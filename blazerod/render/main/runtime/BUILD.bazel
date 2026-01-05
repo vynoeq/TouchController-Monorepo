@@ -26,6 +26,6 @@ kt_merge_library(
         "//blazerod/render/game:remapped_client_access_widened_named",
         "@maven//:it_unimi_dsi_fastutil",
         "@maven//:org_joml_joml",
-        "@maven_blazerod//:org_lwjgl_lwjgl",
+        "@maven//:org_lwjgl_lwjgl",
     ],
 )

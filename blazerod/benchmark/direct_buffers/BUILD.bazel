@@ -1,0 +1,36 @@
+load("@rules_java//java:defs.bzl", "java_library")
+load("@rules_jni//jni:defs.bzl", "jni_headers")
+load("//rule:cc_jni_library.bzl", "cc_jni_library")
+load("//rule:jmh.bzl", "jmh_benchmark")
+
+java_library(
+    name = "buffer_generator",
+    srcs = ["BufferGenerator.java"],
+    deps = ["//blazerod/util/nativeloader"],
+)
+
+jni_headers(
+    name = "buffer_generator_headers",
+    lib = ":buffer_generator",
+)
+
+cc_library(
+    name = "buffer_generator_native_lib",
+    srcs = ["test_data_generator.c"],
+    deps = ["@rules_jni//jni"],
+)
+
+cc_jni_library(
+    name = "buffer_generator_native",
+    platforms = [],
+    deps = [":buffer_generator_native_lib"],
+)
+
+jmh_benchmark(
+    name = "direct_buffers",
+    srcs = ["DirectBuffers.java"],
+    deps = [
+        ":buffer_generator",
+        ":buffer_generator_native",
+    ],
+)

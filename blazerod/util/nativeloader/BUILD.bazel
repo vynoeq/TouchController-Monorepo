@@ -1,0 +1,7 @@
+load("//rule:merge_library.bzl", "java_merge_library")
+
+java_merge_library(
+    name = "nativeloader",
+    srcs = ["NativeLoader.java"],
+    visibility = ["//visibility:public"],
+)
