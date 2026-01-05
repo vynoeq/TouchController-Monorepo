@@ -10,7 +10,7 @@ kt_merge_library(
         "//combine/core/modifier",
         "//combine/data",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//:compose",
     ],

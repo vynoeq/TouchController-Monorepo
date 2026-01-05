@@ -3,6 +3,59 @@
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 
 fabric_versions = {
+    "1.14.4": {
+        "api": "0.28.5+1.14",
+        "loader": "0.6.1+build.165",
+        "modmenu": "1.7.17+build.1",
+        "modmenu_legacy": True,
+        "mixin": "0.7.11.38",
+    },
+    "1.16.5": {
+        "api": "0.42.0+1.16",
+        "loader": "0.8.9+build.203",
+        "modmenu": "1.16.23",
+        "mixin": "0.8+build.18",
+    },
+    "1.17.1": {
+        "api": "0.46.1+1.17",
+        "loader": "0.12.12",
+        "modmenu": "2.0.17",
+        "mixin": "0.10.7+mixin.0.8.4",
+    },
+    "1.18.1": {
+        "api": "0.46.6+1.18",
+        "loader": "0.13.0",
+        "modmenu": "3.0.1",
+        "mixin": "0.11.1+mixin.0.8.5",
+    },
+    "1.18.2": {
+        "api": "0.77.0+1.18.2",
+        "loader": "0.14.9",
+        "modmenu": "3.2.5",
+        "mixin": "0.11.4+mixin.0.8.5",
+    },
+    "1.19.2": {
+        "api": "0.77.0+1.19.2",
+        "loader": "0.14.9",
+        "modmenu": "4.2.0-beta.2",
+        "mixin": "0.11.4+mixin.0.8.5",
+    },
+    "1.20.1": {
+        "api": "0.92.6+1.20.1",
+        "loader": "0.16.10",
+        "placeholder_api": "2.4.0-pre.1+1.20.4",
+        "modmenu": "7.2.2",
+        "mixin": "0.15.4+mixin.0.8.7",
+        "mixin_extras": "0.3.1",
+    },
+    "1.20.4": {
+        "api": "0.97.3+1.20.4",
+        "loader": "0.15.1",
+        "placeholder_api": "2.4.0-pre.1+1.20.4",
+        "modmenu": "9.2.0",
+        "mixin": "0.12.5+mixin.0.8.5",
+        "mixin_extras": "0.3.1",
+    },
     "1.20.6": {
         "api": "0.100.8+1.20.6",
         "loader": "0.15.6",
@@ -91,6 +144,13 @@ fabric_versions = {
         "mixin": "0.16.3+mixin.0.8.7",
         "mixin_extras": "0.5.0",
     },
+    "1.21.11": {
+        "api": "0.140.2+1.21.11",
+        "loader": "0.17.3",
+        "modmenu": "17.0.0-beta.1",
+        "mixin": "0.16.5+mixin.0.8.7",
+        "mixin_extras": "0.5.0",
+    },
 }
 
 [
@@ -108,12 +168,11 @@ fabric_versions = {
                 "net.fabricmc:intermediary:%s:v2" % version,
                 "net.fabricmc.fabric-api:fabric-api:%s" % entry["api"],
                 "net.fabricmc:fabric-loader:%s" % entry["loader"],
-                "com.terraformersmc:modmenu:%s" % entry["modmenu"],
+                ("io.github.prospector:modmenu:%s" % entry["modmenu"]) if "modmenu_legacy" in entry else ("com.terraformersmc:modmenu:%s" % entry["modmenu"]),
                 "net.fabricmc:sponge-mixin:%s" % entry["mixin"],
-                "io.github.llamalad7:mixinextras-fabric:%s" % entry["mixin_extras"],
-                "eu.pb4:placeholder-api:%s" % entry["placeholder_api"],
                 "net.fabricmc:fabric-language-kotlin:1.13.5+kotlin.2.2.10",
-            ],
+            ] + (["eu.pb4:placeholder-api:%s" % entry["placeholder_api"]] if "placeholder_api" in entry else [])
+             + (["io.github.llamalad7:mixinextras-fabric:%s" % entry["mixin_extras"]] if "mixin_extras" in entry else []),
             fetch_sources = True,
             lock_file = "//game/%s:maven_install_fabric.json" % version,
             repositories = [

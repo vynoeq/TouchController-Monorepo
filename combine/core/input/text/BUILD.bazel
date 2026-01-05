@@ -6,9 +6,10 @@ kt_merge_library(
     merge_deps = [
         "//combine/data",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
-        "@maven//:org_jetbrains_compose_runtime_runtime_desktop",
+        "@maven//:androidx_compose_runtime_runtime_desktop",
+        "@maven//:androidx_compose_runtime_runtime_annotation_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
     ],
 )

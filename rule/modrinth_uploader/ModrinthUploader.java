@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mizosoft.methanol.MediaType;
 import com.github.mizosoft.methanol.MoreBodyPublishers;
 import com.github.mizosoft.methanol.MultipartBodyPublisher;
-import de.swiesend.secretservice.simple.SimpleCollection;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ModrinthUploader {
@@ -102,13 +100,10 @@ public class ModrinthUploader {
 
         var uploadData = new ModrinthUploadData(versionName, versionId, changelog, dependencies, gameVersions, versionType, loaders, projectId, List.of("primary_file"), "primary_file", true);
 
-        String token;
-        try (var collection = new SimpleCollection()) {
-            var items = collection.getItems(Map.of("modrinth_token_id", tokenSecretId));
-            if (items.isEmpty()) {
-                throw new IllegalArgumentException("Label " + tokenSecretId + " not found");
-            }
-            token = new String(collection.getSecret(items.getFirst()));
+        var tokenBackend = TokenBackend.getDefault();
+        var token = tokenBackend.getToken(tokenSecretId);
+        if (token == null) {
+            throw new IllegalArgumentException("Token " + tokenSecretId + " not found");
         }
 
         try (var httpClient = HttpClient.newHttpClient()) {

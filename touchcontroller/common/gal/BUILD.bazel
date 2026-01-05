@@ -4,5 +4,12 @@ kt_merge_library(
     name = "gal",
     srcs = glob(["*.kt"]),
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    deps = [
+        "//:kotlin_serialization",
+        "//combine/core/data",
+        "//combine/core/paint",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
 )

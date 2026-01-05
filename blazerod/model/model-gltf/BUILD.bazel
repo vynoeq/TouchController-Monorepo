@@ -1,7 +1,6 @@
-load("@rules_java//java:defs.bzl", "java_library")
-load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library", "kt_jvm_test")
+load("@rules_jvm_external//:kt_defs.bzl", "kt_jvm_export")
+load("//blazerod:properties.bzl", "blazerod_version")
 load("//blazerod/model:model_info_jar.bzl", "model_info_jar")
-load("//rule:merge_jar.bzl", "merge_jar")
 
 model_info_jar(
     name = "mod_info_json",
@@ -12,9 +11,10 @@ model_info_jar(
     },
 )
 
-kt_jvm_library(
+kt_jvm_export(
     name = "model-gltf",
     srcs = glob(["**/*.kt"]),
+    maven_coordinates = "top.fifthlight.blazerod:model-gltf:%s" % blazerod_version,
     resource_jars = [
         ":mod_info_json",
         "//blazerod:icon",

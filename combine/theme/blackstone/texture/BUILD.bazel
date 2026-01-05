@@ -14,6 +14,11 @@ texture(
     ),
 )
 
+texture(
+    name = "icon",
+    srcs = glob(["icon/*.png"]),
+)
+
 ninepatch_texture(
     name = "widget_ninepatch",
     srcs = glob(["widget/*/*.9.png"]),
@@ -23,6 +28,7 @@ texture_group(
     name = "texture_group",
     deps = [
         ":background",
+        ":icon",
         ":widget",
         ":widget_ninepatch",
     ],
@@ -32,6 +38,7 @@ texture_lib(
     name = "texture",
     class_name = "BlackstoneTextures",
     package = "top.fifthlight.combine.theme.blackstone",
+    prefix = "blackstone",
     visibility = ["//combine/theme/blackstone:__pkg__"],
     deps = [
         ":texture_group",

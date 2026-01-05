@@ -2,13 +2,11 @@ package top.fifthlight.combine.paint
 
 import androidx.compose.runtime.Immutable
 import top.fifthlight.data.*
+import top.fifthlight.mergetools.api.ExpectFactory
 
 @Immutable
-abstract class Texture(
-    override val size: IntSize,
-    override val padding: IntPadding = IntPadding.ZERO,
-) : Drawable {
-    abstract fun Canvas.draw(
+interface Texture : Drawable {
+    fun Canvas.draw(
         dstRect: Rect,
         tint: Color = Colors.WHITE,
         srcRect: Rect,
@@ -25,15 +23,34 @@ abstract class Texture(
             srcRect = srcRect.toRect(),
         )
     }
+
+    @ExpectFactory
+    interface Factory {
+        fun create(
+            namespace: String,
+            id: String,
+            width: Int,
+            height: Int,
+            padding: IntPadding,
+        ): Texture
+    }
 }
 
 @Immutable
-abstract class BackgroundTexture(
-    override val size: IntSize,
-) : Drawable {
+interface BackgroundTexture : Drawable {
     override val padding: IntPadding
         get() = IntPadding.ZERO
 
     fun Canvas.draw(dstRect: IntRect, tint: Color = Colors.WHITE, scale: Float) = draw(dstRect.toRect(), tint, scale)
-    abstract fun Canvas.draw(dstRect: Rect, tint: Color = Colors.WHITE, scale: Float)
+    fun Canvas.draw(dstRect: Rect, tint: Color = Colors.WHITE, scale: Float)
+
+    @ExpectFactory
+    interface Factory {
+        fun create(
+            namespace: String,
+            id: String,
+            width: Int,
+            height: Int,
+        ): BackgroundTexture
+    }
 }

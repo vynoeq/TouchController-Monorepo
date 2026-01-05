@@ -1,7 +1,18 @@
-common --java_runtime_version=remotejdk_21
-common --tool_java_runtime_version=remotejdk_21
-common --tool_java_language_version=21
+startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=0
+
+common --java_runtime_version=remotejdk_25
 common --java_language_version=21
+common --tool_java_runtime_version=remotejdk_25
+common --tool_java_language_version=21
+
+common:jre8 --java_runtime_version=remotejdk_8
+common:jre17 --java_runtime_version=remotejdk_17
+common:jre21 --java_runtime_version=remotejdk_21
+common:jre25 --java_runtime_version=remotejdk_21
+
+common:jre25 --jvmopt=--sun-misc-unsafe-memory-access=allow
+
+build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
 
 build --worker_max_multiplex_instances=KotlinKsp=1
 

@@ -11,7 +11,7 @@ import top.fifthlight.touchcontroller.common.platform.proxy.ProxyPlatform
 object ConnectionEvents : KoinComponent {
     private val platformProvider: PlatformProvider by inject()
     private val gameAction: GameAction by inject()
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     fun onJoinedWorld() {
         val platform = platformProvider.platform

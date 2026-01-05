@@ -1,7 +1,5 @@
 package top.fifthlight.touchcontroller.common.control
 
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import top.fifthlight.combine.data.Identifier
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntPadding

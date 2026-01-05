@@ -342,7 +342,7 @@ class EnumProperty<Config : ControllerWidget, T>(
     private val name: Text,
     private val items: PersistentList<Pair<T, Text>>,
 ) : ControllerWidget.Property<Config, T>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private fun getItemText(item: T): Text =
         items.firstOrNull { it.first == item }?.second ?: @DontTranslate textFactory.literal(item.toString())
@@ -412,7 +412,7 @@ class FloatProperty<Config : ControllerWidget>(
     private val range: ClosedFloatingPointRange<Float> = 0f..1f,
     private val messageFormatter: TextFactory.(Float) -> Text,
 ) : ControllerWidget.Property<Config, Float>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     @Composable
     override fun controller(
@@ -445,7 +445,7 @@ class IntProperty<Config : ControllerWidget>(
     private val range: IntRange,
     private val messageFormatter: TextFactory.(Int) -> Text,
 ) : ControllerWidget.Property<Config, Int>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     @Composable
     override fun controller(
@@ -766,7 +766,7 @@ class ButtonTextureProperty<Config : ControllerWidget>(
     setValue: (Config, ButtonTexture) -> Config,
     private val name: Text,
 ) : ControllerWidget.Property<Config, ButtonTexture>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val emptyTexturePaddingProperty = paddingProperty(
         getPadding = { (it as? ButtonTexture.Empty)?.extraPadding },
@@ -962,7 +962,7 @@ class ButtonActiveTextureProperty<Config : ControllerWidget>(
     setValue: (Config, ButtonActiveTexture) -> Config,
     private val name: Text,
 ) : ControllerWidget.Property<Config, ButtonActiveTexture>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val textureProperty = buttonTextureProperty(
         getTexture = { (it as? ButtonActiveTexture.Texture)?.texture },
@@ -1175,7 +1175,7 @@ class TriggerActionProperty<Config : ControllerWidget>(
     setValue: (Config, WidgetTriggerAction?) -> Config,
     private val name: Text,
 ) : ControllerWidget.Property<Config, WidgetTriggerAction?>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val keyClickBindingProperty = keyBindingProperty(
         getKeyBinding = { (it as? WidgetTriggerAction.Key.Click)?.keyBinding },
@@ -1536,7 +1536,7 @@ class DoubleClickTriggerProperty<Config : ControllerWidget>(
     setValue: (Config, DoubleClickTrigger) -> Config,
     private val name: Text,
 ) : ControllerWidget.Property<Config, DoubleClickTrigger>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val actionProperty = triggerActionProperty(
         getAction = { it.action },
@@ -1606,7 +1606,7 @@ class ButtonTriggerProperty<Config : ControllerWidget>(
     getValue: (Config) -> ButtonTrigger,
     setValue: (Config, ButtonTrigger) -> Config,
 ) : ControllerWidget.Property<Config, ButtonTrigger>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val downTriggerActionProperty = triggerActionProperty(
         getAction = { it.down },
@@ -1664,7 +1664,7 @@ class DPadActiveTextureProperty<Config : ControllerWidget>(
     getValue: (Config) -> DPadExtraButton.ActiveTexture,
     setValue: (Config, DPadExtraButton.ActiveTexture) -> Config,
 ) : ControllerWidget.Property<Config, DPadExtraButton.ActiveTexture>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val textureProperty = textureCoordinateProperty(
         getCoordinate = { (it as? DPadExtraButton.ActiveTexture.Texture)?.texture },
@@ -1755,7 +1755,7 @@ class DPadButtonInfoProperty<Config : ControllerWidget>(
     getValue: (Config) -> DPadExtraButton.ButtonInfo,
     setValue: (Config, DPadExtraButton.ButtonInfo) -> Config,
 ) : ControllerWidget.Property<Config, DPadExtraButton.ButtonInfo>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val sizeProperty = intProperty(
         getInt = { it.size },
@@ -1801,7 +1801,7 @@ class DPadExtraButtonProperty<Config : ControllerWidget>(
     getValue: (Config) -> DPadExtraButton,
     setValue: (Config, DPadExtraButton) -> Config,
 ) : ControllerWidget.Property<Config, DPadExtraButton>(getValue, setValue), KoinComponent {
-    private val textFactory: TextFactory by inject()
+    private val textFactory:  = TextFactoryFactory.of()
 
     private val normalTriggerProperty = triggerProperty(
         getTrigger = { (it as? DPadExtraButton.Normal)?.trigger },

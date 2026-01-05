@@ -1,5 +1,7 @@
 "Rules for uploading mods to Modrinth"
 
+_SH_TOOLCHAIN_TYPE = "@rules_shell//shell:toolchain_type"
+
 def _modrinth_dependency_info_init(*, version_id, project_id, dependency_type):
     if not project_id:
         fail("project_id must be specified")
@@ -84,35 +86,72 @@ def _upload_modrinth_impl(ctx):
         args += ["--dependency-type", dependency.dependency_type]
     args += ["--file-name", ctx.attr.file_name]
 
-    runfiles = ctx.runfiles(
-        files = [
-            ctx.file._rlocation_library,
-            input_file,
-        ] + ([changelog_file] if changelog_file else []),
-    ).merge(
-        ctx.attr._modrinth_uploader_binary[DefaultInfo].default_runfiles,
-    )
+    substitutions = {
+        "{WORKSPACE_NAME}": ctx.workspace_name,
+        "{CHANGELOG_PATH}": changelog_file.short_path if changelog_file else "",
+        "{FILE_PATH}": input_file.short_path,
+        "{EXEC_PATH}": ctx.executable._modrinth_uploader_binary.short_path,
+        "{ARGS}": "\n".join([arg.replace("'", "\\'") for arg in args]),
+    }
 
-    ctx.actions.expand_template(
-        output = ctx.outputs.executable,
-        template = ctx.file._modrinth_uploader_wrapper,
-        substitutions = {
-            "{WORKSPACE_NAME}": ctx.workspace_name,
-            "{CHANGELOG_PATH}": changelog_file.short_path if changelog_file else "",
-            "{FILE_PATH}": input_file.short_path,
-            "{EXEC_PATH}": ctx.executable._modrinth_uploader_binary.short_path,
-            "{ARGS}": "\n".join([arg.replace("'", "\\'") for arg in args]),
-        },
-        is_executable = True,
-    )
+    if ctx.target_platform_has_constraint(ctx.attr._windows_constraint[platform_common.ConstraintValueInfo]):
+        output_executable = ctx.actions.declare_file(ctx.attr.name + ".bat")
+        output_script = ctx.actions.declare_file(ctx.attr.name + ".bash")
+        ctx.actions.expand_template(
+            output = output_script,
+            template = ctx.file._modrinth_uploader_wrapper,
+            substitutions = substitutions,
+            is_executable = True,
+        )
+
+        sh_toolchain = ctx.toolchains[_SH_TOOLCHAIN_TYPE]
+        if not sh_toolchain or not sh_toolchain.path:
+            fail("No suitable shell toolchain found")
+
+        runfiles = ctx.runfiles(
+            files = [
+                ctx.file._rlocation_library,
+                input_file,
+                output_script,
+            ] + ([changelog_file] if changelog_file else []),
+        ).merge(
+            ctx.attr._modrinth_uploader_binary[DefaultInfo].default_runfiles,
+        )
+
+        ctx.actions.write(
+            output = output_executable,
+            content = sh_toolchain.path + " -c 'PATH=/usr/local/bin:/usr/bin:/bin:/opt/bin:$PATH RUNFILES_MANIFEST_FILE=../%s.bat.runfiles_manifest ../" % ctx.attr.name + output_script.basename + "'",
+            is_executable = True,
+        )
+    else:
+        output_executable = ctx.actions.declare_file(ctx.attr.name + ".bash")
+        runfiles = ctx.runfiles(
+            files = [
+                ctx.file._rlocation_library,
+                input_file,
+            ] + ([changelog_file] if changelog_file else []),
+        ).merge(
+            ctx.attr._modrinth_uploader_binary[DefaultInfo].default_runfiles,
+        )
+
+        ctx.actions.expand_template(
+            output = output_executable,
+            template = ctx.file._modrinth_uploader_wrapper,
+            substitutions = substitutions,
+            is_executable = True,
+        )
 
     return [DefaultInfo(
         runfiles = runfiles,
+        executable = output_executable,
     )]
 
 upload_modrinth = rule(
     implementation = _upload_modrinth_impl,
     executable = True,
+    toolchains = [
+        config_common.toolchain_type(_SH_TOOLCHAIN_TYPE, mandatory = False),
+    ],
     attrs = {
         "token_secret_id": attr.string(
             doc = "The secret ID of the token.",
@@ -173,6 +212,9 @@ upload_modrinth = rule(
         "_rlocation_library": attr.label(
             default = "@bazel_tools//tools/bash/runfiles",
             allow_single_file = [".bash"],
+        ),
+        "_windows_constraint": attr.label(
+            default = "@platforms//os:windows",
         ),
     },
 )

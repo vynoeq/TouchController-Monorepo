@@ -7,3 +7,4 @@ rust-project.json
 compile_commands.json
 .claude
 CLAUDE.md
+AGENTS.md

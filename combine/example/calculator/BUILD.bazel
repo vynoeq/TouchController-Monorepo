@@ -1,32 +1,46 @@
-load("//rule:merge_library.bzl", "kt_merge_library")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//rule:remap_jar.bzl", "remap_jar")
 
-kt_merge_library(
-    name = "calculator",
+kt_jvm_library(
+    name = "calculator_unmapped",
     srcs = glob(["*.kt"]),
-    merge_deps = [
-        "//combine/backend/minecraft/1.21.8",
-        "//combine/data",
-        "//combine/core/data",
-        "//combine/core/screen",
-        "//combine/core/widget/layout",
-        "//combine/core/modifier",
-        "//combine/core/modifier/placement",
-        "//combine/core/modifier/drawing",
-        "//combine/core/paint",
-        "//combine/core/layout",
-        "//combine/theme/base",
-        "//combine/theme/vanilla",
-        "//combine/widget",
-    ],
     resource_strip_prefix = "combine/example/calculator/resources",
     resources = glob(["resources/**"]),
     deps = [
         "//:compose",
+        "//combine/backend/minecraft/1.21.8",
+        "//combine/core/data",
+        "//combine/core/layout",
+        "//combine/core/modifier",
+        "//combine/core/modifier/drawing",
+        "//combine/core/modifier/placement",
+        "//combine/core/paint",
+        "//combine/core/screen",
+        "//combine/core/widget/layout",
+        "//combine/data",
         "//combine/example:remapped_client_access_widened_named",
         "//combine/example:remapped_deps",
+        "//combine/theme/base",
+        "//combine/theme/blackstone",
+        "//combine/theme/blackstone:vanilla_lib_unmerged",
+        "//combine/theme/oreui",
+        "//combine/theme/oreui:vanilla_lib_unmerged",
+        "//combine/theme/vanilla",
+        "//combine/widget",
         "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
         "@minecraft//1.21.8:client_libraries",
     ],
+)
+
+remap_jar(
+    name = "calculator",
+    classpath = ["//combine/example:remapped_client_access_widened_named"],
+    from_namespace = "named",
+    inputs = [":calculator_unmapped"],
+    mapping = "//game/1.21.8:game_merged_mapping",
+    mixin = True,
+    to_namespace = "intermediary",
+    visibility = ["//visibility:public"],
 )
 
 java_binary(
@@ -53,8 +67,8 @@ java_binary(
         "@minecraft//1.21.8:client_libraries",
         # Classpath separator
         "//game/1.21.8:game_mapping_jar",
-        "//combine/backend/minecraft/1.21.8/fabric:fabric_unmapped",
-        ":calculator",
+        "//combine/backend/minecraft/1.21.8/fabric:fabric_unmapped_merged",
+        ":calculator_unmapped",
         "//rule/dev_launch_wrapper",
         "@maven_fabric_1_21_8//:io_github_llamalad7_mixinextras_fabric",
         "@maven_fabric_1_21_8//:net_fabricmc_fabric_language_kotlin",

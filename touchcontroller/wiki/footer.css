@@ -1,6 +1,6 @@
 footer {
   text-align: center;
   border-top: solid 1px var(--sidebar-spacer);
-  padding-top: 1rem;
+  padding: 1rem;
   color: var(--icons);
 }

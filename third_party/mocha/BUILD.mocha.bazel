@@ -10,6 +10,6 @@ java_library(
     visibility = ["//visibility:public"],
     deps = [
         "@maven//:org_jetbrains_annotations",
-        "@maven_blazerod//:org_javassist_javassist",
+        "@maven//:org_javassist_javassist",
     ],
 )

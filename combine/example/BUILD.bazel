@@ -24,7 +24,7 @@ extract_access_widener(
     name = "access_widener_dep_named",
     inputs = [
         ":remapped_deps",
-        "//combine/backend/minecraft/1.21.8/fabric:fabric_unmapped",
+        "//combine/backend/minecraft/1.21.8/fabric:fabric_unmapped_merged",
     ],
 )
 

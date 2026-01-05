@@ -17,17 +17,13 @@ import top.fifthlight.combine.layout.Alignment
 import top.fifthlight.combine.layout.Arrangement
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.modifier.drawing.background
-import top.fifthlight.combine.modifier.drawing.border
 import top.fifthlight.combine.modifier.drawing.innerLine
-import top.fifthlight.combine.modifier.placement.IntrinsicSize
-import top.fifthlight.combine.modifier.placement.fillMaxSize
-import top.fifthlight.combine.modifier.placement.fillMaxWidth
-import top.fifthlight.combine.modifier.placement.padding
-import top.fifthlight.combine.modifier.placement.size
-import top.fifthlight.combine.modifier.placement.width
+import top.fifthlight.combine.modifier.placement.*
 import top.fifthlight.combine.paint.Colors
 import top.fifthlight.combine.screen.ScreenFactoryFactory
+import top.fifthlight.combine.theme.blackstone.BlackstoneTheme
 import top.fifthlight.combine.theme.invoke
+import top.fifthlight.combine.theme.oreui.OreUITheme
 import top.fifthlight.combine.theme.vanilla.VanillaTheme
 import top.fifthlight.combine.widget.layout.Box
 import top.fifthlight.combine.widget.layout.Column
@@ -38,11 +34,18 @@ import top.fifthlight.combine.widget.ui.Text
 class CalculatorMod: ClientModInitializer, ModMenuApi {
     private val keyMapping = KeyMapping("combine_calculator", GLFW.GLFW_KEY_H, "combine_example")
 
+    private val themes = listOf(
+        "Blackstone" to BlackstoneTheme,
+        "Ore UI" to OreUITheme,
+        "Vanilla" to VanillaTheme,
+    )
+
     private fun createScreen(parent: Screen? = null) = ScreenFactoryFactory.of().getScreen(
         parent = parent,
         title = TextFactoryFactory.of().literal("Combine Calculator")
     ) {
-        VanillaTheme {
+        var themeIndex by remember { mutableStateOf(0) }
+        themes[themeIndex].second {
             var display by remember { mutableStateOf("0") }
             var operand1 by remember { mutableStateOf<Double?>(null) }
             var operator by remember { mutableStateOf<String?>(null) }
@@ -57,6 +60,15 @@ class CalculatorMod: ClientModInitializer, ModMenuApi {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4),
                 ) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            themeIndex = (themeIndex + 1) % themes.size
+                        },
+                    ) {
+                        Text("Theme: ${themes[themeIndex].first}")
+                    }
+
                     Row(
                         modifier = Modifier
                             .padding(4)

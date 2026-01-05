@@ -1,0 +1,28 @@
+load("@bazel_skylib//rules:run_binary.bzl", "run_binary")
+load("//rule:merge_library.bzl", "kt_merge_library")
+load("//touchcontroller/resources/generator:generate_legacy_text.bzl", "generate_legacy_text")
+
+run_binary(
+    name = "text_binding_source",
+    srcs = ["en_us.json"],
+    outs = ["Texts.kt"],
+    args = [
+        "$(location en_us.json)",
+        "$(location Texts.kt)",
+    ],
+    tool = "//touchcontroller/resources/generator:text_binding_generator",
+)
+
+kt_merge_library(
+    name = "text_binding",
+    srcs = [":text_binding_source"],
+    merge_deps = [
+        "//combine/core/data",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+)
+
+generate_legacy_text(
+    name = "legacy_text",
+    deps = glob(["*.json"]),
+)

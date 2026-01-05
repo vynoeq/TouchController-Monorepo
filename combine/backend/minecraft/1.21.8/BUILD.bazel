@@ -18,7 +18,7 @@ kt_merge_library(
         "//combine/theme/vanilla",
         "//combine/backend/minecraft/1.21.8/extension",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//:compose",
         "//combine/backend/minecraft/1.21.8/game:remapped_client_access_widened_named",

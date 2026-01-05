@@ -1,11 +1,8 @@
 package top.fifthlight.fabazel.modrinthuploader;
 
-import de.swiesend.secretservice.simple.SimpleCollection;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
 
 public class ModrinthTokenSaver {
     public static void main(String... args) {
@@ -33,8 +30,9 @@ public class ModrinthTokenSaver {
                         return;
                     }
 
-                    try (var collection = new SimpleCollection()) {
-                        collection.createItem(tokenId, tokenSecret, Map.of("modrinth_token_id", tokenId));
+                    var tokenBackend = TokenBackend.getDefault();
+                    try {
+                        tokenBackend.saveToken(tokenId, tokenSecret);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }

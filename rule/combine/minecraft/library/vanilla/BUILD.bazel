@@ -1,0 +1,21 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "vanilla_lib",
+    srcs = glob(["*.kt"]),
+    deps = [
+        "//:kotlin_serialization",
+        "//combine/data",
+        "//rule/combine/metadata",
+        "@maven//:com_squareup_kotlinpoet_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
+)
+
+java_binary(
+    name = "vanilla",
+    main_class = "top.fifthlight.combine.resources.vanilla.KotlinTextureLibraryGeneratorKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = [":vanilla_lib"],
+)

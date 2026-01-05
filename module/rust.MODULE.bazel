@@ -53,19 +53,19 @@ crate.spec(
         "io-util",
     ],
     package = "tokio",
-    version = "1.43.0",
+    version = "1.48.0",
 )
 crate.spec(
     package = "log",
-    version = "0.4.25",
+    version = "0.4.29",
 )
 crate.spec(
     package = "android_logger",
-    version = "0.14.1",
+    version = "0.15.1",
 )
 crate.spec(
     package = "binrw",
-    version = "0.14.1",
+    version = "0.15.0",
 )
 crate.from_specs(supported_platform_triples = [
     "x86_64-unknown-linux-gnu",

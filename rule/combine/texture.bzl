@@ -11,8 +11,8 @@ def _path_to_identifier(path):
     path = path.split(".")[0]
     # Replace all non-alphanumeric characters with underscores
     path = "".join([path[index] if path[index].isalnum() else "_" for index in range(len(path))])
-    # Make all letters uppercase
-    return path.upper()
+    # Make all letters lowercase
+    return path.lower()
 
 def _ninepatch_texture_impl(ctx):
     strip_prefix = ctx.attr.strip_prefix
@@ -197,7 +197,7 @@ texture_group = rule(
     },
 )
 
-TextureLibraryInfo = provider(fields = ["package", "class_name", "textures", "ninepatch_textures", "files"])
+TextureLibraryInfo = provider(fields = ["package", "class_name", "prefix", "textures", "ninepatch_textures", "files"])
 
 def _texture_lib_impl(ctx):
     groups_infos = [dep[TextureGroupInfo] for dep in ctx.attr.deps]
@@ -206,6 +206,7 @@ def _texture_lib_impl(ctx):
         TextureLibraryInfo(
             package = ctx.attr.package,
             class_name = ctx.attr.class_name,
+            prefix = ctx.attr.prefix,
             textures = merged_group.textures,
             ninepatch_textures = merged_group.ninepatch_textures,
             files = merged_group.files,
@@ -221,6 +222,9 @@ texture_lib = rule(
             mandatory = True,
         ),
         "class_name": attr.string(
+            mandatory = True,
+        ),
+        "prefix": attr.string(
             mandatory = True,
         ),
         "deps": attr.label_list(

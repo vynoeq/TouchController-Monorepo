@@ -1,14 +1,42 @@
 load("//rule:merge_library.bzl", "merge_library_jar")
+load("//rule:remap_jar.bzl", "remap_jar")
+load("//rule/fabric:merge_jij.bzl", "fabric_merge_jij")
 
 merge_library_jar(
-    name = "fabric_unmapped",
-    deps = [
-        "//combine/backend/minecraft/1.21.8",
-        "//combine/backend/minecraft/1.21.8/mixin",
-    ],
-    visibility = ["//visibility:public"],
+    name = "fabric_unmapped_merged",
+    manifest_entries = {
+        "Fabric-Loom-Mixin-Remap-Type": "static",
+    },
     resources = {
         "fabric.mod.json": "combine/backend/minecraft/1.21.8/fabric",
         "//combine/backend/minecraft/1.21.8/game:access_widener": "combine/backend/minecraft/1.21.8/game",
+    },
+    visibility = ["//visibility:public"],
+    deps = [
+        "//combine",
+        "//combine/backend/minecraft/1.21.8",
+        "//combine/backend/minecraft/1.21.8/mixin",
+    ],
+)
+
+remap_jar(
+    name = "fabric_merged",
+    classpath = ["//game/1.21.8:game_client_named"],
+    from_namespace = "named",
+    inputs = [":fabric_unmapped_merged"],
+    mapping = "//game/1.21.8:game_merged_mapping",
+    mixin = True,
+    to_namespace = "intermediary",
+    visibility = ["//visibility:public"],
+)
+
+fabric_merge_jij(
+    name = "fabric",
+    input = ":fabric_merged",
+    visibility = ["//visibility:public"],
+    deps = {
+        "@maven//:androidx_compose_runtime_runtime_desktop": "androidx_compose_runtime_runtime_desktop:1.10.0",
+        "@maven//:androidx_collection_collection_jvm": "androidx_collection_collection_jvm:1.5.0",
+        "@maven//:org_mini2Dx_universal_tween_engine": "org_mini2dx_universal_tween_engine:6.3.3",
     },
 )

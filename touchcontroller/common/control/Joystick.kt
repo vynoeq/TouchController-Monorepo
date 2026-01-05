@@ -40,7 +40,7 @@ data class Joystick(
     override val lockMoving: Boolean = false,
 ) : ControllerWidget() {
     companion object : KoinComponent {
-        private val textFactory: TextFactory by inject()
+        private val textFactory:  = TextFactoryFactory.of()
 
         @Suppress("UNCHECKED_CAST")
         private val _properties = properties + persistentListOf<Property<Joystick, *>>(

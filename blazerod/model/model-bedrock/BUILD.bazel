@@ -1,4 +1,5 @@
-load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("@rules_jvm_external//:kt_defs.bzl", "kt_jvm_export")
+load("//blazerod:properties.bzl", "blazerod_version")
 load("//blazerod/model:model_info_jar.bzl", "model_info_jar")
 load("//rule/fabric:merge_jij.bzl", "fabric_merge_jij")
 
@@ -11,9 +12,10 @@ model_info_jar(
     },
 )
 
-kt_jvm_library(
+kt_jvm_export(
     name = "model-bedrock",
     srcs = glob(["**/*.kt"]),
+    maven_coordinates = "top.fifthlight.blazerod:model-bedrock:%s" % blazerod_version,
     resource_jars = [
         ":mod_info_json",
         "//blazerod:icon",
@@ -40,6 +42,6 @@ fabric_merge_jij(
     visibility = ["//visibility:public"],
     deps = {
         "@mocha//:mocha": "team_unnamed_mocha:3.0.1",
-        "@maven_blazerod//:org_javassist_javassist": "org_javassist_javassist:3.30.2-GA",
+        "@maven//:org_javassist_javassist": "org_javassist_javassist:3.30.2-GA",
     },
 )

@@ -7,7 +7,7 @@ kt_merge_library(
     merge_deps = [
         "//combine/core/data",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//:compose",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",

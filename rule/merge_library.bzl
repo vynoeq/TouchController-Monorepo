@@ -22,6 +22,24 @@ MergeLibraryInfo, _ = provider(
     init = _merge_library_info_init,
 )
 
+def _merge_library_group_impl(ctx):
+    return [
+        MergeLibraryInfo(
+            merge_jars = depset(),
+            deps = [dep[MergeLibraryInfo] for dep in ctx.attr.deps],
+        ),
+    ]
+
+merge_library_group = rule(
+    implementation = _merge_library_group_impl,
+    attrs = {
+        "deps": attr.label_list(
+            providers = [MergeLibraryInfo],
+            mandatory = True,
+        ),
+    },
+)
+
 def _modify_deps(deps, associates, merge_deps, plugins, expect, actual):
     real_deps = [dep for dep in deps]
     for merge_dep in merge_deps:

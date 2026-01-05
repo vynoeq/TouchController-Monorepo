@@ -2,21 +2,14 @@
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
-    name = "maven_armorstand",
     artifacts = [
-        "com.h2database:h2:2.3.232",
+        "com.h2database:h2:2.4.240",
         "com.illposed.osc:javaosc-core:0.9",
-        "org.antlr:antlr4-runtime:4.13.1",
-        "io.github.douira:glsl-transformer:2.0.1",
+        "org.antlr:antlr4-runtime:4.13.2",
+        "io.github.douira:glsl-transformer:2.0.2",
         "org.anarres:jcpp:1.4.14",
     ],
-    fetch_sources = True,
-    lock_file = "//armorstand:maven_install.json",
-    repositories = [
-        "https://repo1.maven.org/maven2/",
-    ],
 )
-use_repo(maven, "maven_armorstand")
 
 # For dev client
 modrinth = use_extension("//repo:modrinth.bzl", "modrinth")

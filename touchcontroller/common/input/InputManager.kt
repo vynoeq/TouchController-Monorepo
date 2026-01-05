@@ -5,15 +5,12 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import top.fifthlight.combine.input.input.InputHandler
-import top.fifthlight.combine.input.input.TextInputState
+import top.fifthlight.combine.input.text.InputHandler
+import top.fifthlight.combine.input.text.TextInputState
 import top.fifthlight.data.IntRect
 import top.fifthlight.touchcontroller.common.event.RenderEvents
 import top.fifthlight.touchcontroller.common.gal.GameDispatcher
 import top.fifthlight.touchcontroller.common.gal.WindowHandle
-import top.fifthlight.touchcontroller.common.platform.PlatformProvider
 import top.fifthlight.touchcontroller.proxy.client.PlatformCapability
 import top.fifthlight.touchcontroller.proxy.message.FloatRect
 import top.fifthlight.touchcontroller.proxy.message.InputAreaMessage
@@ -23,7 +20,7 @@ import top.fifthlight.touchcontroller.proxy.message.KeyboardShowMessage
 import top.fifthlight.touchcontroller.proxy.message.input.TextInputState as ProxyTextInputState
 import top.fifthlight.touchcontroller.proxy.message.input.TextRange as ProxyTextRange
 
-object InputManager : KoinComponent, InputHandler {
+object InputManager : InputHandler {
     private val platformProvider: PlatformProvider by inject()
     private var inputState: TextInputState? = null
     private var cursorRect: IntRect? = null

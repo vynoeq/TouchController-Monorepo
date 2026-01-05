@@ -10,9 +10,10 @@ kt_merge_library(
         "//combine/core/node",
         "//combine/data",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//:compose",
+        "@maven//:androidx_compose_runtime_runtime_annotation_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
     ],
 )

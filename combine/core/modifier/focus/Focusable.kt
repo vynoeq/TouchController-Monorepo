@@ -9,6 +9,8 @@ import top.fifthlight.combine.layout.measure.Placeable
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.modifier.pointer.PointerInputModifierNode
 import top.fifthlight.combine.node.LayoutNode
+import top.fifthlight.combine.node.WrapperFactory
+import top.fifthlight.combine.node.WrapperLayoutNode
 import top.fifthlight.combine.node.plus
 
 sealed class FocusInteraction : Interaction {
@@ -35,7 +37,7 @@ data class FocusableModifierNode(
         event: PointerEvent,
         node: Placeable,
         layoutNode: LayoutNode,
-        children: (PointerEvent) -> Boolean
+        children: (PointerEvent) -> Boolean,
     ): Boolean {
         if (event.type == PointerEventType.Press) {
             layoutNode.compositionLocalMap[LocalFocusManager].requestFocus(layoutNode)
@@ -46,7 +48,11 @@ data class FocusableModifierNode(
     }
 
     companion object {
-        private val wrapperFactory = PointerInputModifierNode.wrapperFactory + FocusStateListenerModifierNode.wrapperFactory
+        private val wrapperFactory =
+            PointerInputModifierNode.wrapperFactory + FocusStateListenerModifierNode.wrapperFactory + { node, children, _ ->
+                node.focusable = true
+                children
+            }
     }
 
     override val wrapperFactory

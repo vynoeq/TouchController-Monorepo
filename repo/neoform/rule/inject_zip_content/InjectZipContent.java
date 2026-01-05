@@ -7,13 +7,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Injects additional content from {@linkplain InjectSource configurable sources} into a Zip (or Jar) file.
- * <br>
- * Standalone CLI tool version.
+ * Injects additional content from {@linkplain InjectSource configurable sources} into a Zip (or
+ * Jar) file. <br> Standalone CLI tool version.
  */
 public class InjectZipContent {
     /**
@@ -29,7 +29,6 @@ public class InjectZipContent {
      * Injection source from a directory
      */
     private record DirectoryInjectSource(Path directory) implements InjectSource {
-
         @Override
         public void copyTo(ZipOutputStream zos) throws IOException {
             if (!Files.exists(directory)) {
@@ -37,17 +36,17 @@ public class InjectZipContent {
             }
 
             Files.walk(directory, FileVisitOption.FOLLOW_LINKS)
-                    .filter(path -> !Files.isDirectory(path))
-                    .forEach(path -> {
-                        try {
-                            var relativePath = directory.relativize(path).toString().replace('\\', '/');
-                            zos.putNextEntry(new ZipEntry(relativePath));
-                            Files.copy(path, zos);
-                            zos.closeEntry();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+                .filter(path -> !Files.isDirectory(path))
+                .forEach(path -> {
+                    try {
+                        var relativePath = directory.relativize(path).toString().replace('\\', '/');
+                        zos.putNextEntry(new ZipEntry(relativePath));
+                        Files.copy(path, zos);
+                        zos.closeEntry();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
         }
 
         @Override
@@ -64,7 +63,6 @@ public class InjectZipContent {
      * Injection source from a ZIP file
      */
     private record ZipInjectSource(Path zipFile) implements InjectSource {
-
         @Override
         public void copyTo(ZipOutputStream zos) throws IOException {
             if (!Files.exists(zipFile)) {
@@ -81,12 +79,19 @@ public class InjectZipContent {
                         continue;
                     }
 
-                    zos.putNextEntry(entry);
-                    while ((length = zis.read(buffer)) > 0) {
-                        zos.write(buffer, 0, length);
+                    try {
+                        zos.putNextEntry(entry);
+                        while ((length = zis.read(buffer)) > 0) {
+                            zos.write(buffer, 0, length);
+                        }
+                        zos.closeEntry();
+                        zis.closeEntry();
+                    } catch (ZipException e) {
+                        if (!e.getMessage().startsWith("duplicate entry:")) {
+                            throw e;
+                        }
+                        System.err.println("Cannot inject duplicate file " + entry.getName());
                     }
-                    zos.closeEntry();
-                    zis.closeEntry();
                 }
             }
         }
@@ -129,8 +134,7 @@ public class InjectZipContent {
         var packageInfoTemplateContent = findPackageInfoTemplate(injectedSources);
 
         try (var fileOut = Files.newOutputStream(outputZipFile);
-             var zos = new ZipOutputStream(fileOut)) {
-
+            var zos = new ZipOutputStream(fileOut)) {
             copyInputZipContent(inputZipFile, zos, packageInfoTemplateContent);
 
             // Copy over the injection sources
@@ -141,8 +145,8 @@ public class InjectZipContent {
     }
 
     /*
-     * We support automatically adding package-info.java files to the source jar based on a template-file
-     * found in any one of the inject directories.
+     * We support automatically adding package-info.java files to the source jar based on a
+     * template-file found in any one of the inject directories.
      */
     private String findPackageInfoTemplate(List<InjectSource> injectedSources) throws IOException {
         // Try to find a package-info-template.java
@@ -158,7 +162,8 @@ public class InjectZipContent {
     /*
      * Copies the original ZIP content while applying the optional package-info.java transform.
      */
-    private void copyInputZipContent(Path inputZipFile, ZipOutputStream zos, String packageInfoTemplateContent) throws IOException {
+    private void copyInputZipContent(Path inputZipFile, ZipOutputStream zos,
+        String packageInfoTemplateContent) throws IOException {
         Set<String> visited = new HashSet<>();
         try (var zis = new ZipInputStream(Files.newInputStream(inputZipFile))) {
             ZipEntry entry;
@@ -168,14 +173,19 @@ public class InjectZipContent {
                 zos.closeEntry();
 
                 if (packageInfoTemplateContent != null) {
-                    var pkg = entry.isDirectory() && !entry.getName().endsWith("/") ? entry.getName() : entry.getName().indexOf('/') == -1 ? "" : entry.getName().substring(0, entry.getName().lastIndexOf('/'));
+                    var pkg = entry.isDirectory() && !entry.getName().endsWith("/")
+                        ? entry.getName()
+                        : entry.getName().indexOf('/') == -1
+                        ? ""
+                        : entry.getName().substring(0, entry.getName().lastIndexOf('/'));
                     if (visited.add(pkg)) {
-                        if (!pkg.startsWith("net/minecraft/") &&
-                                !pkg.startsWith("com/mojang/")) {
+                        if (!pkg.startsWith("net/minecraft/") && !pkg.startsWith("com/mojang/")) {
                             continue;
                         }
                         zos.putNextEntry(new ZipEntry(pkg + "/package-info.java"));
-                        zos.write(packageInfoTemplateContent.replace("{PACKAGE}", pkg.replaceAll("/", ".")).getBytes(StandardCharsets.UTF_8));
+                        zos.write(packageInfoTemplateContent
+                                .replace("{PACKAGE}", pkg.replaceAll("/", "."))
+                                .getBytes(StandardCharsets.UTF_8));
                         zos.closeEntry();
                     }
                 }
@@ -188,7 +198,8 @@ public class InjectZipContent {
      */
     public static void main(String[] args) {
         if (args.length < 3) {
-            System.err.println("Usage: java InjectZipContentAction <input.zip> <output.zip> <injectSource1> [<injectSource2> ...]");
+            System.err.println("Usage: java InjectZipContentAction <input.zip> <output.zip> "
+                               + "<injectSource1> [<injectSource2> ...]");
             System.exit(1);
         }
 
@@ -210,7 +221,8 @@ public class InjectZipContent {
                 } else if (Files.isRegularFile(sourcePath)) {
                     injectSources.add(new ZipInjectSource(sourcePath));
                 } else {
-                    System.err.println("Invalid inject source (not a file or directory): " + sourcePath);
+                    System.err.println(
+                        "Invalid inject source (not a file or directory): " + sourcePath);
                     System.exit(1);
                 }
             }

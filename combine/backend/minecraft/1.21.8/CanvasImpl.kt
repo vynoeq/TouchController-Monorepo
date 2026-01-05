@@ -16,13 +16,15 @@ import top.fifthlight.data.*
 
 class CanvasImpl(val guiGraphics: GuiGraphics) : Canvas {
     private fun GuiGraphics.submitElement(guiElementRenderState: GuiElementRenderState) =
-        (this as SubmittableGuiGraphics).`touchcontroller$submitElement`(guiElementRenderState)
+        (this as SubmittableGuiGraphics).`combine$submitElement`(guiElementRenderState)
 
     private fun GuiGraphics.peekScissorStack() =
-        (this as SubmittableGuiGraphics).`touchcontroller$peekScissorStack`()
+        (this as SubmittableGuiGraphics).`combine$peekScissorStack`()
 
-    private val client: Minecraft = Minecraft.getInstance()
-    private val font: Font = client.font
+    val client: Minecraft
+        get() = Minecraft.getInstance()
+    private val font: Font
+        get() = client.font
 
     override fun pushState() {
         guiGraphics.pose().pushMatrix()

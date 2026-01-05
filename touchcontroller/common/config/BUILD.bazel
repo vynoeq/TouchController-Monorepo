@@ -2,7 +2,10 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 
 kt_merge_library(
     name = "config",
-    srcs = glob(["*.kt"]),
+    srcs = glob(["**/*.kt"]),
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+        "//:kotlin_serialization",
+    ],
 )

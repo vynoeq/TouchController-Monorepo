@@ -46,7 +46,7 @@ data class CustomWidget(
     private val textMeasurer: TextMeasurer by inject()
 
     companion object : KoinComponent {
-        private val textFactory: TextFactory by inject()
+        private val textFactory:  = TextFactoryFactory.of()
 
         @Suppress("UNCHECKED_CAST")
         private val _properties = properties + persistentListOf<Property<CustomWidget, *>>(

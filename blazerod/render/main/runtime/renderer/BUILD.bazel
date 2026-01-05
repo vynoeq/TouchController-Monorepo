@@ -30,6 +30,6 @@ kt_merge_library(
         "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
         "@maven//:org_joml_joml",
-        "@maven_blazerod//:org_lwjgl_lwjgl",
+        "@maven//:org_lwjgl_lwjgl",
     ],
 )

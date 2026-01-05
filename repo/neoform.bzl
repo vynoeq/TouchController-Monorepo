@@ -5,7 +5,10 @@ load("@//private:pin_file.bzl", _parse_pin_file = "parse_pin_file")
 load("@//private:snake_case.bzl", _camel_case_to_snake_case = "camel_case_to_snake_case")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
 
-_neoform_repository_url = "https://maven.neoforged.net/releases"
+_neoforge_repository_url = "https://maven.neoforged.net/releases"
+_minecraftforge_repository_url = "https://maven.minecraftforge.net/releases"
+_config_link = "%s/net/neoforged/neoform/%s/neoform-%s.zip"
+_config_link_legacy = "%s/de/oceanlabs/mcp/mcp_config/%s/mcp_config-%s.zip"
 
 def _neoform_repo_impl(rctx):
     pin_content = {}
@@ -14,12 +17,17 @@ def _neoform_repo_impl(rctx):
 
     version_name = rctx.attr.version
     version_sha256 = rctx.attr.sha256
+    version_legacy = rctx.attr.legacy
     neoform_zip = "neoform.zip"
     output_prefix = "neoform/%s" % version_name
 
+    repository_url = _minecraftforge_repository_url if version_legacy else _neoforge_repository_url
+    repository_prefix = "mcp" if version_legacy else "neoform"
+    config_link = _config_link_legacy if version_legacy else _config_link
+
     rctx.report_progress("Downloading NeoForm JAR %s" % version_name)
     rctx.download(
-        url = "%s/net/neoforged/neoform/%s/neoform-%s.zip" % (_neoform_repository_url, version_name, version_name),
+        url = config_link % (repository_url, version_name, version_name),
         sha256 = version_sha256,
         output = neoform_zip,
     )
@@ -30,26 +38,25 @@ def _neoform_repo_impl(rctx):
 
     config_data = json.decode(rctx.read("%s/config.json" % output_prefix))
 
-    mapping_path = config_data["data"]["mappings"]
-    rctx.symlink("%s/%s" % (output_prefix, mapping_path), "mappings.tsrg")
-    inject_path = config_data["data"]["inject"]
-    rctx.symlink("%s/%s" % (output_prefix, inject_path), "inject")
     root_build_content = [
         'package(default_visibility = ["//visibility:public"])',
         "",
-        "alias(",
-        '    name = "mappings",',
-        '    actual = "mappings.tsrg",',
-        ")",
-        "alias(",
-        '    name = "injects",',
-        '    actual = ":inject",',
-        ")",
         "alias(",
         '    name = "neoform",',
         '    actual = "%s",' % neoform_zip,
         ")",
     ]
+    data_paths = {}
+    for name, path in config_data["data"].items():
+        if name == "patches":
+            continue
+        data_paths[name] = path
+        root_build_content += [
+            "alias(",
+            '    name = "%s",' % name,
+            '    actual = "%s",' % "%s/%s" % (output_prefix, path.removesuffix("/")),
+            ")",
+        ]
 
     rctx.file(
         "BUILD.bazel",
@@ -63,9 +70,9 @@ def _neoform_repo_impl(rctx):
         version = function["version"]
 
         token = rctx.download(
-            url = _convert_maven_coordinate_to_url(_neoform_repository_url, version),
+            url = _convert_maven_coordinate_to_url(repository_url, version),
             output = "function_jars/%s.jar" % function_name,
-            sha256 = pin_content.get(_convert_maven_coordinate_to_url(_neoform_repository_url, version), ""),
+            sha256 = pin_content.get(_convert_maven_coordinate_to_url(repository_url, version), ""),
             block = False,
         )
         function_jar_tokens[function_name] = token
@@ -105,8 +112,9 @@ def _neoform_repo_impl(rctx):
             fail("Failed to extract main class from manifest")
 
         jvm_flags = []
-        for flag in function["jvmargs"]:
-            jvm_flags.append('"%s"' % flag)
+        if "jvmargs" in function:
+            for flag in function["jvmargs"]:
+                jvm_flags.append('"%s"' % flag)
 
         function_build = [
             'load("@rules_java//java:defs.bzl", "java_binary")',
@@ -115,10 +123,10 @@ def _neoform_repo_impl(rctx):
             '    name = "%s",' % function_name,
             '    visibility = ["//visibility:public"],',
             '    main_class = "DecompilerWrapper",',
-            '    runtime_deps = [',
-            '        "@%s//jar",' % _convert_maven_coordinate_to_repo("neoform", version),
+            "    runtime_deps = [",
+            '        "@%s//jar",' % _convert_maven_coordinate_to_repo(repository_prefix, version),
             '        "@//repo/neoform/rule/decompiler_wrapper",',
-            '    ],',
+            "    ],",
             "    jvm_flags = [%s]," % ", ".join(jvm_flags),
             ")",
         ] if function_name == "decompile" else [
@@ -128,7 +136,7 @@ def _neoform_repo_impl(rctx):
             '    name = "%s",' % function_name,
             '    visibility = ["//visibility:public"],',
             '    main_class = "%s",' % main_class,
-            '    runtime_deps = ["@%s//jar"],' % _convert_maven_coordinate_to_repo("neoform", version),
+            '    runtime_deps = ["@%s//jar"],' % _convert_maven_coordinate_to_repo(repository_prefix, version),
             "    jvm_flags = [%s]," % ", ".join(jvm_flags),
             ")",
         ]
@@ -142,6 +150,7 @@ def _neoform_repo_impl(rctx):
         args = function.get("args", [])
         arg_names = []
         arg_entries = []
+        output_entries = []
         for arg in args:
             type = None
             name = arg
@@ -153,6 +162,12 @@ def _neoform_repo_impl(rctx):
                     type = "string"
                 elif name == "output":
                     type = "output"
+                elif name == "log":
+                    output_entries.append({
+                        "name": name,
+                        "type": "log",
+                    })
+                    type = "log"
                 else:
                     type = "file"
             else:
@@ -172,6 +187,10 @@ def _neoform_repo_impl(rctx):
         rule_impl += [
             "def %s(ctx):" % rule_impl_name,
             '    output_file = ctx.actions.declare_file("_neoform_%s/" + ctx.label.name + "%s")' % (function_name, rule_output_extension),
+        ]
+        for entry in output_entries:
+            rule_impl.append('    %s_file = ctx.actions.declare_file("_neoform_%s/" + ctx.label.name + "_%s")' % (entry["name"], function_name, entry["name"]))
+        rule_impl += [
             "    args = ctx.actions.args()",
             "",
             "    action_inputs = []",
@@ -184,7 +203,7 @@ def _neoform_repo_impl(rctx):
                 rule_impl.append("        input_deps.append(ctx.attr.input[JavaSourceInfo])")
         if function_name == "decompile":
             rule_impl.append('    args.add("%s")' % main_class)
-            rule_impl.append('    args.add(output_file.path)')
+            rule_impl.append("    args.add(output_file.path)")
         for entry in arg_entries:
             name = entry["name"]
             if entry["type"] == "plain":
@@ -194,6 +213,8 @@ def _neoform_repo_impl(rctx):
                 rule_impl.append("    action_inputs.append(ctx.file.%s)" % name)
             elif entry["type"] == "output":
                 rule_impl.append("    args.add(output_file.path)")
+            elif entry["type"] == "log":
+                rule_impl.append("    args.add(log_file.path)")
             elif entry["type"] == "string":
                 rule_impl.append("    args.add(ctx.attr.%s)" % name)
             elif entry["type"] == "jar_list":
@@ -223,7 +244,11 @@ def _neoform_repo_impl(rctx):
         rule_impl.append("    ")
         rule_impl.append("    ctx.actions.run(")
         rule_impl.append("        inputs = action_inputs,")
-        rule_impl.append("        outputs = [output_file],")
+        rule_impl.append("        outputs = [")
+        rule_impl.append("            output_file,")
+        for entry in output_entries:
+            rule_impl.append("            %s_file," % entry["name"])
+        rule_impl.append("        ],")
         rule_impl.append("        executable = ctx.executable._%s_bin," % function_name)
         rule_impl.append('        mnemonic = "NeoForm%s",' % function_name.capitalize())
         rule_impl.append('        progress_message = "Running NeoForm function %s to create " + output_file.short_path,' % function_name)
@@ -231,7 +256,9 @@ def _neoform_repo_impl(rctx):
         rule_impl.append("    )")
         rule_impl.append("    ")
         rule_impl.append("    return [")
-        rule_impl.append("        DefaultInfo(files = depset([output_file])),")
+        rule_impl.append("        DefaultInfo(files = depset([")
+        rule_impl.append("            output_file,")
+        rule_impl.append("        ])),")
         if jar_output:
             rule_impl.append("        JavaSourceInfo(")
             rule_impl.append("            source_jar = output_file,")
@@ -250,7 +277,10 @@ def _neoform_repo_impl(rctx):
             name = entry["name"]
             if entry["type"] == "file":
                 rule_def.append('        "%s": attr.label(' % name)
-                rule_def.append("            mandatory = True,")
+                if name in data_paths:
+                    rule_def.append('            default = "//:%s",' % name)
+                else:
+                    rule_def.append("            mandatory = True,")
                 if jar_output:
                     rule_def.append("            providers = [[], [JavaSourceInfo]],")
                 rule_def.append("            allow_single_file = True,")
@@ -264,7 +294,7 @@ def _neoform_repo_impl(rctx):
                 rule_def.append("            mandatory = True,")
                 rule_def.append("            providers = [JavaInfo],")
                 rule_def.append("        ),")
-            elif entry["type"] != "output" and entry["type"] != "plain":
+            elif entry["type"] != "output" and entry["type"] != "plain" and entry["type"] != "log":
                 fail("Unsupported argument type: %s" % entry["type"])
         rule_def.append('        "_%s_bin": attr.label(' % function_name)
         rule_def.append('            default = "//functions/%s",' % function_name)
@@ -306,10 +336,8 @@ def _neoform_repo_impl(rctx):
             task_def.append("")
             task_def.append("%s(" % type)
             task_def.append('    name = "%s",' % task_name)
-            if type == "mergeMappings":
-                task_def.append('    mappings = "//:mappings",')
-            elif type == "inject":
-                task_def.append('    deps = ["//:injects"],')
+            if type == "inject":
+                task_def.append('    deps = ["//:inject"],')
             elif type == "patch":
                 task_def.append('    prefix = "%s",' % config_data["data"]["patches"][side_name])
                 task_def.append('    patches = "//:neoform",')
@@ -347,7 +375,7 @@ def _neoform_repo_impl(rctx):
                         elif output_task == "downloadServerMappings":
                             task_def.append('    %s = "%s",' % (item_key, rctx.attr.server_mapping))
                         elif output_task == "listLibraries":
-                            sided_libraries = ['"@%s//jar"' % _convert_maven_coordinate_to_repo("neoform", library) for library in config_data["libraries"][side_name]]
+                            sided_libraries = ['"@%s//jar"' % _convert_maven_coordinate_to_repo(repository_prefix, library) for library in config_data["libraries"][side_name]]
                             sided_libraries = ", ".join(sided_libraries)
                             if side_name == "client":
                                 task_def.append('    %s = ["%s", %s],' % (item_key, rctx.attr.client_libraries, sided_libraries))
@@ -379,6 +407,11 @@ _neoform_repo = repository_rule(
         "sha256": attr.string(
             doc = "SHA-256 of the NeoForm JAR file",
             mandatory = True,
+        ),
+        "legacy": attr.bool(
+            doc = "Use legacy minecraftforge(lexforge) instead neoforged repository.",
+            mandatory = False,
+            default = False,
         ),
         "client_jar": attr.label(
             doc = "Client JAR file",
@@ -414,9 +447,7 @@ _neoform_repo = repository_rule(
 )
 
 def _neoform_pin_impl(rctx):
-    url_lines = []
-    for coordinate in rctx.attr.libraries:
-        url_lines.append('"%s"' % _convert_maven_coordinate_to_url(_neoform_repository_url, coordinate))
+    url_lines = ['"%s"' % url for url in rctx.attr.urls]
     rctx.template("PinGenerator.java", rctx.attr._pinner_source, {
         "/*INJECT HERE*/": ", ".join(url_lines),
         "/*OUTPUT NAME*/": "neoform_pin",
@@ -437,8 +468,8 @@ def _neoform_pin_impl(rctx):
 neoform_pin = repository_rule(
     implementation = _neoform_pin_impl,
     attrs = {
-        "libraries": attr.string_list(
-            doc = "List of library coordinates to pin",
+        "urls": attr.string_list(
+            doc = "List of URLs to pin",
         ),
         "_pinner_source": attr.label(
             allow_single_file = [".java"],
@@ -456,6 +487,11 @@ version = tag_class(
         "sha256": attr.string(
             doc = "SHA-256 of the NeoForm JAR file",
             mandatory = True,
+        ),
+        "legacy": attr.bool(
+            doc = "Use legacy minecraftforge(lexforge) instead neoforged repository.",
+            mandatory = False,
+            default = False,
         ),
         "client_jar": attr.label(
             doc = "Client JAR file",
@@ -516,12 +552,15 @@ def _neoform_impl(mctx):
                     fail("NeoForm version %s already exists with a different client mapping" % version.version)
                 elif versions[version.version].server_mapping != version.server_mapping:
                     fail("NeoForm version %s already exists with a different server mapping" % version.version)
+                elif versions[version.version].legacy != version.legacy:
+                    fail("NeoForm version %s already exists with a different legacy flag" % version.version)
                 elif versions[version.version].client_libraries != version.client_libraries:
                     fail("NeoForm version %s already exists with a different client libraries" % version.version)
             else:
                 versions[version.version] = {
                     "version": version.version,
                     "sha256": version.sha256,
+                    "legacy": version.legacy,
                     "client_jar": version.client_jar,
                     "server_jar": version.server_jar,
                     "client_mapping": version.client_mapping,
@@ -532,18 +571,26 @@ def _neoform_impl(mctx):
 
     libraries = []
 
-    def append_library(coordinate):
-        if coordinate not in libraries:
-            libraries.append(coordinate)
+    def append_library(coordinate, legacy = False):
+        item = {
+            "coordinate": coordinate,
+            "legacy": legacy,
+        }
+        if item not in libraries:
+            libraries.append(item)
 
     for version in versions:
         version_name = version["version"]
+        version_legacy = version["legacy"]
         version_sha256 = version["sha256"]
         output_prefix = "neoform/%s" % version_name
 
+        config_link = _config_link_legacy if version_legacy else _config_link
+        repository_url = _minecraftforge_repository_url if version_legacy else _neoforge_repository_url
+
         mctx.report_progress("Downloading NeoForm JAR %s" % version_name)
         mctx.download_and_extract(
-            url = "%s/net/neoforged/neoform/%s/neoform-%s.zip" % (_neoform_repository_url, version_name, version_name),
+            url = config_link % (repository_url, version_name, version_name),
             type = "zip",
             sha256 = version_sha256,
             output = output_prefix,
@@ -552,15 +599,16 @@ def _neoform_impl(mctx):
         config_data = json.decode(mctx.read("%s/config.json" % output_prefix))
         for function_name in config_data["functions"]:
             function = config_data["functions"][function_name]
-            append_library(function["version"])
+            append_library(function["version"], version_legacy)
         for libraries_side in config_data["libraries"]:
             for library in config_data["libraries"][libraries_side]:
-                append_library(library)
+                append_library(library, version_legacy)
 
-        repo_name = _convert_maven_coordinate_to_repo("neoform", version_name)
+        repo_name = ("mcp_%s" if version_legacy else "neoform_%s") % _convert_maven_coordinate(version_name)
         _neoform_repo(
             name = repo_name,
             version = version_name,
+            legacy = version_legacy,
             sha256 = version_sha256,
             client_jar = version["client_jar"],
             server_jar = version["server_jar"],
@@ -574,15 +622,25 @@ def _neoform_impl(mctx):
     if pin_file != None:
         pin_content = _parse_pin_file(mctx.read(pin_file))
     for library in libraries:
+        coordinate = library["coordinate"]
+        legacy = library["legacy"]
+        repository_url = _minecraftforge_repository_url if legacy else _neoforge_repository_url
+        repository_prefix = "mcp" if legacy else "neoform"
         http_jar(
-            name = _convert_maven_coordinate_to_repo("neoform", library),
-            url = _convert_maven_coordinate_to_url(_neoform_repository_url, library),
-            sha256 = pin_content.get(_convert_maven_coordinate_to_url(_neoform_repository_url, library), None),
+            name = _convert_maven_coordinate_to_repo(repository_prefix, coordinate),
+            url = _convert_maven_coordinate_to_url(repository_url, coordinate),
+            sha256 = pin_content.get(_convert_maven_coordinate_to_url(repository_url, coordinate), None),
         )
 
     neoform_pin(
         name = "neoform_pin",
-        libraries = libraries,
+        urls = [
+            _convert_maven_coordinate_to_url(
+                _minecraftforge_repository_url if library["legacy"] else _neoforge_repository_url,
+                library["coordinate"],
+            )
+            for library in libraries
+        ],
     )
 
 neoform = module_extension(

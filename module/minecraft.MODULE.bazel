@@ -4,10 +4,37 @@ game_versions = {
     "1.7.10": {
         "mappings": False,
     },
+    "1.8.8": {
+        "mappings": False,
+    },
+    "1.8.9": {
+        "mappings": False,
+    },
     "1.12.2": {
         "mappings": False,
     },
+    "1.14.4": {
+        "mappings": True,
+    },
     "1.16.5": {
+        "mappings": True,
+    },
+    "1.17.1": {
+        "mappings": True,
+    },
+    "1.18.1": {
+        "mappings": True,
+    },
+    "1.18.2": {
+        "mappings": True,
+    },
+    "1.19.2": {
+        "mappings": True,
+    },
+    "1.20.1": {
+        "mappings": True,
+    },
+    "1.20.4": {
         "mappings": True,
     },
     "1.20.6": {
@@ -43,6 +70,12 @@ game_versions = {
     "1.21.10": {
         "mappings": True,
     },
+    "1.21.11": {
+        "mappings": True,
+    },
+    "26.1-snapshot-1": {
+        "mappings": False,
+    },
 }
 
 minecraft = use_extension("//repo:minecraft.bzl", "minecraft")
@@ -51,12 +84,12 @@ minecraft = use_extension("//repo:minecraft.bzl", "minecraft")
     minecraft.version(
         assets = True,
         client = True,
-        client_mappings = game_versions[version]["mappings"],
+        client_mappings = entry["mappings"],
         server = True,
-        server_mappings = game_versions[version]["mappings"],
+        server_mappings = entry["mappings"],
         version = version,
     )
-    for version in game_versions.keys()
+    for version, entry in game_versions.items()
 ]
 
 minecraft.exclude_library(names = [

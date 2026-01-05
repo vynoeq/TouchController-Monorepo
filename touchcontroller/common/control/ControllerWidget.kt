@@ -72,7 +72,7 @@ sealed class ControllerWidget {
     }
 
     companion object : KoinComponent {
-        private val textFactory: TextFactory by inject()
+        private val textFactory:  = TextFactoryFactory.of()
 
         val properties = persistentListOf<Property<ControllerWidget, *>>(
             NameProperty(

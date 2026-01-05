@@ -14,8 +14,8 @@ kt_merge_library(
         "//combine/core/modifier/pointer",
         "//combine/core/node",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
-        "@maven//:org_jetbrains_compose_runtime_runtime_desktop",
+        "@maven//:androidx_compose_runtime_runtime_desktop",
     ],
 )

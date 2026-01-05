@@ -33,7 +33,7 @@ data class SwitchDrawableSet(
                 SwitchDrawableSet(
                     frame = theme.drawables.switchFrame,
                     background = theme.drawables.switchBackground,
-                    handle = theme.drawables.sliderHandle,
+                    handle = theme.drawables.switchHandle,
                 )
             }
     }

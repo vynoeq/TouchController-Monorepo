@@ -5,9 +5,6 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.plus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import top.fifthlight.combine.data.TextFactory
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntSize
 import top.fifthlight.touchcontroller.assets.Texts
@@ -41,8 +38,8 @@ data class BoatButton(
     override val opacity: Float = 1f,
     override val lockMoving: Boolean = false,
 ) : ControllerWidget() {
-    companion object : KoinComponent {
-        private val textFactory: TextFactory by inject()
+    companion object {
+        private val textFactory:  = TextFactoryFactory.of()
 
         @Suppress("UNCHECKED_CAST")
         private val _properties = properties + persistentListOf<Property<BoatButton, *>>(

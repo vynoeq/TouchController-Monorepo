@@ -21,11 +21,11 @@ TouchController Wiki 是一个全面的知识库，旨在帮助玩家了解和�
 
 ## 关于我们
 
-- 作者：[@fifth_light](https://www.mcmod.cn/author/33901.html)
-- 联合作者：[@bukeyu](https://www.mcmod.cn/author/33945.html)
+- 程序：[@fifth_light](https://www.mcmod.cn/author/33901.html)
+- 程序：[@bukeyu](https://www.mcmod.cn/author/33945.html)
 - 美术：[@fengzhou0w0](https://www.mcmod.cn/author/34100.html)
 - 设计、Wiki：[@白象_elephant](https://www.mcmod.cn/author/33761.html)
-- 美术、Wiki：[@不想取名的阿peng](https://www.mcmod.cn/author/34694.html)
+- 美术：[@不想取名的阿peng](https://www.mcmod.cn/author/34694.html)
 - 吉祥物：[@Handsomeprin](https://www.mcmod.cn/author/34167.html)
 
 ## 官方地址

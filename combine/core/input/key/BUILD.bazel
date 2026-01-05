@@ -3,8 +3,9 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "key",
     srcs = glob(["*.kt"]),
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
-        "@maven//:org_jetbrains_compose_runtime_runtime_desktop",
+        "@maven//:androidx_compose_runtime_runtime_desktop",
+        "@maven//:androidx_compose_runtime_runtime_annotation_jvm",
     ],
 )

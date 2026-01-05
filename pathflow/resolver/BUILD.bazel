@@ -1,0 +1,12 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "resolver",
+    srcs = glob(["*.kt"]),
+    visibility = ["//visibility:public"],
+    merge_deps = [
+        "//pathflow/data",
+        "//pathflow/feature",
+        "//pathflow/transformer",
+    ]
+)

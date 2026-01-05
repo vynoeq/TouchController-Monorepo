@@ -15,6 +15,7 @@ public class DevLaunchWrapper {
     private static final String version = System.getProperty("dev.launch.version", null);
     private static final String type = System.getProperty("dev.launch.type", null);
     private static final String assetsPath = System.getProperty("dev.launch.assetsPath", null);
+    private static final String accessToken = System.getProperty("dev.launch.accessToken", "");
     private static final String mainClass = System.getProperty("dev.launch.mainClass", null);
     private static final String glfwLibName = System.getenv("GLFW_LIBNAME");
     private static final String copyFiles = System.getProperty("dev.launch.copyFiles", null);
@@ -79,6 +80,13 @@ public class DevLaunchWrapper {
 
         if (glfwLibName != null) {
             System.setProperty("org.lwjgl.glfw.libname", glfwLibName);
+        }
+
+        argsList.add("--accessToken");
+        argsList.add(accessToken);
+        if (version != null) {
+            argsList.add("--version");
+            argsList.add(version);
         }
 
         if (assetsPath != null) {

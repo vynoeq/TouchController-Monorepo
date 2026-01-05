@@ -15,5 +15,5 @@ kt_merge_library(
         "//combine/core/node",
         "//combine/data",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
 )

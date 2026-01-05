@@ -2,10 +2,9 @@ package top.fifthlight.touchcontroller.common.gal
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import top.fifthlight.combine.data.Text
 import top.fifthlight.combine.data.TextFactory
+import top.fifthlight.combine.data.TextFactoryFactory
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -113,8 +112,8 @@ abstract class KeyBindingState {
         }
     }
 
-    companion object Empty : KeyBindingState(), KoinComponent {
-        private val textFactory: TextFactory by inject()
+    companion object Empty : KeyBindingState() {
+        private val textFactory = TextFactoryFactory.of()
         override val id: String = "empty"
         override val name: Text
             get() = textFactory.empty()

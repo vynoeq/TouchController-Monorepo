@@ -1,0 +1,12 @@
+load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "android",
+    srcs = glob(["**/*.kt"]),
+    custom_package = "top.fifthlight.touchcontroller.proxy.client.android",
+    manifest = "AndroidManifest.xml",
+    deps = [
+        "//touchcontroller/proxy/client/core",
+        "//touchcontroller/proxy/message",
+    ],
+)

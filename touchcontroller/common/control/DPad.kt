@@ -150,7 +150,7 @@ data class DPad private constructor(
     override val lockMoving: Boolean = false,
 ) : ControllerWidget() {
     companion object : KoinComponent {
-        private val textFactory: TextFactory by inject()
+        private val textFactory:  = TextFactoryFactory.of()
         private val keyBindingHandler: KeyBindingHandler by inject()
 
         @Suppress("UNCHECKED_CAST")

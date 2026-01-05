@@ -1,0 +1,25 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_binary")
+
+kt_jvm_binary(
+    name = "text_binding_generator",
+    srcs = ["TextsBinding.kt"],
+    main_class = "top.fifthlight.touchcontroller.resources.generator.TextsBindingKt",
+    visibility = ["//touchcontroller/resources:__subpackages__"],
+    deps = [
+        "@maven//:com_squareup_kotlinpoet_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
+)
+
+kt_jvm_binary(
+    name = "legacy_text_generator",
+    srcs = ["LegacyTextGenerator.kt"],
+    main_class = "top.fifthlight.touchcontroller.resources.generator.LegacyTextGeneratorKt",
+    visibility = ["//touchcontroller/resources:__subpackages__"],
+    deps = [
+        "@maven//:com_squareup_kotlinpoet_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
+)

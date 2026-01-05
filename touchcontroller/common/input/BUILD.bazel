@@ -4,5 +4,13 @@ kt_merge_library(
     name = "input",
     srcs = glob(["*.kt"]),
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    merge_deps = [
+        "//touchcontroller/proxy/message",
+        "//touchcontroller/proxy/client/core",
+        "//touchcontroller/common/gal",
+    ],
+    deps = [
+        "//combine/core/input/text",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
 )

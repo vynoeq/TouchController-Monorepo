@@ -1,0 +1,9 @@
+"MODULE.bazel TouchController part"
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.4.0",
+    ],
+)
+

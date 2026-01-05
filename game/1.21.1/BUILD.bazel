@@ -4,6 +4,8 @@ game_version(
     name = "game",
     client = "@minecraft//1.21.1:client",
     client_mappings = "@minecraft//1.21.1:client_mappings",
+    client_assets = "@minecraft_assets//:assets_1.21.1",
+    client_libraries = "@minecraft//1.21.1:client_libraries",
     intermediary = "@maven_fabric_1_21_1//:net_fabricmc_intermediary_v2",
     server = "@minecraft//1.21.1:server",
     version = "1.21.1",

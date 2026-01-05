@@ -176,6 +176,10 @@ class CombineScreen(
         return true
     }
 
+    override fun insertText(string: String, override: Boolean) {
+        owner.onTextInput(string)
+    }
+
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         if (renderBackground) {
             super.render(guiGraphics, mouseX, mouseY, delta)

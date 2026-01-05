@@ -1,6 +1,7 @@
-load("//rule:merge_library.bzl", "kt_merge_library")
+load("//combine/theme:theme_info_jar.bzl", "theme_info_jar")
+load("//rule:merge_library.bzl", "kt_merge_library", "merge_library_jar")
 load("//rule/combine:library.bzl", "kt_texture_lib")
-load("//rule/combine:minecraft.bzl", "atlas_pack", "vanilla_pack")
+load("//rule/combine:minecraft.bzl", "atlas_pack", "kt_vanilla_lib", "vanilla_pack")
 
 kt_texture_lib(
     name = "texture_lib",
@@ -12,6 +13,8 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     merge_deps = [
         ":texture_lib",
+    ],
+    deps = [
         "//combine/core/paint",
         "//combine/style",
         "//combine/theme/base",
@@ -29,4 +32,32 @@ atlas_pack(
     name = "atlas_pack",
     dep = "//combine/theme/blackstone/texture",
     namespace = "combine",
+)
+
+theme_info_jar(
+    name = "mod_info_json",
+    substitutions = {
+        "${mod_id}": "combine-theme-blackstone",
+        "${name}": "Combine theme blackstone",
+        "${description}": "Blackstone theme for Combine.",
+    },
+)
+
+kt_vanilla_lib(
+    name = "vanilla_lib_unmerged",
+    dep = ":texture_lib",
+    pack = ":vanilla_pack",
+    resource_jars = [
+        ":mod_info_json",
+        ":vanilla_pack",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+merge_library_jar(
+    name = "vanilla_lib",
+    deps = [
+        ":blackstone",
+        ":vanilla_lib_unmerged",
+    ],
 )

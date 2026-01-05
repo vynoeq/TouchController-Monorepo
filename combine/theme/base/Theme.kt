@@ -36,6 +36,7 @@ data class Theme(
 
         val switchFrame: DrawableSet = DrawableSet.Empty,
         val switchBackground: TextureSet = TextureSet.Empty,
+        val switchHandle: DrawableSet = DrawableSet.Empty,
 
         val editText: DrawableSet = DrawableSet.Empty,
 

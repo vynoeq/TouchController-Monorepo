@@ -1,0 +1,12 @@
+load("//game:game.bzl", "game_version")
+
+game_version(
+    name = "game",
+    client = "@minecraft//1.8.8:client",
+    client_assets = "@minecraft_assets//:assets_1.8.8",
+    client_libraries = "@minecraft//1.8.8:client_libraries",
+    server = "@minecraft//1.8.8:server",
+    server_legacy = True,
+    version = "1.8.8",
+    visibility = ["//visibility:public"],
+)

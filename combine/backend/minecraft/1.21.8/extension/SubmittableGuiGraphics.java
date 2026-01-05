@@ -4,6 +4,6 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 
 public interface SubmittableGuiGraphics {
-    void touchcontroller$submitElement(GuiElementRenderState guiElementRenderState);
-    ScreenRectangle touchcontroller$peekScissorStack();
+    void combine$submitElement(GuiElementRenderState guiElementRenderState);
+    ScreenRectangle combine$peekScissorStack();
 }

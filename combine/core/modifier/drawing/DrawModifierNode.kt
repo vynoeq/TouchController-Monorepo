@@ -30,9 +30,9 @@ interface DrawModifierNode : WrapperModifierNode {
             override fun Canvas.render() {
                 withState {
                     translate(x, y)
-                    modifierNode.run { renderBefore(node) }
+                    modifierNode.run { renderBefore(this@DrawWrapperNode) }
                     children.run { render() }
-                    modifierNode.run { renderAfter(node) }
+                    modifierNode.run { renderAfter(this@DrawWrapperNode) }
                 }
             }
         }

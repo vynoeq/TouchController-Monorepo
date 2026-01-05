@@ -7,10 +7,11 @@ kt_merge_library(
     merge_deps = [
         "//combine/data",
     ],
-    visibility = ["//combine:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//:compose",
         "//:kotlin_serialization",
+        "@maven//:androidx_compose_runtime_runtime_annotation_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
     ],
