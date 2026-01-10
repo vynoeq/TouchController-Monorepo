@@ -48,6 +48,11 @@ class ModelInstanceImpl(
     init {
         scene.increaseReferenceCount()
         scene.attachToInstance(this)
+        // Ensure transforms are calculated (Bind Pose) before initializing physics
+        // Otherwise rigid bodies will be initialized with Identity transforms, leading to incorrect offsets
+        for (i in scene.nodes.indices) {
+            updateNodeTransform(i)
+        }
         physicsData?.initialize()
     }
 
@@ -60,6 +65,8 @@ class ModelInstanceImpl(
         private var _world: PhysicsWorld? = null
         val world: PhysicsWorld
             get() = _world ?: error("PhysicsWorld is not initialized")
+        lateinit var transformArray: FloatArray
+            private set
 
         fun initialize() {
             if (_world != null) {
@@ -72,6 +79,9 @@ class ModelInstanceImpl(
                     nodeWorldTransform.get(component.rigidBodyIndex * 64, initialTransform)
                 }
                 _world = PhysicsWorld(physicsScene, initialTransform)
+                transformArray = FloatArray(scene.rigidBodyComponents.size * 7)
+                // Initial pull to populate array
+                _world!!.pullTransforms(transformArray)
             }
         }
 
@@ -91,6 +101,7 @@ class ModelInstanceImpl(
         val transformDirty = Array(scene.nodes.size) { true }
 
         val worldTransforms = Array(scene.nodes.size) { Matrix4f() }
+        val worldTransformsNoPhysics = Array(scene.nodes.size) { Matrix4f() }
 
         val localMatricesBuffer = run {
             val buffer = LocalMatricesBuffer(scene.primitiveComponents.size)
@@ -254,6 +265,25 @@ class ModelInstanceImpl(
         for (child in node.children) {
             updateNodeTransform(child)
         }
+    }
+
+    internal fun updateNodeTransformNoPhysics(node: RenderNodeImpl) {
+        val nodeIndex = node.nodeIndex
+        val localBase = modelData.transformMaps[nodeIndex].getSum(TransformId.EXTERNAL_PARENT_DEFORM)
+        val parent = node.parent
+        val dst = modelData.worldTransformsNoPhysics[nodeIndex]
+        if (parent != null) {
+            dst.set(modelData.worldTransformsNoPhysics[parent.nodeIndex]).mul(localBase)
+        } else {
+            dst.set(localBase)
+        }
+        for (child in node.children) {
+            updateNodeTransformNoPhysics(child)
+        }
+    }
+
+    internal fun updateWorldTransformsNoPhysics() {
+        updateNodeTransformNoPhysics(scene.rootNode)
     }
 
     override fun createRenderTask(

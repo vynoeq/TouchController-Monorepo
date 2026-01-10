@@ -4,6 +4,7 @@ import com.mojang.blaze3d.textures.TextureFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import kotlinx.coroutines.*
+import org.joml.Vector3f
 import top.fifthlight.blazerod.api.resource.RenderExpression
 import top.fifthlight.blazerod.api.resource.RenderExpressionGroup
 import top.fifthlight.blazerod.extension.NativeImageExt
@@ -632,22 +633,35 @@ class ModelPreprocessor private constructor(
         return Pair(expressions, expressionGroups)
     }
 
-    private fun loadPhysicalJoints(modelPhysicalJoints: List<PhysicalJoint>) = modelPhysicalJoints.mapNotNull {
-        RenderPhysicsJoint(
-            name = it.name,
-            type = it.type,
-            rigidBodyAIndex = rigidBodyIdToIndexMap[it.rigidBodyA] ?: return@mapNotNull null,
-            rigidBodyBIndex = rigidBodyIdToIndexMap[it.rigidBodyB] ?: return@mapNotNull null,
-            position = it.position,
-            rotation = it.rotation,
-            positionMin = it.positionMin,
-            positionMax = it.positionMax,
-            rotationMin = it.rotationMin,
-            rotationMax = it.rotationMax,
-            positionSpring = it.positionSpring,
-            rotationSpring = it.rotationSpring,
-        )
-    }
+    private fun loadPhysicalJoints(modelPhysicalJoints: List<PhysicalJoint>) =
+        modelPhysicalJoints.mapIndexedNotNull { index, joint ->
+            val rigidBodyAIndex = rigidBodyIdToIndexMap[joint.rigidBodyA] ?: return@mapIndexedNotNull null
+            val rigidBodyBIndex = rigidBodyIdToIndexMap[joint.rigidBodyB] ?: return@mapIndexedNotNull null
+
+            val position = joint.position
+            val rotation = joint.rotation
+            val positionMin = joint.positionMin
+            val positionMax = joint.positionMax
+            val rotationMin = joint.rotationMin
+            val rotationMax = joint.rotationMax
+            val positionSpring = joint.positionSpring
+            val rotationSpring = joint.rotationSpring
+
+            RenderPhysicsJoint(
+                name = joint.name,
+                type = joint.type,
+                rigidBodyAIndex = rigidBodyAIndex,
+                rigidBodyBIndex = rigidBodyBIndex,
+                position = position,
+                rotation = rotation,
+                positionMin = positionMin,
+                positionMax = positionMax,
+                rotationMin = rotationMin,
+                rotationMax = rotationMax,
+                positionSpring = positionSpring,
+                rotationSpring = rotationSpring,
+            )
+        }
 
     private fun loadScene(scene: Scene, expressions: List<Expression>): PreProcessModelLoadInfo {
         val rootNode = NodeLoadInfo(

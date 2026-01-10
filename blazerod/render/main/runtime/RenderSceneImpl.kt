@@ -2,7 +2,10 @@ package top.fifthlight.blazerod.runtime
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import net.minecraft.client.renderer.MultiBufferSource
+import org.joml.Matrix4f
 import org.joml.Matrix4fc
+import org.joml.Quaternionf
+import org.joml.Vector3f
 import top.fifthlight.blazerod.api.refcount.AbstractRefCount
 import top.fifthlight.blazerod.api.resource.RenderExpression
 import top.fifthlight.blazerod.api.resource.RenderExpressionGroup
@@ -22,6 +25,7 @@ import top.fifthlight.blazerod.runtime.node.component.RigidBodyComponent
 import top.fifthlight.blazerod.runtime.node.forEach
 import top.fifthlight.blazerod.runtime.resource.RenderPhysicsJoint
 import top.fifthlight.blazerod.runtime.resource.RenderSkin
+import kotlin.time.measureTime
 
 class RenderSceneImpl(
     override val rootNode: RenderNodeImpl,
@@ -34,7 +38,7 @@ class RenderSceneImpl(
     val renderTransform: NodeTransform?,
 ) : AbstractRefCount(), RenderScene {
     companion object {
-        private const val PHYSICS_MAX_SUB_STEP_COUNT = 1
+        private const val PHYSICS_MAX_SUB_STEP_COUNT = 10
         private const val PHYSICS_FPS = 120f
         private const val PHYSICS_TIME_STEP = 1f / PHYSICS_FPS
     }
@@ -133,6 +137,21 @@ class RenderSceneImpl(
         instance.physicsData?.let { data ->
             if (data.lastPhysicsTime < 0) {
                 data.lastPhysicsTime = time
+
+                instance.updateWorldTransformsNoPhysics()
+                executePhase(instance, UpdatePhase.PhysicsUpdatePre)
+                data.world.pushTransforms(data.transformArray)
+
+                val initPos = Vector3f()
+                val initRot = Quaternionf()
+                for ((nodeIndex, component) in rigidBodyComponents) {
+                    val nodeWorld = instance.modelData.worldTransforms[nodeIndex]
+                    nodeWorld.getTranslation(initPos)
+                    nodeWorld.getUnnormalizedRotation(initRot)
+                    data.world.resetRigidBody(component.rigidBodyIndex, initPos, initRot)
+                }
+                data.world.pullTransforms(data.transformArray)
+
                 return@let
             }
             val timeStep = time - data.lastPhysicsTime
@@ -140,10 +159,17 @@ class RenderSceneImpl(
                 return@let
             }
 
+            val maxTimeStep = PHYSICS_MAX_SUB_STEP_COUNT * PHYSICS_TIME_STEP
+            val clampedTimeStep = minOf(timeStep, maxTimeStep)
+
             data.lastPhysicsTime = time
 
+            instance.updateWorldTransformsNoPhysics()
             executePhase(instance, UpdatePhase.PhysicsUpdatePre)
-            data.world.step(timeStep, PHYSICS_MAX_SUB_STEP_COUNT, PHYSICS_TIME_STEP)
+            data.world.pushTransforms(data.transformArray)
+            data.world.step(clampedTimeStep, PHYSICS_MAX_SUB_STEP_COUNT, PHYSICS_TIME_STEP)
+            data.world.pullTransforms(data.transformArray)
+
             executePhase(instance, UpdatePhase.PhysicsUpdatePost)
             executePhase(instance, UpdatePhase.GlobalTransformPropagation)
         }
