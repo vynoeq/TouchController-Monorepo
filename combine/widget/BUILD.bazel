@@ -11,6 +11,7 @@ kt_merge_library(
         "//combine/core/input/focus",
         "//combine/core/input/key",
         "//combine/core/input/text",
+        "//combine/core/input/pointer",
         "//combine/core/layout",
         "//combine/core/layout/measure",
         "//combine/core/layout/constraints",

@@ -1,31 +1,10 @@
 package top.fifthlight.touchcontroller.common.event
 
-import kotlinx.collections.immutable.toPersistentSet
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.slf4j.LoggerFactory
-import top.fifthlight.combine.input.input.TextInputState
-import top.fifthlight.combine.input.input.TextRange
-import top.fifthlight.combine.paint.Canvas
-import top.fifthlight.data.IntOffset
-import top.fifthlight.data.Offset
-import top.fifthlight.touchcontroller.common.config.GlobalConfigHolder
-import top.fifthlight.touchcontroller.common.config.condition.BuiltinLayerConditionKey
-import top.fifthlight.touchcontroller.common.gal.*
-import top.fifthlight.touchcontroller.common.helper.fixAspectRadio
-import top.fifthlight.touchcontroller.common.input.InputManager
-import top.fifthlight.touchcontroller.common.layout.Context
-import top.fifthlight.touchcontroller.common.layout.ContextInput
-import top.fifthlight.touchcontroller.common.layout.DrawQueue
-import top.fifthlight.touchcontroller.common.layout.Hud
-import top.fifthlight.touchcontroller.common.model.ControllerHudModel
-import top.fifthlight.touchcontroller.common.model.TouchStateModel
-import top.fifthlight.touchcontroller.common.platform.PlatformProvider
-import top.fifthlight.touchcontroller.proxy.client.PlatformCapability
+import com.sun.org.slf4j.internal.LoggerFactory
 import top.fifthlight.touchcontroller.proxy.message.*
 import java.util.*
 
-object RenderEvents : KoinComponent {
+object RenderEvents {
     private val logger = LoggerFactory.getLogger(RenderEvents::class.java)
     private val window: WindowHandle by inject()
     private val configHolder: GlobalConfigHolder by inject()

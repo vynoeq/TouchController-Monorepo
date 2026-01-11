@@ -3,6 +3,14 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "model",
     srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/state",
+        "//touchcontroller/common/layout/data",
+        "//touchcontroller/common/layout/queue",
+    ],
+    kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    deps = [
+        "//combine/core/data",
+    ],
 )

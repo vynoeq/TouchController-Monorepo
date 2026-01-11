@@ -1,6 +1,7 @@
 package top.fifthlight.combine.paint
 
-import top.fifthlight.combine.data.*
+import top.fifthlight.combine.data.Text
+import top.fifthlight.combine.input.pointer.PointerIcon
 import top.fifthlight.data.*
 import kotlin.math.max
 import kotlin.math.min
@@ -30,6 +31,8 @@ interface Canvas {
 
     fun pushClip(absoluteArea: IntRect, relativeArea: IntRect)
     fun popClip()
+
+    fun requestPointerIcon(pointer: PointerIcon) = Unit
 }
 
 class ClipStack {

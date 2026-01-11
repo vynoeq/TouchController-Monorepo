@@ -11,7 +11,7 @@ import top.fifthlight.armorstand.extension.internal.PlayerRenderStateExtInternal
 
 @Mixin(PlayerRenderer.class)
 public class PlayerRendererMixin {
-    @Inject(method = "extractRenderState", at = @At("HEAD"))
+    @Inject(method = "extractRenderState(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V", at = @At("HEAD"))
     public void onUpdateRenderState(AbstractClientPlayer entity, PlayerRenderState state, float tickProgress, CallbackInfo ci) {
         var stateInternal = ((PlayerRenderStateExtInternal) state);
         stateInternal.armorstand$setUuid(entity.getUUID());

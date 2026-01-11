@@ -6,10 +6,15 @@ import top.fifthlight.combine.input.Interaction
 import top.fifthlight.combine.input.MutableInteractionSource
 import top.fifthlight.combine.input.pointer.PointerEvent
 import top.fifthlight.combine.input.pointer.PointerEventType
+import top.fifthlight.combine.input.pointer.PointerIcon
 import top.fifthlight.combine.layout.measure.Placeable
 import top.fifthlight.combine.layout.measure.contains
 import top.fifthlight.combine.modifier.Modifier
+import top.fifthlight.combine.modifier.drawing.DrawModifierNode
 import top.fifthlight.combine.node.LayoutNode
+import top.fifthlight.combine.node.WrapperFactory
+import top.fifthlight.combine.node.plus
+import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.data.Offset
 
 sealed class ClickInteraction : Interaction {
@@ -27,22 +32,24 @@ class ClickState internal constructor(
 fun Modifier.clickable(
     interactionSource: MutableInteractionSource? = null,
     clickState: ClickState = remember { ClickState() },
+    pointerIcon: PointerIcon = PointerIcon.PointingHand,
     onClick: () -> Unit
-) = then(ClickableModifierNode(interactionSource, clickState, onClick = { onClick() }))
+) = then(ClickableModifierNode(interactionSource, clickState, pointerIcon, onClick = { onClick() }))
 
 @Composable
 fun Modifier.clickableWithOffset(
     interactionSource: MutableInteractionSource? = null,
     clickState: ClickState = remember { ClickState() },
+    pointerIcon: PointerIcon = PointerIcon.PointingHand,
     onClick: (Offset) -> Unit
-) = then(ClickableModifierNode(interactionSource, clickState, onClick))
+) = then(ClickableModifierNode(interactionSource, clickState, pointerIcon, onClick))
 
 private data class ClickableModifierNode(
     val interactionSource: MutableInteractionSource?,
     val clickState: ClickState,
+    val pointerIcon: PointerIcon,
     val onClick: (Offset) -> Unit,
-) : Modifier.Node<ClickableModifierNode>, PointerInputModifierNode {
-
+) : Modifier.Node<ClickableModifierNode>, PointerInputModifierNode, DrawModifierNode {
     override fun onPointerEvent(
         event: PointerEvent,
         node: Placeable,
@@ -85,4 +92,13 @@ private data class ClickableModifierNode(
         }
         return true
     }
+
+    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        if (cursorPos in node) {
+            requestPointerIcon(pointerIcon)
+        }
+    }
+
+    override val wrapperFactory: WrapperFactory<*>
+        get() = DrawModifierNode.wrapperFactory + PointerInputModifierNode.wrapperFactory
 }

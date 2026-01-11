@@ -1,0 +1,18 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "item",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/serializer",
+        "//touchcontroller/common/gal/item",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:kotlin_serialization",
+        "//combine/core/data",
+        "//combine/item/data",
+        "@maven//:androidx_compose_runtime_runtime_annotation_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
+)

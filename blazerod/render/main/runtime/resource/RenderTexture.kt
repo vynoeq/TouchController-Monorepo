@@ -1,10 +1,10 @@
 package top.fifthlight.blazerod.runtime.resource
 
+import com.mojang.blaze3d.platform.NativeImage
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.textures.GpuTextureView
 import com.mojang.blaze3d.textures.TextureFormat
-import com.mojang.blaze3d.platform.NativeImage
 import top.fifthlight.blazerod.api.refcount.AbstractRefCount
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

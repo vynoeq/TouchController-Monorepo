@@ -6,7 +6,6 @@ import top.fifthlight.combine.layout.Alignment
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.modifier.drawing.background
 import top.fifthlight.combine.modifier.focus.focusable
-import top.fifthlight.combine.modifier.placement.minHeight
 import top.fifthlight.combine.modifier.placement.minSize
 import top.fifthlight.combine.modifier.placement.padding
 import top.fifthlight.combine.modifier.pointer.clickable
@@ -30,7 +29,7 @@ val defaultTextButtonColorSet = ColorSet(
     disabled = Color(0xFF323335u),
 )
 
-val LocalTextButtonColorSet = staticCompositionLocalOf<ColorSet> { defaultTextButtonColorSet }
+val LocalTextButtonColorSet = staticCompositionLocalOf { defaultTextButtonColorSet }
 
 @Composable
 fun TextButton(

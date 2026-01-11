@@ -3,10 +3,10 @@ load("//game:game.bzl", "game_version")
 game_version(
     name = "game",
     client = "@minecraft//1.21.9:client",
-    client_mappings = "@minecraft//1.21.9:client_mappings",
-    client_parchment = "@parchment_1_21_9//:json",
     client_assets = "@minecraft_assets//:assets_1.21.9",
     client_libraries = "@minecraft//1.21.9:client_libraries",
+    client_mappings = "@minecraft//1.21.9:client_mappings",
+    client_parchment = "@parchment_1_21_9//:json",
     intermediary = "@maven_fabric_1_21_9//:net_fabricmc_intermediary_v2",
     neoforge = "@neoforge_1_21_9//:compiled_with_neoforge",
     server = "@minecraft//1.21.9:server",

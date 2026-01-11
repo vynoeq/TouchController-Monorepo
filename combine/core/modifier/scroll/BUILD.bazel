@@ -5,7 +5,6 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     merge_deps = [
         "//combine/core/animation",
-        "//combine/core/data",
         "//combine/core/input/pointer",
         "//combine/core/layout/constraints",
         "//combine/core/layout/measure",

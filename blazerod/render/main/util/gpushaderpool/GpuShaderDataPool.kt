@@ -254,7 +254,7 @@ sealed class GpuShaderDataPool(
             // Clean oldest frame data
             allFrameData.remove(currentFrame - MAX_BUFFER_KEEP_FRAMES)?.let { frameData ->
                 frameData.fence?.close()
-                availableBuffers.removeAll(frameData.buffers)
+                availableBuffers.removeAll(frameData.buffers.toSet())
                 frameData.buffers.forEach { it.close() }
                 frameData.buffers.clear()
             }

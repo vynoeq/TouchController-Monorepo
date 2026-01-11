@@ -6,6 +6,7 @@ import top.fifthlight.combine.data.LocalTextFactory
 import top.fifthlight.combine.data.Text
 import top.fifthlight.combine.input.MutableInteractionSource
 import top.fifthlight.combine.input.key.Key
+import top.fifthlight.combine.input.pointer.PointerIcon
 import top.fifthlight.combine.input.text.LocalClipboard
 import top.fifthlight.combine.input.text.TextInputState
 import top.fifthlight.combine.input.text.TextRange
@@ -92,7 +93,7 @@ fun EditText(
         }
         LaunchedEffect(focused) {
             if (focused) {
-                inputManager.events?.collect { newState ->
+                inputManager.events.collect { newState ->
                     updateInputState { newState }
                 }
             }
@@ -123,7 +124,10 @@ fun EditText(
             .clip()
             .minHeight(9)
             .border(drawable)
-            .clickable(interactionSource) {
+            .clickable(
+                interactionSource = interactionSource,
+                pointerIcon = PointerIcon.Edit,
+            ) {
                 inputManager?.tryShowKeyboard()
             }
             .focusable(interactionSource)

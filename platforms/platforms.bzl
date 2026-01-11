@@ -1,3 +1,5 @@
+"""Platform configuration definitions."""
+
 _CPUS = [
     "aarch32",
     "aarch64",

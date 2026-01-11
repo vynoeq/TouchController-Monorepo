@@ -6,10 +6,8 @@ import com.google.gson.stream.JsonReader
 import org.joml.Vector2f
 import org.joml.Vector3f
 
-inline fun <T> JsonReader.with(block: JsonReader.() -> T) = try {
+inline fun <T> JsonReader.with(block: JsonReader.() -> T) = use {
     block()
-} finally {
-    close()
 }
 
 inline fun JsonReader.obj(onEntry: JsonReader.(key: String) -> Unit) {

@@ -1,0 +1,16 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "widget",
+    srcs = glob(["*.kt"]),
+    kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
+    merge_deps = [
+        "//touchcontroller/common/layout",
+        "//touchcontroller/common/layout/align",
+        "//touchcontroller/common/control/data",
+        "//touchcontroller/resources/texture:texture_set_lib",
+        "//touchcontroller/common/util/offset",
+        "//touchcontroller/common/gal/paint",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+)

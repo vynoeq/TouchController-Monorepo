@@ -1,0 +1,12 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "serializer",
+    srcs = glob(["*.kt"]),
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//combine/core/data",
+        "//combine/item/data",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+    ],
+)

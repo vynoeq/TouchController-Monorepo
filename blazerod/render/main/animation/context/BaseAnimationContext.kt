@@ -1,16 +1,12 @@
 package top.fifthlight.blazerod.animation.context
 
-import net.minecraft.client.Minecraft
 import net.minecraft.client.DeltaTracker
+import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
 import org.joml.Vector3d
 import top.fifthlight.blazerod.mixin.MinecraftClientAccessor
 import top.fifthlight.blazerod.model.animation.AnimationContext
-import top.fifthlight.blazerod.model.util.MutableBoolean
-import top.fifthlight.blazerod.model.util.MutableDouble
-import top.fifthlight.blazerod.model.util.MutableFloat
-import top.fifthlight.blazerod.model.util.MutableInt
-import top.fifthlight.blazerod.model.util.MutableLong
+import top.fifthlight.blazerod.model.util.*
 import kotlin.jvm.optionals.getOrNull
 
 open class BaseAnimationContext(
@@ -65,9 +61,11 @@ open class BaseAnimationContext(
             }
         }
 
-        AnimationContext.Property.WorldDimension -> world?.let { world ->
-            world.dimensionTypeRegistration().unwrapKey().getOrNull().toString()
-        }
+        AnimationContext.Property.WorldDimension -> world
+            ?.dimensionTypeRegistration()
+            ?.unwrapKey()
+            ?.getOrNull()
+            ?.toString()
 
         AnimationContext.Property.GameFps -> intBuffer.apply {
             value = client.fps

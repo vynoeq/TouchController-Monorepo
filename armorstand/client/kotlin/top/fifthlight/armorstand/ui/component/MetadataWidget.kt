@@ -4,15 +4,16 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.events.GuiEventListener
-import net.minecraft.client.gui.narration.NarrationElementOutput
-import net.minecraft.client.gui.navigation.ScreenRectangle
-import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.network.chat.Component
+import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.client.gui.navigation.ScreenRectangle
+import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.CommonComponents
-import net.minecraft.network.chat.*
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import net.minecraft.util.CommonColors
 import top.fifthlight.blazerod.model.Metadata
 import java.net.URI
@@ -190,6 +191,7 @@ class MetadataWidget(
                         name = Component.literal(author.name),
                         role = author.role?.let { Component.literal(it) },
                         contact = author.contact?.map { (type, value) ->
+                            @Suppress("HttpUrlsUsage")
                             val content = when {
                                 value.startsWith("https://", ignoreCase = true) ||
                                         value.startsWith("http://", ignoreCase = true) -> value.urlText()
@@ -639,7 +641,7 @@ private fun String.urlText(uri: URI): Component = Component.literal(this)
         Style.EMPTY
             .withColor(ChatFormatting.BLUE)
             .withUnderlined(true)
-            .withClickEvent(ClickEvent { ClickEvent.Action.OPEN_URL })
+            .withClickEvent { ClickEvent.Action.OPEN_URL }
     )
 
 private fun String.emailText(): Component {

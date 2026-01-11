@@ -2,12 +2,12 @@ package top.fifthlight.touchcontroller.common.platform.provider
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
-import top.fifthlight.touchcontroller.common.gal.GlfwPlatform
-import top.fifthlight.touchcontroller.common.gal.NativeLibraryPathGetter
-import top.fifthlight.touchcontroller.common.gal.PlatformWindowProvider
+import top.fifthlight.touchcontroller.common.gal.window.GlfwPlatform
+import top.fifthlight.touchcontroller.common.gal.library.NativeLibraryPathGetter
+import top.fifthlight.touchcontroller.common.gal.library.NativeLibraryPathGetterFactory
+import top.fifthlight.touchcontroller.common.gal.window.PlatformWindowProvider
+import top.fifthlight.touchcontroller.common.platform.Platform
 import top.fifthlight.touchcontroller.common.platform.android.AndroidPlatform
 import top.fifthlight.touchcontroller.common.platform.proxy.ProxyPlatform
 import top.fifthlight.touchcontroller.common.platform.wayland.WaylandPlatform
@@ -26,9 +26,8 @@ import kotlin.io.path.exists
 import kotlin.io.path.fileAttributesView
 import kotlin.io.path.outputStream
 
-class PlatformProvider : KoinComponent {
-    private val nativeLibraryPathGetter: NativeLibraryPathGetter by inject()
-
+object PlatformProvider {
+    private val nativeLibraryPathGetter: NativeLibraryPathGetter = NativeLibraryPathGetterFactory.of()
     private val logger = LoggerFactory.getLogger(PlatformProvider::class.java)
 
     val isAndroid: Boolean by lazy {
@@ -181,6 +180,7 @@ class PlatformProvider : KoinComponent {
                         logger.warn("X11 is not supported for now")
                         return null
                     }
+
                     else -> throw AssertionError()
                 }
                 // TODO: detect musl, and use musl libraries

@@ -2,12 +2,12 @@ package top.fifthlight.armorstand.state
 
 import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
-import net.minecraft.world.entity.Pose
-import net.minecraft.world.entity.EntityType
-import net.minecraft.tags.EntityTypeTags
-import net.minecraft.world.entity.HumanoidArm
 import net.minecraft.core.Direction
+import net.minecraft.tags.EntityTypeTags
 import net.minecraft.util.Mth
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.HumanoidArm
+import net.minecraft.world.entity.Pose
 import top.fifthlight.armorstand.extension.internal.PlayerRenderStateExtInternal
 import top.fifthlight.armorstand.util.toRadians
 import top.fifthlight.armorstand.vmc.VmcMarionetteManager
@@ -348,8 +348,8 @@ sealed interface ModelController {
                 }
 
                 player.onClimbable() -> when {
-                    player.getDeltaMovement().y > 0.1 -> PlayState.OnClimbableUp
-                    player.getDeltaMovement().y < -0.1 -> PlayState.OnClimbableDown
+                    player.deltaMovement.y > 0.1 -> PlayState.OnClimbableUp
+                    player.deltaMovement.y < -0.1 -> PlayState.OnClimbableDown
                     player.isShiftKeyDown -> PlayState.OnClimbable
                     else -> PlayState.Idle
                 }

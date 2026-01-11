@@ -6,11 +6,7 @@ import org.joml.Vector3d
 import team.unnamed.mocha.runtime.value.*
 import team.unnamed.mocha.runtime.value.Function
 import top.fifthlight.blazerod.model.animation.AnimationContext
-import top.fifthlight.blazerod.model.util.BooleanWrapper
-import top.fifthlight.blazerod.model.util.DoubleWrapper
-import top.fifthlight.blazerod.model.util.FloatWrapper
-import top.fifthlight.blazerod.model.util.IntWrapper
-import top.fifthlight.blazerod.model.util.LongWrapper
+import top.fifthlight.blazerod.model.util.*
 
 internal inline fun <E, T : Value> ObjectValue.property(crossinline getter: (E) -> T) =
     EntityObjectProperty<E> { getter(it) }

@@ -9,7 +9,6 @@ kt_merge_library(
         "//combine/core/input/pointer",
         "//combine/core/input/text",
         "//combine/core/modifier",
-        "//combine/core/modifier/pointer",
         "//combine/core/node",
     ],
     visibility = ["//visibility:public"],

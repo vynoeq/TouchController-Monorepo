@@ -3,16 +3,16 @@ package top.fifthlight.armorstand.ui.component
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.components.Button
-import net.minecraft.client.gui.components.events.GuiEventListener
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler
-import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.components.Renderable
+import net.minecraft.client.gui.components.events.AbstractContainerEventHandler
+import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.narration.NarratableEntry
+import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.network.chat.Component
 import net.minecraft.util.CommonColors
-import net.minecraft.client.gui.navigation.ScreenRectangle
 import java.util.function.Consumer
 
 class PagingWidget(

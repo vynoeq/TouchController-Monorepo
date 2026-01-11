@@ -1,3 +1,4 @@
+load("@rules_java//java:java_binary.bzl", "java_binary")
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 load("//rule:remap_jar.bzl", "remap_jar")
 
@@ -18,8 +19,8 @@ kt_jvm_library(
         "//combine/core/screen",
         "//combine/core/widget/layout",
         "//combine/data",
-        "//combine/example:remapped_client_access_widened_named",
-        "//combine/example:remapped_deps",
+        "//combine/example/versions/1.21.8:remapped_client_access_widened_named",
+        "//combine/example/versions/1.21.8:remapped_deps",
         "//combine/theme/base",
         "//combine/theme/blackstone",
         "//combine/theme/blackstone:vanilla_lib_unmerged",
@@ -27,14 +28,14 @@ kt_jvm_library(
         "//combine/theme/oreui:vanilla_lib_unmerged",
         "//combine/theme/vanilla",
         "//combine/widget",
+        "//game/1.21.8:game_client_libraries",
         "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
-        "@minecraft//1.21.8:client_libraries",
     ],
 )
 
 remap_jar(
     name = "calculator",
-    classpath = ["//combine/example:remapped_client_access_widened_named"],
+    classpath = ["//combine/example/versions/1.21.8:remapped_client_access_widened_named"],
     from_namespace = "named",
     inputs = [":calculator_unmapped"],
     mapping = "//game/1.21.8:game_merged_mapping",
@@ -47,8 +48,8 @@ java_binary(
     name = "dev_client",
     srcs = [],
     data = [
+        "//game/1.21.8:game_client_assets",
         "@minecraft_assets//:assets",
-        "@minecraft_assets//:assets_1.21.8",
     ],
     env = {
         "LANG": "en_US.UTF8",
@@ -64,7 +65,7 @@ java_binary(
     main_class = "top.fifthlight.fabazel.devlaunchwrapper.DevLaunchWrapper",
     runtime_deps = [
         "//game/1.21.8:game_client_named",
-        "@minecraft//1.21.8:client_libraries",
+        "//game/1.21.8:game_client_libraries",
         # Classpath separator
         "//game/1.21.8:game_mapping_jar",
         "//combine/backend/minecraft/1.21.8/fabric:fabric_unmapped_merged",

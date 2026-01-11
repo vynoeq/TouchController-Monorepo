@@ -3,9 +3,9 @@ load("//game:game.bzl", "game_version")
 game_version(
     name = "game",
     client = "@minecraft//1.14.4:client",
-    client_mappings = "@minecraft//1.14.4:client_mappings",
     client_assets = "@minecraft_assets//:assets_1.14.4",
     client_libraries = "@minecraft//1.14.4:client_libraries",
+    client_mappings = "@minecraft//1.14.4:client_mappings",
     intermediary = "@maven_fabric_1_14_4//:net_fabricmc_intermediary_v2",
     neoforge = "@forge_1_14_4//:compiled_with_neoforge",
     server = "@minecraft//1.14.4:server",

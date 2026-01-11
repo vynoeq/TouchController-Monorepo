@@ -3,19 +3,25 @@ package top.fifthlight.touchcontroller.common.control
 import top.fifthlight.combine.data.Identifier
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntPadding
-import top.fifthlight.touchcontroller.assets.EmptyTexture
 import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.assets.TextureSet
 import top.fifthlight.touchcontroller.common.gal.DefaultKeyBindingType
 import top.fifthlight.touchcontroller.common.gal.KeyBindingHandler
+import top.fifthlight.touchcontroller.common.gal.KeyBindingHandlerFactory
 import top.fifthlight.touchcontroller.common.layout.Align
 import java.util.concurrent.ConcurrentHashMap
 
 @ConsistentCopyVisibility
 data class BuiltInWidgets private constructor(
     private val textureSet: TextureSet.TextureSetKey,
-) : KoinComponent {
-    private val keyBindingHandler: KeyBindingHandler = get()
+) {
+    companion object {
+        private val keyBindingHandler: KeyBindingHandler = KeyBindingHandlerFactory.of()
+
+        private val cache = ConcurrentHashMap<TextureSet.TextureSetKey, BuiltInWidgets>()
+        operator fun get(textureSet: TextureSet.TextureSetKey): BuiltInWidgets =
+            cache.computeIfAbsent(textureSet, ::BuiltInWidgets)
+    }
 
     private fun coordinate(key: TextureSet.TextureKey) = TextureCoordinate(
         textureSet = textureSet,
@@ -24,7 +30,7 @@ data class BuiltInWidgets private constructor(
 
     private fun fixed(
         key: TextureSet.TextureKey,
-        scale: Float = 2f
+        scale: Float = 2f,
     ) = ButtonTexture.Fixed(
         texture = coordinate(key),
         scale = scale,
@@ -409,10 +415,4 @@ data class BuiltInWidgets private constructor(
         name = Texts.WIDGET_CUSTOM_BUTTON_NAME,
         align = Align.CENTER_CENTER,
     )
-
-    companion object {
-        private val cache = ConcurrentHashMap<TextureSet.TextureSetKey, BuiltInWidgets>()
-        operator fun get(textureSet: TextureSet.TextureSetKey): BuiltInWidgets =
-            cache.computeIfAbsent(textureSet, ::BuiltInWidgets)
-    }
 }

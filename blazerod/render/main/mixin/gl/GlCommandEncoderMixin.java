@@ -7,14 +7,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.opengl.GlConst;
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.opengl.*;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.opengl.*;
-import com.mojang.blaze3d.shaders.UniformType;
-import com.mojang.blaze3d.opengl.GlTextureView;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.*;
 import org.slf4j.Logger;
@@ -77,13 +74,13 @@ public abstract class GlCommandEncoderMixin implements CommandEncoderExtInternal
     }
 
     @Unique
-    private static boolean isPowerOfTwo(int x) {
+    private static boolean blazerod$isPowerOfTwo(int x) {
         return x > 0 && (x & (x - 1)) == 0;
     }
 
     @ModifyArg(method = "writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIIIIIII)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;_pixelStore(II)V", ordinal = 3), index = 1)
     private int onSetTextureUnpackAlignmentNativeImage(int param) {
-        if (!isPowerOfTwo(param)) {
+        if (!blazerod$isPowerOfTwo(param)) {
             return 1;
         }
         return param;
@@ -91,7 +88,7 @@ public abstract class GlCommandEncoderMixin implements CommandEncoderExtInternal
 
     @ModifyArg(method = "writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIIIIIII)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;_pixelStore(II)V", ordinal = 3), index = 1)
     private int onSetTextureUnpackAlignmentIntBuffer(int param) {
-        if (!isPowerOfTwo(param)) {
+        if (!blazerod$isPowerOfTwo(param)) {
             return 1;
         }
         return param;
@@ -120,6 +117,7 @@ public abstract class GlCommandEncoderMixin implements CommandEncoderExtInternal
         return true;
     }
 
+    @SuppressWarnings({"DataFlowIssue", "resource"})
     @Inject(method = "trySetup", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"))
     private void afterClearSimpleUniforms(GlRenderPass pass, Collection<String> validationSkippedUniforms, CallbackInfoReturnable<Boolean> cir) {
         var renderPipeline = pass.pipeline.info();
@@ -147,7 +145,7 @@ public abstract class GlCommandEncoderMixin implements CommandEncoderExtInternal
             var name = entry.getKey();
             var info = shaderStorageBuffers.get(name);
             if (info == null) {
-                throw new IllegalStateException("Missing ssbo " + name + " for pipeline" + renderPipeline.toString());
+                throw new IllegalStateException("Missing ssbo " + name + " for pipeline" + renderPipeline);
             }
             var slice = entry.getValue();
             var glBuffer = (GlBuffer) slice.buffer();
@@ -175,7 +173,7 @@ public abstract class GlCommandEncoderMixin implements CommandEncoderExtInternal
     }
 
     @Unique
-    private boolean setupComputePass(ComputePass computePass, Collection<String> validationSkippedUniforms) {
+    private boolean blazerod$setupComputePass(ComputePass computePass, Collection<String> validationSkippedUniforms) {
         var pass = (ComputePassImpl) computePass;
         var pipeline = pass.getPipeline();
         if (GlRenderPass.VALIDATION) {
@@ -347,7 +345,7 @@ public abstract class GlCommandEncoderMixin implements CommandEncoderExtInternal
 
     @Override
     public void blazerod$dispatchCompute(ComputePass pass, int x, int y, int z) {
-        if (!setupComputePass(pass, Collections.emptyList())) {
+        if (!blazerod$setupComputePass(pass, Collections.emptyList())) {
             return;
         }
         if (GlRenderPass.VALIDATION) {

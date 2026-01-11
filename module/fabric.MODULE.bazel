@@ -154,9 +154,9 @@ fabric_versions = {
     },
     "26.1": {
         "intermediary": False,
-        "api": "0.140.3+26.1",
+        "api": "0.141.2+26.1",
         "loader": "0.18.3",
-        "modmenu": "18.0.0-alpha.3",
+        "modmenu": "18.0.0-alpha.4",
         "mixin": "0.16.5+mixin.0.8.7",
         "mixin_extras": "0.5.0",
     },

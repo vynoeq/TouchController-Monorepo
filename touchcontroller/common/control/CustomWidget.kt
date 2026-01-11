@@ -5,19 +5,18 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.plus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import top.fifthlight.combine.data.TextFactory
+import top.fifthlight.combine.data.TextFactoryFactory
 import top.fifthlight.combine.paint.Color
 import top.fifthlight.combine.paint.Colors
 import top.fifthlight.combine.paint.TextMeasurer
-import top.fifthlight.combine.paint.drawNinePatchTexture
+import top.fifthlight.combine.paint.TextMeasurerFactory
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntPadding
 import top.fifthlight.data.IntRect
 import top.fifthlight.data.IntSize
 import top.fifthlight.touchcontroller.assets.Texts
-import top.fifthlight.touchcontroller.common.ext.fastRandomUuid
+import top.fifthlight.touchcontroller.common.util.uuid.fastRandomUuid
 import top.fifthlight.touchcontroller.common.helper.ColorHelper
 import top.fifthlight.touchcontroller.common.layout.Align
 import top.fifthlight.touchcontroller.common.layout.Button
@@ -42,11 +41,10 @@ data class CustomWidget(
     override val offset: IntOffset = IntOffset.ZERO,
     override val opacity: Float = 1f,
     override val lockMoving: Boolean = false,
-) : ControllerWidget(), KoinComponent {
-    private val textMeasurer: TextMeasurer by inject()
-
-    companion object : KoinComponent {
-        private val textFactory:  = TextFactoryFactory.of()
+) : ControllerWidget() {
+    companion object {
+        private val textMeasurer: TextMeasurer = TextMeasurerFactory.of()
+        private val textFactory: TextFactory = TextFactoryFactory.of()
 
         @Suppress("UNCHECKED_CAST")
         private val _properties = properties + persistentListOf<Property<CustomWidget, *>>(

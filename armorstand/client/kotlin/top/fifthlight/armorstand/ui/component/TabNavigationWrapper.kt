@@ -1,17 +1,17 @@
 package top.fifthlight.armorstand.ui.component
 
-import net.minecraft.client.renderer.RenderPipelines
-import net.minecraft.client.gui.*
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Renderable
-import net.minecraft.client.gui.screens.Screen
-import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.components.events.ContainerEventHandler
 import net.minecraft.client.gui.components.tabs.TabManager
 import net.minecraft.client.gui.components.tabs.TabNavigationBar
-import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.Layout
+import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.narration.NarratableEntry
+import net.minecraft.client.gui.navigation.ScreenRectangle
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen
+import net.minecraft.client.renderer.RenderPipelines
 import java.util.function.Consumer
 
 @Suppress("JavaDefaultMethodsNotOverriddenByDelegation")

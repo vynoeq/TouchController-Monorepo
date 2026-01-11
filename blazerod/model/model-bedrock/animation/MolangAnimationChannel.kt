@@ -7,6 +7,7 @@ import top.fifthlight.blazerod.model.animation.SingleFrameAnimationChannel
 import top.fifthlight.blazerod.model.bedrock.molang.value.MolangValue
 import top.fifthlight.blazerod.model.bedrock.molang.value.MolangVector3f
 
+@Suppress("FunctionName")
 fun <T : Any, D> MolangAnimationChannel(
     type: AnimationChannel.Type<T, D>,
     typeData: D,

@@ -2,7 +2,6 @@ package top.fifthlight.combine.paint
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.PersistentList
-import top.fifthlight.combine.data.Identifier
 import top.fifthlight.data.*
 import kotlin.math.max
 

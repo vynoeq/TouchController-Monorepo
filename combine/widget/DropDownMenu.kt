@@ -16,7 +16,6 @@ import top.fifthlight.combine.modifier.placement.*
 import top.fifthlight.combine.modifier.pointer.clickable
 import top.fifthlight.combine.paint.Colors
 import top.fifthlight.combine.paint.Drawable
-import top.fifthlight.combine.theme.LocalTheme
 import top.fifthlight.combine.widget.Popup
 import top.fifthlight.combine.widget.layout.Box
 import top.fifthlight.combine.widget.layout.Column

@@ -4,8 +4,8 @@ load("@rules_python//python:py_binary.bzl", "py_binary")
 cc_library(
     name = "wayland-util",
     srcs = [
-        "src/wayland-util.c",
         "src/wayland-private.h",
+        "src/wayland-util.c",
     ],
     hdrs = ["src/wayland-util.h"],
     visibility = ["//visibility:public"],
@@ -30,25 +30,25 @@ cc_binary(
         "src/scanner.c",
         "src/wayland-version.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":wayland-util",
         "@libexpat",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "wayland-private",
     srcs = [
+        "config.h",
         "src/connection.c",
         "src/wayland-os.c",
         "src/wayland-os.h",
-        "config.h",
     ],
     deps = [
-        "@libffi",
         ":wayland-util",
-    ]
+        "@libffi",
+    ],
 )
 
 genrule(
@@ -70,9 +70,9 @@ genrule(
 cc_library(
     name = "wayland-client",
     srcs = [
+        "src/timespec-util.h",
         "src/wayland-client.c",
         "src/wayland-version.h",
-        "src/timespec-util.h",
     ],
     hdrs = [
         "src/wayland-client.h",
@@ -81,9 +81,9 @@ cc_library(
         ":wayland-client-protocol-core",
     ],
     includes = ["src"],
-    deps = [
-        ":wayland-util",
-        ":wayland-private",
-    ],
     visibility = ["//visibility:public"],
+    deps = [
+        ":wayland-private",
+        ":wayland-util",
+    ],
 )

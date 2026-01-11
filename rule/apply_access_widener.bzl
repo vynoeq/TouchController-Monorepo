@@ -1,3 +1,5 @@
+"""Rules for applying access wideners to JAR files."""
+
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 
 def _apply_access_widener_impl(ctx):

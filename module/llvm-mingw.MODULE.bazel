@@ -1,14 +1,58 @@
 "MODULE.bazel llvm-mingw part"
 
-llvm_mingw_toolchain = use_repo_rule("//third_party/llvm_mingw:llvm_mingw_toolchain.bzl", "llvm_mingw_toolchain")
+llvm_mingw = use_extension("//repo:llvm_mingw.bzl", "llvm_mingw")
 
-llvm_mingw_toolchain(
-    name = "llvm_mingw_toolchain",
-    targets = {
-        "x86_64": "x86_64-w64-mingw32",
-        "i386": "i686-w64-mingw32",
-        "aarch64": "aarch64-w64-mingw32",
+toolchains = {
+    "linux_x86_64": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-ubuntu-22.04-x86_64.tar.xz",
+        "sha256": "db561734a05eb4a0695d5e901aadd6c1cda74bba4c9e102b677f81c6fd59849a",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-ubuntu-22.04-x86_64",
+        "type": "tar.xz",
+        "exec_compatible_with": [
+            "@platforms//os:linux",
+            "@platforms//cpu:x86_64",
+        ],
     },
-)
+    "linux_aarch64": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-ubuntu-22.04-aarch64.tar.xz",
+        "sha256": "2950bc65bdd289a2138f48ffb4b200c06c6dc71d8c105452ebd9fa7d567497ec",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-ubuntu-22.04-aarch64",
+        "type": "tar.xz",
+        "exec_compatible_with": [
+            "@platforms//os:linux",
+            "@platforms//cpu:aarch64",
+        ],
+    },
+    "macos": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-macos-universal.tar.xz",
+        "sha256": "38bb5e48ec3e0ce95fb901f4efff0bd6ffa966d1b32539a6510af816a959d160",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-macos-universal",
+        "type": "tar.xz",
+        "exec_compatible_with": [
+            "@platforms//os:macos",
+        ],
+    },
+}
 
-register_toolchains("@llvm_mingw_toolchain//:x86_64_toolchain")
+[
+    (
+        llvm_mingw.toolchain(
+            name = "llvm_mingw_toolchain_%s" % name,
+            targets = {
+                "x86_64": "x86_64-w64-mingw32",
+                "x86_32": "i686-w64-mingw32",
+                "aarch64": "aarch64-w64-mingw32",
+            },
+            url = toolchain["url"],
+            sha256 = toolchain["sha256"],
+            strip_prefix = toolchain["strip_prefix"],
+            type = toolchain["type"],
+            exec_compatible_with = toolchain["exec_compatible_with"],
+        ),
+        use_repo(llvm_mingw, "llvm_mingw_toolchain_%s" % name),
+        register_toolchains("@llvm_mingw_toolchain_%s//:x86_64_toolchain" % name),
+        register_toolchains("@llvm_mingw_toolchain_%s//:x86_32_toolchain" % name),
+        register_toolchains("@llvm_mingw_toolchain_%s//:aarch64_toolchain" % name),
+    )
+    for name, toolchain in toolchains.items()
+]

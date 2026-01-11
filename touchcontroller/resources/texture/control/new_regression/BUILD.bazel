@@ -1,0 +1,9 @@
+load("//rule/touchcontroller:control_texture_set.bzl", "control_texture_set")
+
+control_texture_set(
+    name = "new_regression",
+    srcs = glob(["**/*.png"]),
+    id = "new_regression",
+    metadata = "texture_set.json",
+    visibility = ["//touchcontroller/resources/texture/control:__pkg__"],
+)

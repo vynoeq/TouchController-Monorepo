@@ -3,10 +3,10 @@ load("@rules_java//java:defs.bzl", "java_library")
 java_library(
     name = "pkgdeps",
     srcs = glob(["*.java"]),
+    visibility = ["//visibility:public"],
     deps = [
+        "@maven//:org_jetbrains_annotations",
         "@maven//:org_ow2_asm_asm",
         "@maven//:org_ow2_asm_asm_commons",
-        "@maven//:org_jetbrains_annotations",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -3,14 +3,14 @@ package top.fifthlight.armorstand.ui.screen
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.network.chat.Component
-import net.minecraft.util.CommonColors
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
+import net.minecraft.util.CommonColors
 import top.fifthlight.armorstand.ArmorStandClient
 import top.fifthlight.armorstand.config.ConfigHolder
 import top.fifthlight.armorstand.manage.model.ModelItem

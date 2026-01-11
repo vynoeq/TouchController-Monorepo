@@ -1,12 +1,12 @@
 package wincred;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-
 import com.sun.jna.LastErrorException;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 // https://stackoverflow.com/questions/65144266/use-the-windows-credential-manager-in-java-to-get-credentials-for-authentication
 public class WinCred implements CredAdvapi32 {
@@ -15,31 +15,26 @@ public class WinCred implements CredAdvapi32 {
         return maybeNullValue == null ? nonNullValue : maybeNullValue;
     }
 
-    public class Credential {
-        public String target;
-        public String username;
-        public String password;
-
-        public Credential(String target, String username, String password) {
-            this.target = coalesce(target, "");
-            this.username = coalesce(username, "");
-            this.password = coalesce(password, "");
+    public record Credential(String target, String username, String password) {
+            public Credential(String target, String username, String password) {
+                this.target = coalesce(target, "");
+                this.username = coalesce(username, "");
+                this.password = coalesce(password, "");
+            }
         }
-    }
 
     public Credential getCredential(String target) {
-        PCREDENTIAL pcredMem = new PCREDENTIAL();
+        var pcredMem = new PCREDENTIAL();
 
         try {
             if (CredRead(target, 1, 0, pcredMem)) {
-                CREDENTIAL credMem = new CREDENTIAL(pcredMem.credential);
-                byte[] passwordBytes = credMem.CredentialBlob.getByteArray(0, credMem.CredentialBlobSize);
+                var credMem = new CREDENTIAL(pcredMem.credential);
+                var passwordBytes = credMem.CredentialBlob.getByteArray(0, credMem.CredentialBlobSize);
 
-                String password = new String(passwordBytes, Charset.forName("UTF-16LE"));
-                Credential cred = new WinCred.Credential(credMem.TargetName, credMem.UserName, password);
-                return cred;
+                var password = new String(passwordBytes, StandardCharsets.UTF_16LE);
+                return new Credential(credMem.TargetName, credMem.UserName, password);
             } else {
-                int err = Native.getLastError();
+                var err = Native.getLastError();
                 throw new LastErrorException(err);
             }
         } finally {
@@ -47,8 +42,8 @@ public class WinCred implements CredAdvapi32 {
         }
     }
 
-    public boolean setCredential(String target, String userName, String password) throws UnsupportedEncodingException {
-        CREDENTIAL credMem = new CREDENTIAL();
+    public void setCredential(String target, String userName, String password) throws UnsupportedEncodingException {
+        var credMem = new CREDENTIAL();
 
         credMem.Flags = 0;
         credMem.TargetName = target;
@@ -56,23 +51,19 @@ public class WinCred implements CredAdvapi32 {
         credMem.UserName = userName;
         credMem.AttributeCount = 0;
         credMem.Persist = CRED_PERSIST_ENTERPRISE;
-        byte[] bpassword = password.getBytes("UTF-16LE");
-        credMem.CredentialBlobSize = (int) bpassword.length;
+        var bpassword = password.getBytes(StandardCharsets.UTF_16LE);
+        credMem.CredentialBlobSize = bpassword.length;
         credMem.CredentialBlob = getPointer(bpassword);
         if (!CredWrite(credMem, 0)) {
-            int err = Native.getLastError();
+            var err = Native.getLastError();
             throw new LastErrorException(err);
-        } else {
-            return true;
         }
     }
 
-    public boolean deleteCredential(String target) throws UnsupportedEncodingException {
+    public void deleteCredential(String target) throws UnsupportedEncodingException {
         if (!CredDelete(target, CRED_TYPE_GENERIC, 0)) {
-            int err = Native.getLastError();
+            var err = Native.getLastError();
             throw new LastErrorException(err);
-        } else {
-            return true;
         }
     }
 

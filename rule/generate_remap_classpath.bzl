@@ -1,3 +1,8 @@
+"""Rules for generating remap classpath files."""
+
+load("@rules_java//java/common:java_common.bzl", "java_common")
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+
 def _generate_remap_classpath_impl(ctx):
     output_file = ctx.actions.declare_file(ctx.label.name + ".txt")
     merged_deps = java_common.merge([dep[JavaInfo] for dep in ctx.attr.deps])

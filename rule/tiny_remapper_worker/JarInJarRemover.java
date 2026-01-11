@@ -51,9 +51,7 @@ public class JarInJarRemover implements OutputConsumerPath.ResourceRemapper {
                     var jsonObject = (ObjectNode) jsonContent;
                     var newObject = mapper.createObjectNode();
 
-                    var fields = jsonObject.fields();
-                    while (fields.hasNext()) {
-                        var entry = fields.next();
+                    for (var entry : jsonObject.properties()) {
                         if (!"jars".equals(entry.getKey())) {
                             newObject.set(entry.getKey(), entry.getValue());
                         }

@@ -9,8 +9,6 @@ import top.fifthlight.combine.layout.measure.Placeable
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.modifier.pointer.PointerInputModifierNode
 import top.fifthlight.combine.node.LayoutNode
-import top.fifthlight.combine.node.WrapperFactory
-import top.fifthlight.combine.node.WrapperLayoutNode
 import top.fifthlight.combine.node.plus
 
 sealed class FocusInteraction : Interaction {

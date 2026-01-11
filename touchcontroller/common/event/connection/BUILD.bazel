@@ -1,0 +1,18 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "connection",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/gal/player",
+        "//touchcontroller/common/platform/provider",
+        "//touchcontroller/common/gal/action",
+        "//touchcontroller/common/platform",
+        "//touchcontroller/common/platform/proxy",
+        "//touchcontroller/resources/lang:text_binding",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//combine/core/data",
+    ],
+)

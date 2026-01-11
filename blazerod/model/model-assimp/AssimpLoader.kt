@@ -2,30 +2,28 @@ package top.fifthlight.blazerod.model.assimp
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList
 import it.unimi.dsi.fastutil.floats.FloatList
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.file.Path
-import java.util.*
-import kotlin.jvm.optionals.getOrNull
-
 import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import org.lwjgl.assimp.*
 import org.lwjgl.system.MemoryUtil
 import org.slf4j.LoggerFactory
-import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.*
 import top.fifthlight.blazerod.model.animation.*
 import top.fifthlight.blazerod.model.loader.LoadContext
 import top.fifthlight.blazerod.model.loader.LoadParam
 import top.fifthlight.blazerod.model.loader.LoadResult
+import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.loader.util.readToBuffer
 import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.channels.FileChannel
+import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import kotlin.collections.buildList
+import java.util.*
 import kotlin.io.path.extension
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.min
 
 class AssimpLoadException(message: String) : Exception(message)
@@ -930,8 +928,8 @@ class AssimpLoader : ModelFileLoader {
                         return@create 0L
                     }
                     val file = BufferBackedFile.create(buffer)
-                    file.address().also {
-                        files[it] = file
+                    file.address().also { fileAddress ->
+                        files[fileAddress] = file
                     }
                 }
                 val closeProc = AIFileCloseProc.create { _, fileAddress ->

@@ -1,7 +1,7 @@
 package top.fifthlight.blazerod.mixin.gl;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.opengl.GlProgram;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.ARBProgramInterfaceQuery;
 import org.lwjgl.opengl.ARBShaderStorageBufferObject;
 import org.lwjgl.opengl.GL43C;
@@ -34,12 +34,12 @@ public abstract class GlProgramMixin implements ShaderProgramExtInternal {
     private String debugLabel;
 
     @Unique
-    private Map<String, ShaderProgramExtInternal.GlStorageBuffer> storageBuffers;
+    private Map<String, ShaderProgramExtInternal.GlStorageBuffer> blazerod$storageBuffers;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void afterInit(int glRef, String debugLabel, CallbackInfo ci) {
         // Iris extends GlProgram, so fallback here
-        this.storageBuffers = Map.of();
+        this.blazerod$storageBuffers = Map.of();
     }
 
     @Override
@@ -75,11 +75,11 @@ public abstract class GlProgramMixin implements ShaderProgramExtInternal {
             }
         }
 
-        this.storageBuffers = buffers;
+        this.blazerod$storageBuffers = buffers;
     }
 
     @Override
     public Map<String, GlStorageBuffer> blazerod$getStorageBuffers() {
-        return storageBuffers;
+        return blazerod$storageBuffers;
     }
 }

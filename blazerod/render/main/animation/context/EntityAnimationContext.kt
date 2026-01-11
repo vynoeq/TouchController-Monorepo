@@ -1,7 +1,7 @@
 package top.fifthlight.blazerod.animation.context
 
-import net.minecraft.world.entity.Entity
 import net.minecraft.core.Direction
+import net.minecraft.world.entity.Entity
 import top.fifthlight.blazerod.model.animation.AnimationContext
 import top.fifthlight.blazerod.model.animation.AnimationContext.Property.*
 import top.fifthlight.blazerod.model.animation.AnimationContext.RenderingTargetType
@@ -39,7 +39,7 @@ open class EntityAnimationContext(
 
         EntityPositionDelta -> entity.position().sub(entity.oldPosition(), vector3dBuffer)
 
-        EntityHorizontalFacing -> when (entity.getDirection()) {
+        EntityHorizontalFacing -> when (entity.direction) {
             Direction.NORTH -> 2
             Direction.SOUTH -> 3
             Direction.WEST -> 4

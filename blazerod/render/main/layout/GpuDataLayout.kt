@@ -321,7 +321,9 @@ abstract class GpuDataLayout<L : GpuDataLayout<L>> {
             private val list = object : AbstractIntList() {
                 var buffer: ByteBuffer? = null
 
+                @Deprecated("Deprecated in Java")
                 override fun add(key: Int?) = throw UnsupportedOperationException()
+                @Deprecated("Deprecated in Java")
                 override fun remove(key: Int?) = throw UnsupportedOperationException()
 
                 override val size: Int
@@ -357,7 +359,9 @@ abstract class GpuDataLayout<L : GpuDataLayout<L>> {
             private val list = object : AbstractFloatList() {
                 var buffer: ByteBuffer? = null
 
+                @Deprecated("Deprecated in Java")
                 override fun add(key: Float?) = throw UnsupportedOperationException()
+                @Deprecated("Deprecated in Java")
                 override fun remove(key: Float?) = throw UnsupportedOperationException()
 
                 override val size: Int

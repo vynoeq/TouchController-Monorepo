@@ -6,9 +6,15 @@ import top.fifthlight.combine.input.Interaction
 import top.fifthlight.combine.input.MutableInteractionSource
 import top.fifthlight.combine.input.pointer.PointerEvent
 import top.fifthlight.combine.input.pointer.PointerEventType
+import top.fifthlight.combine.input.pointer.PointerIcon
 import top.fifthlight.combine.layout.measure.Placeable
+import top.fifthlight.combine.layout.measure.contains
 import top.fifthlight.combine.modifier.Modifier
+import top.fifthlight.combine.modifier.drawing.DrawModifierNode
 import top.fifthlight.combine.node.LayoutNode
+import top.fifthlight.combine.node.WrapperFactory
+import top.fifthlight.combine.node.plus
+import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.data.Offset
 
 sealed class DragInteraction : Interaction {
@@ -20,14 +26,15 @@ sealed class DragInteraction : Interaction {
 class DragState internal constructor(
     internal var pressed: Boolean = false,
     internal var entered: Boolean = false,
-    internal var lastPosition: Offset? = null
+    internal var lastPosition: Offset? = null,
 )
 
 @Composable
 fun Modifier.draggable(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     dragState: DragState = remember { DragState() },
-    onDrag: (relative: Offset) -> Unit
+    pointerIcon: PointerIcon = PointerIcon.ResizeAll,
+    onDrag: (relative: Offset) -> Unit,
 ) = then(
     DraggableModifierNode(
         interactionSource = interactionSource,
@@ -35,20 +42,7 @@ fun Modifier.draggable(
         onDrag = { relative, _ -> onDrag(relative) },
         onRelease = { _, _ -> },
         onCancel = { _, _ -> },
-    ))
-
-@Composable
-fun Modifier.draggable(
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    dragState: DragState = remember { DragState() },
-    onDrag: Placeable.(relative: Offset, absolute: Offset) -> Unit
-) = then(
-    DraggableModifierNode(
-        interactionSource = interactionSource,
-        dragState = dragState,
-        onDrag = onDrag,
-        onRelease = { _, _ -> },
-        onCancel = { _, _ -> },
+        pointerIcon = pointerIcon,
     )
 )
 
@@ -56,6 +50,24 @@ fun Modifier.draggable(
 fun Modifier.draggable(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     dragState: DragState = remember { DragState() },
+    pointerIcon: PointerIcon = PointerIcon.ResizeAll,
+    onDrag: Placeable.(relative: Offset, absolute: Offset) -> Unit,
+) = then(
+    DraggableModifierNode(
+        interactionSource = interactionSource,
+        dragState = dragState,
+        onDrag = onDrag,
+        onRelease = { _, _ -> },
+        onCancel = { _, _ -> },
+        pointerIcon = pointerIcon,
+    )
+)
+
+@Composable
+fun Modifier.draggable(
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    dragState: DragState = remember { DragState() },
+    pointerIcon: PointerIcon = PointerIcon.ResizeAll,
     onDrag: Placeable.(relative: Offset, absolute: Offset) -> Unit,
     onRelease: Placeable.(relative: Offset, absolute: Offset) -> Unit,
     onCancel: Placeable.(relative: Offset, absolute: Offset) -> Unit = onRelease,
@@ -66,6 +78,7 @@ fun Modifier.draggable(
         onDrag = onDrag,
         onRelease = onRelease,
         onCancel = onCancel,
+        pointerIcon = pointerIcon,
     )
 )
 
@@ -75,7 +88,8 @@ private data class DraggableModifierNode(
     val onDrag: Placeable.(relative: Offset, absolute: Offset) -> Unit,
     val onRelease: Placeable.(relative: Offset, absolute: Offset) -> Unit,
     val onCancel: Placeable.(relative: Offset, absolute: Offset) -> Unit,
-) : Modifier.Node<DraggableModifierNode>, PointerInputModifierNode {
+    val pointerIcon: PointerIcon,
+) : Modifier.Node<DraggableModifierNode>, PointerInputModifierNode, DrawModifierNode {
 
     override fun onPointerEvent(
         event: PointerEvent,
@@ -109,14 +123,14 @@ private data class DraggableModifierNode(
             }
 
             PointerEventType.Release -> {
-                if (dragState.pressed == true) {
+                if (dragState.pressed) {
                     onRelease(node, Offset.ZERO, absolutePosition)
                 }
                 dragState.pressed = false
             }
 
             PointerEventType.Cancel -> {
-                if (dragState.pressed == true) {
+                if (dragState.pressed) {
                     onCancel(node, Offset.ZERO, absolutePosition)
                 }
                 dragState.pressed = false
@@ -135,4 +149,13 @@ private data class DraggableModifierNode(
         }
         return true
     }
+
+    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        if (cursorPos in node) {
+            requestPointerIcon(pointerIcon)
+        }
+    }
+
+    override val wrapperFactory: WrapperFactory<*>
+        get() = DrawModifierNode.wrapperFactory + PointerInputModifierNode.wrapperFactory
 }

@@ -6,8 +6,8 @@ java_binary(
     main_class = "DecompilerWrapper",
     visibility = ["//visibility:public"],
     deps = [
-        "@maven//:org_vineflower_vineflower",
-        "@fabric_loom//:vineflower_tiny_javadoc_provider",
         "//:picocli",
+        "@fabric_loom//:vineflower_tiny_javadoc_provider",
+        "@maven//:org_vineflower_vineflower",
     ],
 )

@@ -1,4 +1,14 @@
+"""Utilities for parsing and managing pin files."""
+
 def parse_pin_file(content):
+    """Parse a pin file and extract hash information.
+
+    Args:
+        content: The content of the pin file as a string.
+
+    Returns:
+        A dictionary mapping URLs to their hash values.
+    """
     lines = content.split("\n")
     hashes = {}
     for line in lines:

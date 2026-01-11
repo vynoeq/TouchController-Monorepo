@@ -4,7 +4,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import top.fifthlight.combine.data.Text
 import top.fifthlight.combine.data.TextFactory
 
-val LocalTextStyle = staticCompositionLocalOf<TextStyle> { TextStyle.default }
+val LocalTextStyle = staticCompositionLocalOf { TextStyle.default }
 
 data class TextStyle(
     val bold: Boolean = false,

@@ -1,3 +1,5 @@
+"""Rules for generating fabric.mod.json JAR files."""
+
 load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
 load("@rules_java//java:defs.bzl", "java_library")
 

@@ -15,7 +15,6 @@ import top.fifthlight.combine.input.pointer.PointerEventType
 import top.fifthlight.combine.input.pointer.PointerType
 import top.fifthlight.combine.input.text.LocalClipboard
 import top.fifthlight.combine.node.CombineOwner
-import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.combine.screen.LocalOnDismissRequestDispatcher
 import top.fifthlight.combine.screen.LocalScreenFactory
 import top.fifthlight.combine.screen.OnDismissRequestDispatcher
@@ -32,7 +31,7 @@ class CombineScreen(
     private val renderBackground: Boolean,
     private val parent: Screen?,
 ) : Screen(title) {
-    protected val client = Minecraft.getInstance()
+    private val client: Minecraft = Minecraft.getInstance()
     private var initialized = false
     private val dismissDispatcher = OnDismissRequestDispatcher()
     private val soundManager = SoundManagerImpl(client.soundManager)
@@ -185,9 +184,11 @@ class CombineScreen(
             super.render(guiGraphics, mouseX, mouseY, delta)
         }
 
-        val canvas: Canvas = CanvasImpl(guiGraphics)
-        val size = IntSize(width, height)
-        owner.render(size, canvas)
+        owner.render(
+            size = IntSize(width, height),
+            cursorPos = Offset(mouseX.toFloat(), mouseY.toFloat()),
+            canvas = CanvasImpl(guiGraphics),
+        )
     }
 
     override fun onClose() {

@@ -9,7 +9,7 @@ import top.fifthlight.combine.ui.style.ColorSet
 import top.fifthlight.combine.ui.style.DrawableSet
 import top.fifthlight.combine.ui.style.TextureSet
 
-val LocalWidgetState = staticCompositionLocalOf<WidgetState> { WidgetState.NORMAL }
+val LocalWidgetState = staticCompositionLocalOf { WidgetState.NORMAL }
 
 enum class WidgetState(val priority: Int) : Comparable<WidgetState> {
     NORMAL(0),

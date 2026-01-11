@@ -32,12 +32,12 @@ def _parchment_repo_impl(rctx):
 
     build_content = [
         'package(default_visibility = ["//visibility:public"])',
-        '',
+        "",
         "alias(",
         '    name = "zip",',
         '    actual = "%s",' % zip_filename,
         ")",
-        '',
+        "",
         "alias(",
         '    name = "json",',
         '    actual = "parchment.json",',
@@ -97,7 +97,8 @@ def _parchment_impl(mctx):
                 existing = versions[key]
                 if existing.sha256 != tag.sha256:
                     fail("Parchment version %s for MC %s already exists with different SHA-256" % (
-                        tag.parchment_version, tag.mc_version,
+                        tag.parchment_version,
+                        tag.mc_version,
                     ))
             else:
                 versions[key] = {

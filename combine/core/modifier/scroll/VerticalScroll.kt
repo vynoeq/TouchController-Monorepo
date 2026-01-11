@@ -150,15 +150,15 @@ private data class VerticalScrollNode(
         }
     }
 
-    override fun Canvas.renderBefore(node: Placeable) {
+    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         pushClip(
             IntRect(
-                offset = IntOffset(node.absoluteX, node.absoluteY),
-                size = IntSize(node.width, node.height)
+                offset = IntOffset(wrapperNode.absoluteX, wrapperNode.absoluteY),
+                size = IntSize(wrapperNode.width, wrapperNode.height)
             ),
             IntRect(
-                offset = IntOffset(node.x, node.y),
-                size = IntSize(node.width, node.height)
+                offset = IntOffset(wrapperNode.x, wrapperNode.y),
+                size = IntSize(wrapperNode.width, wrapperNode.height)
             ),
         )
         background?.let { background ->
@@ -177,8 +177,8 @@ private data class VerticalScrollNode(
                             y = -tileHeight - tileOffset,
                         ),
                         size = Size(
-                            width = node.width.toFloat(),
-                            height = node.height.toFloat() + tileHeight * 2,
+                            width = wrapperNode.width.toFloat(),
+                            height = wrapperNode.height.toFloat() + tileHeight * 2,
                         ),
                     )
                 )
@@ -186,18 +186,18 @@ private data class VerticalScrollNode(
         }
     }
 
-    override fun Canvas.renderAfter(node: Placeable) {
+    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         if (scrollState.viewportHeight < scrollState.contentHeight) {
             val progress =
                 scrollState.progress.value.toFloat() / (scrollState.contentHeight - scrollState.viewportHeight).toFloat()
-            val barHeight = (node.height * scrollState.viewportHeight / scrollState.contentHeight).coerceAtLeast(12)
-            val barY = ((node.height - barHeight) * if (reverse) {
+            val barHeight = (wrapperNode.height * scrollState.viewportHeight / scrollState.contentHeight).coerceAtLeast(12)
+            val barY = ((wrapperNode.height - barHeight) * if (reverse) {
                 1f - progress
             } else {
                 progress
             }).roundToInt()
             fillRect(
-                offset = IntOffset(node.width - 3, barY),
+                offset = IntOffset(wrapperNode.width - 3, barY),
                 size = IntSize(3, barHeight),
                 color = Color(0x66FFFFFFu),
             )

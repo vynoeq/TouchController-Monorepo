@@ -1,0 +1,18 @@
+load("//rule:apply_access_widener.bzl", "apply_access_widener")
+load("//rule:extract_access_widener.bzl", "extract_access_widener")
+
+extract_access_widener(
+    name = "access_widener_dep_named",
+    inputs = [
+        "@maven_fabric_26_1//:net_fabricmc_fabric_api_fabric_api",
+        "@maven_fabric_26_1//:com_terraformersmc_modmenu",
+        "//combine/backend/minecraft/26.1/fabric:fabric_merged",
+    ],
+)
+
+apply_access_widener(
+    name = "remapped_client_access_widened_named",
+    srcs = [":access_widener_dep_named"],
+    input = "//game/26.1:game_client",
+    visibility = ["//combine/example:__subpackages__"],
+)

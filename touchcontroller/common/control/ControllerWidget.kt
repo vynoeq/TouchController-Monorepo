@@ -7,19 +7,17 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import top.fifthlight.combine.data.Identifier
 import top.fifthlight.combine.data.LocalTextFactory
 import top.fifthlight.combine.data.TextFactory
+import top.fifthlight.combine.data.TextFactoryFactory
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntSize
 import top.fifthlight.touchcontroller.assets.Texts
-import top.fifthlight.touchcontroller.common.config.preset.LayoutPreset
-import top.fifthlight.touchcontroller.common.ext.fastRandomUuid
-import top.fifthlight.touchcontroller.common.layout.Align
+import top.fifthlight.touchcontroller.common.util.uuid.fastRandomUuid
 import top.fifthlight.touchcontroller.common.layout.Context
+import top.fifthlight.touchcontroller.common.layout.align.Align
 import kotlin.math.round
 import kotlin.uuid.Uuid
 
@@ -71,8 +69,8 @@ sealed class ControllerWidget {
         )
     }
 
-    companion object : KoinComponent {
-        private val textFactory:  = TextFactoryFactory.of()
+    companion object {
+        private val textFactory = TextFactoryFactory.of()
 
         val properties = persistentListOf<Property<ControllerWidget, *>>(
             NameProperty(

@@ -1,3 +1,6 @@
+"""Rules for Minecraft-specific build targets."""
+
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("//rule:merge_library.bzl", "kt_merge_library")
 load("//rule/combine:texture.bzl", "TextureLibraryInfo")
 
@@ -7,7 +10,10 @@ def _texture_to_arg(texture):
 def _nine_patch_texture_to_arg(texture):
     return ["--ninepatch", texture.identifier, texture.texture.path, texture.metadata.path]
 
-AtlasPackInfo = provider(fields = ["namespace", "atlas_jar", "atlas_metadata"])
+AtlasPackInfo = provider(
+    doc = "Information about a Minecraft atlas pack including namespace, JAR file, and metadata.",
+    fields = ["namespace", "atlas_jar", "atlas_metadata"],
+)
 
 def _atlas_pack_impl(ctx):
     texture_info = ctx.attr.dep[TextureLibraryInfo]
@@ -67,7 +73,10 @@ atlas_pack = rule(
     },
 )
 
-VanillaPackInfo = provider(fields = ["namespace", "texture_lib"])
+VanillaPackInfo = provider(
+    doc = "Information about a vanilla Minecraft pack including namespace and texture library.",
+    fields = ["namespace", "texture_lib"],
+)
 
 def _vanilla_pack_impl(ctx):
     texture_info = ctx.attr.dep[TextureLibraryInfo]

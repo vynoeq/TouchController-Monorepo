@@ -56,7 +56,7 @@ sealed abstract class TokenBackend {
         public String getToken(String tokenId) {
             try {
                 var cred = winCred.getCredential(tokenId);
-                return cred.password;
+                return cred.password();
             } catch (Exception ex) {
                 logger.warn("Failed to get token from Windows Credential Manager: {}", ex.getMessage());
                 return null;

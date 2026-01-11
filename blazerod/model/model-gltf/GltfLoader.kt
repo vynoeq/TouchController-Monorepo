@@ -65,9 +65,7 @@ internal class GltfLoader(
         val commaIndex = data.indexOf(',').takeIf { it >= 0 } ?: throw GltfLoadException("No comma in data URI")
 
         val metadataPart = data.substring(0, commaIndex)
-        val encoding = metadataPart.substringAfter(";", "").takeIf(String::isNotEmpty)
-
-        val byteArray = when (encoding) {
+        val byteArray = when (val encoding = metadataPart.substringAfter(";", "").takeIf(String::isNotEmpty)) {
             null -> data.substring(commaIndex + 1).encodeToByteArray()
             "base64" -> try {
                 Base64.getDecoder().decode(data.substring(commaIndex + 1))

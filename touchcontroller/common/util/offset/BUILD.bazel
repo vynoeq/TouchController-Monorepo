@@ -1,0 +1,10 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "offset",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//combine/data",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+)

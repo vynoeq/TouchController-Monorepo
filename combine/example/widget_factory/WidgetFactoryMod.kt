@@ -1,10 +1,6 @@
 package top.fifthlight.combine.example.widgetfactory
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import kotlinx.collections.immutable.persistentListOf
@@ -12,9 +8,10 @@ import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toPersistentList
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.resources.Identifier
 import org.lwjgl.glfw.GLFW
 import top.fifthlight.combine.data.TextFactoryFactory
 import top.fifthlight.combine.layout.Alignment
@@ -38,7 +35,10 @@ import top.fifthlight.combine.widget.layout.Spacer
 import top.fifthlight.combine.widget.ui.*
 
 class WidgetFactoryMod : ClientModInitializer, ModMenuApi {
-    private val keyMapping = KeyMapping("combine_widget_factory", GLFW.GLFW_KEY_H, "combine_example")
+    companion object {
+        private val keyCategory = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("combine", "example"))
+        private val keyMapping = KeyMapping("combine_widget_factory", GLFW.GLFW_KEY_H, keyCategory)
+    }
 
     private val themes = persistentListOf(
         "Blackstone" to BlackstoneTheme,
@@ -285,7 +285,7 @@ class WidgetFactoryMod : ClientModInitializer, ModMenuApi {
             Column(verticalArrangement = Arrangement.spacedBy(4)) {
                 Text(text = "Color Picker")
 
-                var color by remember { mutableStateOf(top.fifthlight.combine.paint.Color(255, 128, 64)) }
+                var color by remember { mutableStateOf(Color(255, 128, 64)) }
                 ColorPicker(
                     value = color,
                     onValueChanged = { color = it }
@@ -545,7 +545,7 @@ class WidgetFactoryMod : ClientModInitializer, ModMenuApi {
     override fun getModConfigScreenFactory() = ConfigScreenFactory(::createScreen)
 
     override fun onInitializeClient() {
-        KeyBindingHelper.registerKeyBinding(keyMapping)
+        KeyMappingHelper.registerKeyMapping(keyMapping)
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             if (!keyMapping.isDown) {
                 return@register

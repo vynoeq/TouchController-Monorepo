@@ -3,9 +3,9 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "core",
     srcs = glob(["**/*.kt"]),
-    visibility = ["//touchcontroller:__subpackages__"],
     merge_deps = [
         "//touchcontroller/proxy/message",
         "//touchcontroller/proxy/message/input",
     ],
+    visibility = ["//touchcontroller:__subpackages__"],
 )

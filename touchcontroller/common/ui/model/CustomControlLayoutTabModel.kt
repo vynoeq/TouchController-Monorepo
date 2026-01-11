@@ -14,7 +14,7 @@ import top.fifthlight.touchcontroller.common.config.preset.builtin.BuiltInPreset
 import top.fifthlight.touchcontroller.common.config.widget.WidgetPresetManager
 import top.fifthlight.touchcontroller.common.control.ControllerWidget
 import top.fifthlight.touchcontroller.common.ext.combineStates
-import top.fifthlight.touchcontroller.common.ext.fastRandomUuid
+import top.fifthlight.touchcontroller.common.util.uuid.fastRandomUuid
 import top.fifthlight.touchcontroller.common.ui.state.CustomControlLayoutTabState
 import kotlin.uuid.Uuid
 

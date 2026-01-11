@@ -19,8 +19,8 @@
     },
     "depends": {
         "combine": "*",
-        "minecraft": "1.21.8",
-        "java": ">=21",
+        "minecraft": "~26.1-",
+        "java": ">=25",
         "fabric-api": "*",
         "fabric-language-kotlin": "*"
     }

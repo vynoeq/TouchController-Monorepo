@@ -66,7 +66,7 @@ class RenderTaskImpl private constructor(
     }
 
     companion object {
-        private val POOL = ObjectPool<RenderTaskImpl>(
+        private val POOL = ObjectPool(
             identifier = "render_task",
             create = ::RenderTaskImpl,
             onReleased = {

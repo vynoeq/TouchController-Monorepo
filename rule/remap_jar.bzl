@@ -1,3 +1,5 @@
+"""Rules for remapping JAR files."""
+
 load("@rules_java//java:defs.bzl", "java_common")
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 

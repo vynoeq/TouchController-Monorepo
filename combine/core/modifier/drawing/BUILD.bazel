@@ -11,7 +11,6 @@ kt_merge_library(
         "//combine/core/layout/constraints",
         "//combine/core/layout/measure",
         "//combine/core/modifier",
-        "//combine/core/modifier/pointer",
         "//combine/core/node",
         "//combine/core/paint",
         "//combine/data",

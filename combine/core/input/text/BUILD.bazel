@@ -8,8 +8,8 @@ kt_merge_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@maven//:androidx_compose_runtime_runtime_desktop",
         "@maven//:androidx_compose_runtime_runtime_annotation_jvm",
+        "@maven//:androidx_compose_runtime_runtime_desktop",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
     ],
 )

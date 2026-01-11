@@ -165,7 +165,7 @@ def _generate_function_build_file(rctx, version_info, function_name, function, c
         '    visibility = ["//visibility:public"],',
         '    main_class = "DecompilerWrapper",',
         "    runtime_deps = [",
-        '        %s,' % ", \n".join(['"@%s//jar"' % _convert_maven_coordinate_to_repo(version_info.repository_prefix, entry) for entry in classpath]),
+        "        %s," % ", \n".join(['"@%s//jar"' % _convert_maven_coordinate_to_repo(version_info.repository_prefix, entry) for entry in classpath]),
         '        "@//repo/neoform/rule/decompiler_wrapper",',
         "    ],",
         "    jvm_flags = [%s]," % ", ".join(jvm_flags),
@@ -286,7 +286,7 @@ def _generate_jar_list_args_code(function_name, placeholder_types, jar_output):
     return jar_list_placeholder_info, result_code
 
 def _generate_function_impl(function_name, impl_name, jar_output, main_class, arg_entries, placeholder_types, output_entries):
-    output_extension = ".jar" if function_name != "merge" else ".tsrg"
+    output_extension = ".jar" if jar_output else ".tsrg"
     rule_impl = []
 
     if jar_output:

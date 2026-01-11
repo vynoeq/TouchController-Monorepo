@@ -10,7 +10,7 @@ import top.fifthlight.touchcontroller.common.model.ControllerHudModel
 import kotlin.math.asin
 import kotlin.math.atan2
 
-object CrosshairTargetHelper : KoinComponent {
+object CrosshairTargetHelper {
     private val controllerHudModel: ControllerHudModel by inject()
 
     var lastCrosshairDirection = Vector3d()

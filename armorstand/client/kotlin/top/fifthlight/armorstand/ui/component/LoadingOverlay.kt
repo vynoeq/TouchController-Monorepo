@@ -23,7 +23,7 @@ class LoadingOverlay<T>(
 
     override fun arrangeElements() = inner.arrangeElements()
 
-    override fun getRectangle(): ScreenRectangle = inner.getRectangle()
+    override fun getRectangle(): ScreenRectangle = inner.rectangle
 
     override fun setPosition(x: Int, y: Int) = inner.setPosition(x, y)
 

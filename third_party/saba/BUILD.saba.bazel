@@ -18,11 +18,11 @@ cc_library(
     hdrs = glob(["src/Saba/**/*.h"]),
     includes = ["src"],
     deps = [
-        "@glm",
-        "@glfw",
         ":spdlog",
         "@bullet//:BulletCollision",
         "@bullet//:BulletDynamics",
         "@bullet//:LinearMath",
+        "@glfw",
+        "@glm",
     ],
 )

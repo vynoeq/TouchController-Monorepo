@@ -68,11 +68,11 @@ kt_merge_library(
         "//armorstand/game:remapped_client_access_widened_named",
         "//blazerod/model/model-formats",
         "//blazerod/render/api/event",
+        "//game/1.21.8:game_client_libraries",
         "//game/1.21.8:game_iris_named",
         "//game/1.21.8:game_sodium_named",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
         "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
-        "@minecraft//1.21.8:client_libraries",
     ],
 )
 

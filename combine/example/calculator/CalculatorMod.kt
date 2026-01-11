@@ -95,8 +95,8 @@ class CalculatorMod: ClientModInitializer, ModMenuApi {
                                 Button(
                                     modifier = Modifier.size(28, 20),
                                     onClick = {
-                                        when {
-                                            symbol in "0".."9" -> {
+                                        when (symbol) {
+                                            in "0".."9" -> {
                                                 if (display == "0" || shouldResetDisplay) {
                                                     display = symbol
                                                     shouldResetDisplay = false
@@ -104,12 +104,12 @@ class CalculatorMod: ClientModInitializer, ModMenuApi {
                                                     display += symbol
                                                 }
                                             }
-                                            symbol == "C" -> {
+                                            "C" -> {
                                                 display = "0"
                                                 operand1 = null
                                                 operator = null
                                             }
-                                            symbol == "=" -> {
+                                            "=" -> {
                                                 val val1 = operand1
                                                 val val2 = display.toDoubleOrNull()
                                                 if (val1 != null && val2 != null && operator != null) {
@@ -126,7 +126,7 @@ class CalculatorMod: ClientModInitializer, ModMenuApi {
                                                 operator = null
                                                 shouldResetDisplay = true
                                             }
-                                            symbol in listOf("+", "-", "*", "/") -> {
+                                            in listOf("+", "-", "*", "/") -> {
                                                 operand1 = display.toDoubleOrNull()
                                                 operator = symbol
                                                 shouldResetDisplay = true

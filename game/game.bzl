@@ -73,6 +73,25 @@ def _game_version_impl(
             format = "parchment",
         )
 
+    native.alias(
+        name = name + "_client",
+        actual = client,
+        visibility = visibility,
+    )
+
+    if client_assets:
+        native.alias(
+            name = name + "_client_assets",
+            actual = client_assets,
+            visibility = visibility,
+        )
+
+    native.alias(
+        name = name + "_client_libraries",
+        actual = client_libraries,
+        visibility = visibility,
+    )
+
     decompile_jar(
         name = client_source,
         inputs = [client],

@@ -1,0 +1,13 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "tick",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/gal/key",
+        "//touchcontroller/common/model",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+    ],
+)

@@ -1,0 +1,13 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "item",
+    srcs = glob(["*.kt"]),
+    expect = True,
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//combine/core/data",
+        "//combine/item/data",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
+)

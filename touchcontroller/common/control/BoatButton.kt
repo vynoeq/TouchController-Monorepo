@@ -5,25 +5,18 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.plus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import top.fifthlight.combine.data.TextFactory
+import top.fifthlight.combine.data.TextFactoryFactory
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntSize
 import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.assets.TextureSet
-import top.fifthlight.touchcontroller.common.ext.fastRandomUuid
+import top.fifthlight.touchcontroller.common.util.uuid.fastRandomUuid
 import top.fifthlight.touchcontroller.common.layout.Align
 import top.fifthlight.touchcontroller.common.layout.BoatButton
 import top.fifthlight.touchcontroller.common.layout.Context
 import kotlin.math.round
 import kotlin.uuid.Uuid
-
-@Serializable
-enum class BoatButtonSide {
-    @SerialName("left")
-    LEFT,
-
-    @SerialName("right")
-    RIGHT
-}
 
 @Serializable
 @SerialName("boat_button")
@@ -39,7 +32,7 @@ data class BoatButton(
     override val lockMoving: Boolean = false,
 ) : ControllerWidget() {
     companion object {
-        private val textFactory:  = TextFactoryFactory.of()
+        private val textFactory: TextFactory = TextFactoryFactory.of()
 
         @Suppress("UNCHECKED_CAST")
         private val _properties = properties + persistentListOf<Property<BoatButton, *>>(
@@ -80,7 +73,8 @@ data class BoatButton(
 
     override fun size(): IntSize = (textureSize.toSize() * size).toIntSize()
 
-    val classic = textureSet == TextureSet.TextureSetKey.CLASSIC || textureSet == TextureSet.TextureSetKey.CLASSIC_EXTENSION
+    val classic =
+        textureSet == TextureSet.TextureSetKey.CLASSIC || textureSet == TextureSet.TextureSetKey.CLASSIC_EXTENSION
 
     override fun layout(context: Context) {
         context.BoatButton(this)
@@ -92,7 +86,7 @@ data class BoatButton(
         align: Align,
         offset: IntOffset,
         opacity: Float,
-        lockMoving: Boolean
+        lockMoving: Boolean,
     ) = copy(
         id = id,
         name = name,

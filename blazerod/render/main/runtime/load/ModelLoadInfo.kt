@@ -1,8 +1,8 @@
 package top.fifthlight.blazerod.runtime.load
 
+import com.mojang.blaze3d.platform.NativeImage
 import com.mojang.blaze3d.vertex.VertexFormat
 import kotlinx.coroutines.Deferred
-import com.mojang.blaze3d.platform.NativeImage
 import top.fifthlight.blazerod.api.resource.RenderExpression
 import top.fifthlight.blazerod.api.resource.RenderExpressionGroup
 import top.fifthlight.blazerod.model.*

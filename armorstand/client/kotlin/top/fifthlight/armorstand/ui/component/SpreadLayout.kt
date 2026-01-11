@@ -1,9 +1,9 @@
 package top.fifthlight.armorstand.ui.component
 
-import net.minecraft.client.gui.layouts.LayoutSettings
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.client.gui.layouts.AbstractLayout
+import net.minecraft.client.gui.layouts.LayoutElement
+import net.minecraft.client.gui.layouts.LayoutSettings
 import java.util.function.Consumer
 
 class SpreadLayout(

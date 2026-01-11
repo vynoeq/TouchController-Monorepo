@@ -1,91 +1,91 @@
 platform(
     name = "android_arm64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:android",
         "@platforms//cpu:aarch64",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "android_x86_64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:android",
         "@platforms//cpu:x86_64",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "linux_x86_32",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_32",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "linux_x86_64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "linux_arm64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:aarch64",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "windows_x86_32",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:windows",
         "@platforms//cpu:x86_32",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "windows_x86_64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:windows",
         "@platforms//cpu:x86_64",
     ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "windows_arm64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:windows",
         "@platforms//cpu:aarch64",
-    ]
+    ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "macos_x86_64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:macos",
         "@platforms//cpu:x86_64",
-    ]
+    ],
+    visibility = ["//visibility:public"],
 )
 
 platform(
     name = "macos_arm64",
-    visibility = ["//visibility:public"],
     constraint_values = [
         "@platforms//os:macos",
         "@platforms//cpu:aarch64",
-    ]
+    ],
+    visibility = ["//visibility:public"],
 )
 
 constraint_value(

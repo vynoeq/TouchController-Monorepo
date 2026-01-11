@@ -1,9 +1,9 @@
 package top.fifthlight.armorstand.manage.scan
 
 import top.fifthlight.armorstand.util.ModelLoaders
-import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.formats.ModelFileLoaders
 import top.fifthlight.blazerod.model.loader.LoadContext
+import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import java.nio.file.Path
 import kotlin.io.path.extension
 

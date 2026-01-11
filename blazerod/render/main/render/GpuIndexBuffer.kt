@@ -14,7 +14,7 @@ class GpuIndexBuffer(
 
     init {
         buffer.increaseReferenceCount()
-        buffer.inner.size == length * type.bytes
+        require(buffer.inner.size == length * type.bytes) { "Index buffer size mismatch: ${buffer.inner.size} != $length * ${type.bytes}" }
     }
 
     override fun onClosed() {

@@ -1,9 +1,9 @@
 package top.fifthlight.armorstand.ui.component
 
 import net.minecraft.client.gui.Font
-import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
+import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 

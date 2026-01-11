@@ -6,20 +6,20 @@
     "defaultRequire": 1
   },
   "client": [
-    "AddressModeMixin",
-    "GpuBufferSliceMixin",
-    "MinecraftClientAccessor",
-    "RenderPipelineBuilderMixin",
-    "RenderPipelineMixin",
-    "RenderPipelineSnippetMixin",
-    "RenderSystemMixin",
-    "ShaderTypeMixin",
-    "TextureFormatMixin",
-    "gl.GlDeviceMixin",
-    "gl.GlCommandEncoderMixin",
-    "gl.GlConstMixin",
-    "gl.GlGpuBufferMixin",
-    "gl.GlRenderPassMixin",
-    "gl.GlProgramMixin"
+      "AddressModeMixin",
+      "GpuBufferSliceMixin",
+      "MinecraftClientAccessor",
+      "RenderPipelineBuilderMixin",
+      "RenderPipelineMixin",
+      "RenderPipelineSnippetMixin",
+      "RenderSystemMixin",
+      "ShaderTypeMixin",
+      "TextureFormatMixin",
+      "gl.GlCommandEncoderMixin",
+      "gl.GlConstMixin",
+      "gl.GlDeviceMixin",
+      "gl.GlGpuBufferMixin",
+      "gl.GlProgramMixin",
+      "gl.GlRenderPassMixin"
   ]
 }

@@ -3,9 +3,20 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "config",
     srcs = glob(["**/*.kt"]),
+    kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
+    merge_deps = [
+        "//touchcontroller/common/config/item",
+        "//touchcontroller/common/gal/item",
+        "//touchcontroller/common/gal/itemlist",
+        "//touchcontroller/common/gal/gameconfig",
+        "//touchcontroller/common/serialization",
+        "//touchcontroller/common/config/widget",
+        "//touchcontroller/common/util/state",
+    ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
-        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
         "//:kotlin_serialization",
+        "//combine/core/paint",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
     ],
 )

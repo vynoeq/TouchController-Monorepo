@@ -17,8 +17,6 @@ kt_merge_library(
         "//blazerod/render/main/util/cowbuffer",
         "//blazerod/render/main/util/iterator",
         "//blazerod/render/main/util/objectpool",
-        "//blazerod/render/main/util/uniform",
-        "//blazerod/render/main/layout",
     ],
     visibility = ["//blazerod/render:__subpackages__"],
     deps = [

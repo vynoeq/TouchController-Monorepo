@@ -1,4 +1,18 @@
+"""Rules for merging JAR files as jar-in-jar for NeoForge mods."""
+
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+
 def do_merge_neoforge_jij(ctx, input_jar, output_jar, deps, executable, label):
+    """Perform the actual JIJ (Jar-in-Jar) merge operation for NeoForge mods.
+
+    Args:
+        ctx: The rule context.
+        input_jar: The input JAR file to merge into.
+        output_jar: The output JAR file path.
+        deps: Dictionary of dependency labels to their JAR names.
+        executable: The merge tool executable.
+        label: The label for progress messages.
+    """
     args = ctx.actions.args()
     args.add(input_jar)
     args.add(output_jar)

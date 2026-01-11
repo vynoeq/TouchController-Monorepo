@@ -35,8 +35,8 @@ kt_merge_library(
     ) + ["ModInfo.kt"],
     visibility = ["//armorstand:__subpackages__"],
     deps = [
+        "//game/1.21.8:game_client_libraries",
         "//game/1.21.8:game_server_named",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
-        "@minecraft//1.21.8:client_libraries",
     ],
 )

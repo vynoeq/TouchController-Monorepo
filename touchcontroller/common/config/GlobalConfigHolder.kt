@@ -3,10 +3,6 @@ package top.fifthlight.touchcontroller.common.config
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.updateAndGet
-import kotlinx.serialization.json.Json
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 import top.fifthlight.touchcontroller.common.config.preset.PresetConfig
 import top.fifthlight.touchcontroller.common.config.preset.PresetManager
@@ -14,28 +10,29 @@ import top.fifthlight.touchcontroller.common.config.preset.builtin.BuiltInPreset
 import top.fifthlight.touchcontroller.common.config.widget.WidgetPresetManager
 import top.fifthlight.touchcontroller.common.ext.combineStates
 import top.fifthlight.touchcontroller.common.ext.mapState
-import top.fifthlight.touchcontroller.common.gal.DefaultItemListProvider
+import top.fifthlight.touchcontroller.common.gal.config.ConfigDirectoryProviderFactory
+import top.fifthlight.touchcontroller.common.gal.gameconfig.GameConfigEditor
+import top.fifthlight.touchcontroller.common.gal.gameconfig.GameConfigEditorFactory
+import top.fifthlight.touchcontroller.common.gal.itemlist.DefaultItemListProvider
+import top.fifthlight.touchcontroller.common.gal.itemlist.DefaultItemListProviderFactory
+import top.fifthlight.touchcontroller.common.serialization.jsonFormat
 import java.io.IOException
 import kotlin.io.path.*
 
-class GlobalConfigHolder : KoinComponent {
+object GlobalConfigHolder {
     private val logger = LoggerFactory.getLogger(GlobalConfig::class.java)
-    private val gameConfigEditor: GameConfigEditor by inject()
-    private val presetManager: PresetManager by inject()
-    private val widgetPresetManager: WidgetPresetManager by inject()
-    private val defaultItemListProvider: DefaultItemListProvider = get()
-    private val configDirectoryProvider: ConfigDirectoryProvider = get()
-    private val configDir = configDirectoryProvider.getConfigDirectory()
+    private val gameConfigEditor: GameConfigEditor = GameConfigEditorFactory.of()
+    private val defaultItemListProvider: DefaultItemListProvider = DefaultItemListProviderFactory.of()
+    private val configDir = ConfigDirectoryProviderFactory.of().configDirectory
     private val configFile = configDir.resolve("config.json")
 
-    private val json: Json by inject()
     private val _config = MutableStateFlow(GlobalConfig.default(defaultItemListProvider))
     val config = _config.asStateFlow()
 
-    val currentPreset = combineStates(config, presetManager.presets) { config, presets ->
+    val currentPreset = combineStates(config, PresetManager.presets) { config, presets ->
         when (val preset = config.preset) {
             is PresetConfig.BuiltIn -> preset.key.preset
-            is PresetConfig.Custom -> presets[preset.uuid] ?: BuiltInPresetKey.Companion.DEFAULT.preset
+            is PresetConfig.Custom -> presets[preset.uuid] ?: BuiltInPresetKey.DEFAULT.preset
         }
     }
     val currentPresetUuid = config.mapState { (it.preset as? PresetConfig.Custom)?.uuid }
@@ -49,7 +46,7 @@ class GlobalConfigHolder : KoinComponent {
         }
         try {
             logger.info("Reading TouchController config file")
-            _config.value = json.decodeFromString(configFile.readText())
+            _config.value = jsonFormat.decodeFromString(configFile.readText())
         } catch (ex: Exception) {
             logger.warn("Failed to read config: ", ex)
             val timeStamp = System.currentTimeMillis()
@@ -58,8 +55,8 @@ class GlobalConfigHolder : KoinComponent {
                 configFile.moveTo(backupFileName, overwrite = true)
             }
         }
-        presetManager.load()
-        widgetPresetManager.load()
+        PresetManager.load()
+        WidgetPresetManager.load()
     }
 
     private fun createConfigDirectory() {
@@ -80,6 +77,6 @@ class GlobalConfigHolder : KoinComponent {
         val config = _config.updateAndGet(editor)
         createConfigDirectory()
         logger.info("Saving TouchController config file")
-        configFile.writeText(json.encodeToString(config))
+        configFile.writeText(jsonFormat.encodeToString(config))
     }
 }

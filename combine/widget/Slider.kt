@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import top.fifthlight.combine.input.MutableInteractionSource
+import top.fifthlight.combine.input.pointer.PointerIcon
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.modifier.focus.focusable
 import top.fifthlight.combine.modifier.placement.height
@@ -58,7 +59,10 @@ fun Slider(
     Canvas(
         modifier = Modifier
             .height(height = 16)
-            .draggable(interactionSource) { _, absolute ->
+            .draggable(
+                interactionSource = interactionSource,
+                pointerIcon = PointerIcon.ResizeHorizonal,
+            ) { _, absolute ->
                 val rawProgress = (absolute.x - handleLeftHalfWidth) / (size.width - handleDrawable.size.width)
                 val newProgress = rawProgress.coerceIn(0f, 1f)
                 onValueChanged(newProgress.toValue())
@@ -84,11 +88,11 @@ fun Slider(
             draw(
                 IntRect(
                     offset = trackRect.offset + IntOffset(
-                        x = progressWidth.toInt(),
+                        x = progressWidth,
                         y = 0,
                     ),
                     size = IntSize(
-                        width = trackRect.size.width - progressWidth.toInt(),
+                        width = trackRect.size.width - progressWidth,
                         height = trackRect.size.height,
                     )
                 )

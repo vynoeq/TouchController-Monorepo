@@ -35,7 +35,9 @@ class ModelScannerImpl(
             val directory = file.toAbsolutePath().parent
             val relativePath = modelDir.relativize(file).normalize().toString()
             val name = file.fileName.toString()
-            val lastChanged = Files.getLastModifiedTime(file).toMillis()
+            val lastChanged = withContext(Dispatchers.IO) {
+                Files.getLastModifiedTime(file).toMillis()
+            }
 
             logger.trace("Process model file {}", name)
 
@@ -62,15 +64,17 @@ class ModelScannerImpl(
                     for ((normalizedName, path) in toBeHashedFiles) {
                         logger.trace("Processing marker sign file {}", normalizedName)
                         digest.update(normalizedName.encodeToByteArray())
-                        Files.newByteChannel(path).use {
-                            while (true) {
-                                buffer.clear()
-                                val len = it.read(buffer)
-                                if (len < 0) {
-                                    break
+                        withContext(Dispatchers.IO) {
+                            Files.newByteChannel(path).use {
+                                while (true) {
+                                    buffer.clear()
+                                    val len = it.read(buffer)
+                                    if (len < 0) {
+                                        break
+                                    }
+                                    buffer.flip()
+                                    digest.update(buffer)
                                 }
-                                buffer.flip()
-                                digest.update(buffer)
                             }
                         }
                     }

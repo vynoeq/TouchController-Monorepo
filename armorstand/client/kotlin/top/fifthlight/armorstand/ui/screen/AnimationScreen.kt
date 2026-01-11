@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.StringWidget
 import net.minecraft.client.gui.layouts.LayoutSettings
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import top.fifthlight.armorstand.PlayerRenderer
 import top.fifthlight.armorstand.ui.component.*

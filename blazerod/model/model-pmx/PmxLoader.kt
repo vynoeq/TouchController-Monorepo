@@ -796,9 +796,9 @@ class PmxLoader : ModelFileLoader {
                     localCoordinate = localCoordinate,
                     externalParentIndex = externalParentIndex,
                     ikData = ikData,
-                ).also {
-                    it.inheritData?.let {
-                        sourceToInheritMap.getOrPut(it.sourceIndex) { mutableListOf() }.add(it)
+                ).also { bone ->
+                    bone.inheritData?.let { inheritData ->
+                        sourceToInheritMap.getOrPut(inheritData.sourceIndex) { mutableListOf() }.add(inheritData)
                     }
                 }
             }

@@ -3,6 +3,15 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "layout",
     srcs = glob(["*.kt"]),
+    kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
+    merge_deps = [
+        "//touchcontroller/common/state",
+        "//touchcontroller/common/layout/data",
+        "//touchcontroller/common/layout/queue",
+        "//touchcontroller/common/gal/key",
+    ],
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    deps = [
+        "//combine/core/paint",
+    ],
 )

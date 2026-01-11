@@ -1,0 +1,32 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "widget",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//combine/core/layout/constraints",
+        "//combine/core/layout/measure",
+        "//combine/core/modifier/drawing",
+        "//combine/core/modifier/pointer",
+        "//combine/core/paint",
+        "//combine/core/data",
+        "//combine/data",
+        "//combine/item/data",
+        "//combine/item/paint",
+        "//combine/core/modifier",
+        "//combine/core/widget",
+        "//combine/core/modifier/placement",
+        "//combine/core/node",
+        "//combine/core/modifier/scroll",
+        "//combine/core/sound",
+        "//combine/core/input/interaction",
+        "//combine/core/util/math",
+        "//combine/theme/base",
+        "//combine/widget",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:compose",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
+)

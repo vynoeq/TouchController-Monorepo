@@ -42,9 +42,9 @@ kt_merge_library(
     ],
     deps = [
         ":remapped_deps",
+        "//game/1.21.8:game_client_libraries",
         "//game/1.21.8:game_client_named",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
         "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
-        "@minecraft//1.21.8:client_libraries",
     ],
 )

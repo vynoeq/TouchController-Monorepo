@@ -307,9 +307,74 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
+    "//repo:llvm_mingw.bzl%llvm_mingw": {
+      "general": {
+        "bzlTransitiveDigest": "RCTAuWRH1FdEWH0+nJyjJgdVD6O1MHLPmKdJWmD3cw0=",
+        "usagesDigest": "ugan3MgKZD2xOvNqhonRN0vLWyK6kdFDi0RygU5m3qs=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "llvm_mingw_toolchain_linux_x86_64": {
+            "repoRuleId": "@@//repo:llvm_mingw.bzl%_llvm_mingw_toolchain",
+            "attributes": {
+              "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-ubuntu-22.04-x86_64.tar.xz",
+              "sha256": "db561734a05eb4a0695d5e901aadd6c1cda74bba4c9e102b677f81c6fd59849a",
+              "strip_prefix": "llvm-mingw-20251216-ucrt-ubuntu-22.04-x86_64",
+              "type": "tar.xz",
+              "targets": {
+                "x86_64": "x86_64-w64-mingw32",
+                "x86_32": "i686-w64-mingw32",
+                "aarch64": "aarch64-w64-mingw32"
+              },
+              "exec_compatible_with": [
+                "@platforms//os:linux",
+                "@platforms//cpu:x86_64"
+              ]
+            }
+          },
+          "llvm_mingw_toolchain_linux_aarch64": {
+            "repoRuleId": "@@//repo:llvm_mingw.bzl%_llvm_mingw_toolchain",
+            "attributes": {
+              "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-ubuntu-22.04-aarch64.tar.xz",
+              "sha256": "2950bc65bdd289a2138f48ffb4b200c06c6dc71d8c105452ebd9fa7d567497ec",
+              "strip_prefix": "llvm-mingw-20251216-ucrt-ubuntu-22.04-aarch64",
+              "type": "tar.xz",
+              "targets": {
+                "x86_64": "x86_64-w64-mingw32",
+                "x86_32": "i686-w64-mingw32",
+                "aarch64": "aarch64-w64-mingw32"
+              },
+              "exec_compatible_with": [
+                "@platforms//os:linux",
+                "@platforms//cpu:aarch64"
+              ]
+            }
+          },
+          "llvm_mingw_toolchain_macos": {
+            "repoRuleId": "@@//repo:llvm_mingw.bzl%_llvm_mingw_toolchain",
+            "attributes": {
+              "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-macos-universal.tar.xz",
+              "sha256": "38bb5e48ec3e0ce95fb901f4efff0bd6ffa966d1b32539a6510af816a959d160",
+              "strip_prefix": "llvm-mingw-20251216-ucrt-macos-universal",
+              "type": "tar.xz",
+              "targets": {
+                "x86_64": "x86_64-w64-mingw32",
+                "x86_32": "i686-w64-mingw32",
+                "aarch64": "aarch64-w64-mingw32"
+              },
+              "exec_compatible_with": [
+                "@platforms//os:macos"
+              ]
+            }
+          }
+        },
+        "recordedRepoMappingEntries": []
+      }
+    },
     "//repo:minecraft.bzl%minecraft": {
       "general": {
-        "bzlTransitiveDigest": "iNGV8kraL8UTX3sedv2M+4dWH3t0RTI9qb9r1CNrD08=",
+        "bzlTransitiveDigest": "9SB6NfQHGWmey0T0A+P29FqzuD59akP+dDadjOKn5ZY=",
         "usagesDigest": "xqTjU/aycd1Bjpkd/lgzBVGD+2B7C3sI95z2wxRUtZw=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -4717,7 +4782,7 @@
     },
     "//repo:modrinth.bzl%modrinth": {
       "general": {
-        "bzlTransitiveDigest": "moO7t9ZHF2zn9Jab0+oNShF/7W2rrAapYm39izBa49c=",
+        "bzlTransitiveDigest": "6afW+cPgSP5Ms8rL+f1Jvm0fhJm9dYaqURyghYx3q3M=",
         "usagesDigest": "c3FRxP62obdnUseiROjVE9xIwHs8z9xp5Qexck6Ypas=",
         "recordedFileInputs": {
           "@@//modrinth_lock.json": "5d261a40c4ec173c389374f3945961a1153f36e62518dd0fe495717a2cc3dd22"
@@ -4938,7 +5003,7 @@
     },
     "//repo:neoforge.bzl%neoforge": {
       "general": {
-        "bzlTransitiveDigest": "94kPwfuDyHDSzjjYOADXK/yjGZRAh/FWPLs3IxycnwM=",
+        "bzlTransitiveDigest": "xh9pscknirU43bnpyK5boAbs51fCMRugPyAT5DIW+bg=",
         "usagesDigest": "Zy0QzfPGi44mbo5unPjNOk9NKLwoaRCNXqXi5EVvKmk=",
         "recordedFileInputs": {
           "@@//neoforge_pin.txt": "84c9d1c76cd4796b9a68ec93219caa83ea64bb8d8a6c7f9b79c87685dc298e0e"
@@ -8072,8 +8137,8 @@
     },
     "//repo:neoform.bzl%neoform": {
       "general": {
-        "bzlTransitiveDigest": "TiQNhVs48A8aMLd2PKujs1tZa4uiWbl0pi/fe2XHe6U=",
-        "usagesDigest": "IXtTqOnKF6n0HPORl2xqfsJZFMPVGiKejoj6KWniad4=",
+        "bzlTransitiveDigest": "M08GBXF0XqVT1dFavdgKG8b3SVrnR1RRS2kkkc6ChvE=",
+        "usagesDigest": "XX0TPfq3K2A+83EK1C9CFINSEfZl9LCtqKMTQ4l/8a4=",
         "recordedFileInputs": {
           "@@//neoform_pin.txt": "f5f349c33255eb0173480b40bd5ae23a8309aac7342a8267bffb9294168be7c6"
         },
@@ -8211,7 +8276,7 @@
             "attributes": {
               "version": "1.21-20240613.152323",
               "legacy": false,
-              "sha256": "fc03b4e32b879a109ec78abeebb002df4231cff03fab4f0bffeb03c63cbb590c",
+              "sha256": "33bbf6d5dc922c081521b745d73f262a5738f7c6ff7c1e98b4ceef9068398857",
               "client_jar": "@@+minecraft+minecraft//1.21:client",
               "server_jar": "@@+minecraft+minecraft//1.21:server",
               "client_mapping": "@@+minecraft+minecraft//1.21:client_mappings",
@@ -8908,7 +8973,7 @@
     },
     "//repo:parchment.bzl%parchment": {
       "general": {
-        "bzlTransitiveDigest": "PrpckC+4jnFwbT2l4sfITUfMV+7uLGfFxCWhgbbS91s=",
+        "bzlTransitiveDigest": "E5fBjpsogdu8/8DhhHroYoRW21JuQmcGauw3Q7BXfOE=",
         "usagesDigest": "5o2wtXkABpNh800+HXz6LH2+7YXznk3cfsMf2fPx/lM=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},

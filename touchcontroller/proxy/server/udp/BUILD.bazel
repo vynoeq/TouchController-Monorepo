@@ -3,6 +3,9 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "udp",
     srcs = glob(["*.kt"]),
-    visibility = ["//touchcontroller:__subpackages__"],
     merge_deps = ["//touchcontroller/proxy/message"],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
 )

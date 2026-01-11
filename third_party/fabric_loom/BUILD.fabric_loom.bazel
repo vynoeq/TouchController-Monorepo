@@ -5,7 +5,7 @@ java_library(
     srcs = ["src/decompilers/vineflower/net/fabricmc/loom/decompilers/vineflower/TinyJavadocProvider.java"],
     visibility = ["//visibility:public"],
     deps = [
-        "@maven//:org_vineflower_vineflower",
         "@maven//:net_fabricmc_mapping_io",
+        "@maven//:org_vineflower_vineflower",
     ],
 )

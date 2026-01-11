@@ -2,10 +2,10 @@ package top.fifthlight.armorstand.ui.screen
 
 import kotlinx.coroutines.flow.map
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.components.Button
-import net.minecraft.client.gui.layouts.LayoutSettings
 import net.minecraft.client.gui.components.StringWidget
+import net.minecraft.client.gui.layouts.LayoutSettings
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import top.fifthlight.armorstand.config.GlobalConfig

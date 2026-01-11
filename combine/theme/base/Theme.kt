@@ -3,7 +3,6 @@ package top.fifthlight.combine.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
-import top.fifthlight.combine.paint.BackgroundTexture
 import top.fifthlight.combine.paint.Drawable
 import top.fifthlight.combine.ui.style.ColorTheme
 import top.fifthlight.combine.ui.style.DrawableSet
@@ -58,7 +57,7 @@ data class Theme(
 
         val tab: DrawableSet = DrawableSet.Empty,
 
-        val itemGridBackground: BackgroundTexture? = null,
+        val itemGridBackground: Drawable? = null,
     )
 
     data class Colors(

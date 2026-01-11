@@ -1,11 +1,7 @@
 package top.fifthlight.blazerod.model.animation
 
 import org.joml.Vector3d
-import top.fifthlight.blazerod.model.util.BooleanWrapper
-import top.fifthlight.blazerod.model.util.DoubleWrapper
-import top.fifthlight.blazerod.model.util.FloatWrapper
-import top.fifthlight.blazerod.model.util.IntWrapper
-import top.fifthlight.blazerod.model.util.LongWrapper
+import top.fifthlight.blazerod.model.util.*
 
 interface AnimationContext {
     companion object {

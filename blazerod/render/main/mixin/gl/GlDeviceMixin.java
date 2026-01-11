@@ -4,13 +4,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.opengl.GlDebugLabel;
-import com.mojang.blaze3d.opengl.GlShaderModule;
+import com.mojang.blaze3d.opengl.*;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.ShaderType;
-import com.mojang.blaze3d.opengl.GlDevice;
-import com.mojang.blaze3d.opengl.GlProgram;
-import com.mojang.blaze3d.opengl.GlRenderPipeline;
 import net.minecraft.client.renderer.ShaderDefines;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -45,19 +41,19 @@ import java.util.function.Supplier;
 @Mixin(GlDevice.class)
 public abstract class GlDeviceMixin implements GpuDeviceExtInternal {
     @Unique
-    private static final boolean allowGlTextureBufferRange = true;
+    private static final boolean blazerod$allowGlTextureBufferRange = true;
     @Unique
-    private static final boolean allowGlShaderStorageBufferObject = true;
+    private static final boolean blazerod$allowGlShaderStorageBufferObject = true;
     @Unique
-    private static final boolean allowSsboInVertexShader = true;
+    private static final boolean blazerod$allowSsboInVertexShader = true;
     @Unique
-    private static final boolean allowSsboInFragmentShader = true;
+    private static final boolean blazerod$allowSsboInFragmentShader = true;
     @Unique
-    private static final boolean allowGlComputeShader = true;
+    private static final boolean blazerod$allowGlComputeShader = true;
     @Unique
-    private static final boolean allowGlShaderImageLoadStore = true;
+    private static final boolean blazerod$allowGlShaderImageLoadStore = true;
     @Unique
-    private static final boolean allowGlShaderPacking = true;
+    private static final boolean blazerod$allowGlShaderPacking = true;
 
     @Shadow
     @Final
@@ -73,32 +69,32 @@ public abstract class GlDeviceMixin implements GpuDeviceExtInternal {
     private GlDebugLabel debugLabels;
 
     @Unique
-    private final Map<ComputePipeline, CompiledComputePipeline> computePipelineCompileCache = new IdentityHashMap<>();
+    private final Map<ComputePipeline, CompiledComputePipeline> blazerod$computePipelineCompileCache = new IdentityHashMap<>();
     @Unique
-    private int glMajorVersion;
+    private int blazerod$glMajorVersion;
     @Unique
-    private int glMinorVersion;
+    private int blazerod$glMinorVersion;
 
     @Unique
-    private boolean supportTextureBufferSlice;
+    private boolean blazerod$supportTextureBufferSlice;
     @Unique
-    private boolean supportSsbo;
+    private boolean blazerod$supportSsbo;
     @Unique
-    private boolean supportComputeShader;
+    private boolean blazerod$supportComputeShader;
     @Unique
-    private boolean supportShaderImageLoadStore;
+    private boolean blazerod$supportShaderImageLoadStore;
     @Unique
-    private boolean supportShaderPacking;
+    private boolean blazerod$supportShaderPacking;
     @Unique
-    private int maxSsboBindings;
+    private int blazerod$maxSsboBindings;
     @Unique
-    private int maxSsboInVertexShader;
+    private int blazerod$maxSsboInVertexShader;
     @Unique
-    private int maxSsboInFragmentShader;
+    private int blazerod$maxSsboInFragmentShader;
     @Unique
-    private int ssboOffsetAlignment;
+    private int blazerod$ssboOffsetAlignment;
     @Unique
-    private int textureBufferOffsetAlignment;
+    private int blazerod$textureBufferOffsetAlignment;
 
     @Shadow
     public abstract GpuBuffer createBuffer(@Nullable Supplier<String> labelSupplier, int usage, int size);
@@ -111,14 +107,14 @@ public abstract class GlDeviceMixin implements GpuDeviceExtInternal {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(long contextId, int debugVerbosity, boolean sync, BiFunction<ResourceLocation, ShaderType, String> shaderSourceGetter, boolean debugLabels, CallbackInfo ci, @Local(ordinal = 0) GLCapabilities glCapabilities) {
-        if (allowGlTextureBufferRange && glCapabilities.GL_ARB_texture_buffer_range) {
+        if (blazerod$allowGlTextureBufferRange && glCapabilities.GL_ARB_texture_buffer_range) {
             enabledExtensions.add("GL_ARB_texture_buffer_range");
-            supportTextureBufferSlice = true;
+            blazerod$supportTextureBufferSlice = true;
         } else {
-            supportTextureBufferSlice = false;
+            blazerod$supportTextureBufferSlice = false;
         }
 
-        if (allowGlShaderStorageBufferObject
+        if (blazerod$allowGlShaderStorageBufferObject
                 && glCapabilities.GL_ARB_shader_storage_buffer_object
                 && glCapabilities.GL_ARB_program_interface_query
                 // OpenGL spec says GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS must be at least 8, but we check it
@@ -126,61 +122,61 @@ public abstract class GlDeviceMixin implements GpuDeviceExtInternal {
                 && GL11.glGetInteger(GL43C.GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS) > 8) {
             enabledExtensions.add("GL_ARB_shader_storage_buffer_object");
             enabledExtensions.add("GL_ARB_program_interface_query");
-            supportSsbo = true;
+            blazerod$supportSsbo = true;
         } else {
-            supportSsbo = false;
+            blazerod$supportSsbo = false;
         }
 
-        if (allowGlComputeShader && glCapabilities.GL_ARB_compute_shader) {
+        if (blazerod$allowGlComputeShader && glCapabilities.GL_ARB_compute_shader) {
             enabledExtensions.add("GL_ARB_compute_shader");
-            supportComputeShader = true;
+            blazerod$supportComputeShader = true;
         } else {
-            supportComputeShader = false;
+            blazerod$supportComputeShader = false;
         }
 
-        if (allowGlShaderImageLoadStore && glCapabilities.GL_ARB_shader_image_load_store) {
+        if (blazerod$allowGlShaderImageLoadStore && glCapabilities.GL_ARB_shader_image_load_store) {
             enabledExtensions.add("GL_ARB_shader_image_load_store");
-            supportShaderImageLoadStore = true;
+            blazerod$supportShaderImageLoadStore = true;
         } else {
-            supportShaderImageLoadStore = false;
+            blazerod$supportShaderImageLoadStore = false;
         }
 
-        if (allowGlShaderPacking && glCapabilities.GL_ARB_shading_language_packing) {
+        if (blazerod$allowGlShaderPacking && glCapabilities.GL_ARB_shading_language_packing) {
             enabledExtensions.add("GL_ARB_shading_language_packing");
-            supportShaderPacking = true;
+            blazerod$supportShaderPacking = true;
         } else {
-            supportShaderPacking = false;
+            blazerod$supportShaderPacking = false;
         }
 
-        if (supportSsbo && allowSsboInVertexShader) {
-            maxSsboInVertexShader = GL11.glGetInteger(GL43C.GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS);
+        if (blazerod$supportSsbo && blazerod$allowSsboInVertexShader) {
+            blazerod$maxSsboInVertexShader = GL11.glGetInteger(GL43C.GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS);
         } else {
-            maxSsboInVertexShader = 0;
+            blazerod$maxSsboInVertexShader = 0;
         }
-        if (supportSsbo && allowSsboInFragmentShader) {
-            maxSsboInFragmentShader = GL11.glGetInteger(GL43C.GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS);
+        if (blazerod$supportSsbo && blazerod$allowSsboInFragmentShader) {
+            blazerod$maxSsboInFragmentShader = GL11.glGetInteger(GL43C.GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS);
         } else {
-            maxSsboInFragmentShader = 0;
+            blazerod$maxSsboInFragmentShader = 0;
         }
-        if (supportSsbo) {
-            maxSsboBindings = GL11.glGetInteger(GL43C.GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS);
+        if (blazerod$supportSsbo) {
+            blazerod$maxSsboBindings = GL11.glGetInteger(GL43C.GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS);
         } else {
-            maxSsboBindings = 0;
-        }
-
-        if (supportSsbo) {
-            ssboOffsetAlignment = GL11.glGetInteger(ARBShaderStorageBufferObject.GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT);
-        } else {
-            ssboOffsetAlignment = -1;
-        }
-        if (supportTextureBufferSlice) {
-            textureBufferOffsetAlignment = GL11.glGetInteger(ARBTextureBufferRange.GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT);
-        } else {
-            textureBufferOffsetAlignment = -1;
+            blazerod$maxSsboBindings = 0;
         }
 
-        glMajorVersion = GL11.glGetInteger(GL30C.GL_MAJOR_VERSION);
-        glMinorVersion = GL11.glGetInteger(GL30C.GL_MINOR_VERSION);
+        if (blazerod$supportSsbo) {
+            blazerod$ssboOffsetAlignment = GL11.glGetInteger(ARBShaderStorageBufferObject.GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT);
+        } else {
+            blazerod$ssboOffsetAlignment = -1;
+        }
+        if (blazerod$supportTextureBufferSlice) {
+            blazerod$textureBufferOffsetAlignment = GL11.glGetInteger(ARBTextureBufferRange.GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT);
+        } else {
+            blazerod$textureBufferOffsetAlignment = -1;
+        }
+
+        blazerod$glMajorVersion = GL11.glGetInteger(GL30C.GL_MAJOR_VERSION);
+        blazerod$glMinorVersion = GL11.glGetInteger(GL30C.GL_MINOR_VERSION);
     }
 
     @Inject(method = "compilePipeline", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlProgram;setupUniforms(Ljava/util/List;Ljava/util/List;)V"))
@@ -192,7 +188,7 @@ public abstract class GlDeviceMixin implements GpuDeviceExtInternal {
 
     @WrapOperation(method = "compileShader(Lcom/mojang/blaze3d/opengl/GlDevice$ShaderCompilationKey;Ljava/util/function/BiFunction;)Lcom/mojang/blaze3d/opengl/GlShaderModule;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/preprocessor/GlslPreprocessor;injectDefines(Ljava/lang/String;Lnet/minecraft/client/renderer/ShaderDefines;)Ljava/lang/String;"))
     public String modifyShaderSource(String source, ShaderDefines defines, Operation<String> original) {
-        var context = new GlslExtensionProcessor.Context(glMajorVersion, glMinorVersion, defines);
+        var context = new GlslExtensionProcessor.Context(blazerod$glMajorVersion, blazerod$glMinorVersion, defines);
         var processedShader = GlslExtensionProcessor.process(context, source);
         return original.call(processedShader, defines);
     }
@@ -215,77 +211,77 @@ public abstract class GlDeviceMixin implements GpuDeviceExtInternal {
 
     @Override
     public boolean blazerod$supportTextureBufferSlice() {
-        return supportTextureBufferSlice;
+        return blazerod$supportTextureBufferSlice;
     }
 
     @Override
     public boolean blazerod$supportSsbo() {
-        return supportSsbo;
+        return blazerod$supportSsbo;
     }
 
     @Override
     public boolean blazerod$supportComputeShader() {
-        return supportComputeShader;
+        return blazerod$supportComputeShader;
     }
 
     @Override
     public boolean blazerod$supportMemoryBarrier() {
         // glMemoryBarrier is defined in ARB_shader_image_load_store
-        return supportShaderImageLoadStore;
+        return blazerod$supportShaderImageLoadStore;
     }
 
     @Override
     public boolean blazerod$supportShaderPacking() {
-        return supportShaderPacking;
+        return blazerod$supportShaderPacking;
     }
 
     @Override
     public int blazerod$getMaxSsboBindings() {
-        if (!supportSsbo) {
+        if (!blazerod$supportSsbo) {
             throw new IllegalStateException("SSBO is not supported");
         }
-        return maxSsboBindings;
+        return blazerod$maxSsboBindings;
     }
 
     @Override
     public int blazerod$getMaxSsboInVertexShader() {
-        if (!supportSsbo) {
+        if (!blazerod$supportSsbo) {
             throw new IllegalStateException("SSBO is not supported");
         }
-        return maxSsboInVertexShader;
+        return blazerod$maxSsboInVertexShader;
     }
 
     @Override
     public int blazerod$getMaxSsboInFragmentShader() {
-        if (!supportSsbo) {
+        if (!blazerod$supportSsbo) {
             throw new IllegalStateException("SSBO is not supported");
         }
-        return maxSsboInFragmentShader;
+        return blazerod$maxSsboInFragmentShader;
     }
 
     @Override
     public int blazerod$getSsboOffsetAlignment() {
-        if (!supportSsbo) {
+        if (!blazerod$supportSsbo) {
             throw new IllegalStateException("SSBO is not supported");
         }
-        return ssboOffsetAlignment;
+        return blazerod$ssboOffsetAlignment;
     }
 
     @Override
     public int blazerod$getTextureBufferOffsetAlignment() {
-        if (!supportTextureBufferSlice) {
+        if (!blazerod$supportTextureBufferSlice) {
             throw new IllegalStateException("Texture buffer slice is not supported");
         }
-        return textureBufferOffsetAlignment;
+        return blazerod$textureBufferOffsetAlignment;
     }
 
     @Override
     public CompiledComputePipeline blazerod$compilePipelineCached(ComputePipeline pipeline) {
-        return this.computePipelineCompileCache.computeIfAbsent(pipeline, p -> this.compileComputePipeline(pipeline, defaultShaderSource));
+        return this.blazerod$computePipelineCompileCache.computeIfAbsent(pipeline, p -> this.blazerod$compileComputePipeline(pipeline, defaultShaderSource));
     }
 
     @Unique
-    private CompiledComputePipeline compileComputePipeline(ComputePipeline pipeline, BiFunction<ResourceLocation, ShaderType, String> sourceRetriever) {
+    private CompiledComputePipeline blazerod$compileComputePipeline(ComputePipeline pipeline, BiFunction<ResourceLocation, ShaderType, String> sourceRetriever) {
         var compiledShader = getOrCompileShader(pipeline.getComputeShader(), ShaderTypeExt.COMPUTE, pipeline.getShaderDefines(), sourceRetriever);
         if (compiledShader == GlShaderModule.INVALID_SHADER) {
             LOGGER.error("Couldn't compile pipeline {}: compute shader {} was invalid", pipeline.getLocation(), pipeline.getComputeShader());

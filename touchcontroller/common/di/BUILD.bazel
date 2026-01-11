@@ -4,5 +4,9 @@ kt_merge_library(
     name = "di",
     srcs = glob(["*.kt"]),
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    deps = [
+        "@maven//:io_insert_koin_koin_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
 )

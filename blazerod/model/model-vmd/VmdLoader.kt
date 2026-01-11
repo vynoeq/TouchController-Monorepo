@@ -6,17 +6,17 @@ import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntIterable
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.HumanoidTag
 import top.fifthlight.blazerod.model.TransformId
 import top.fifthlight.blazerod.model.animation.*
 import top.fifthlight.blazerod.model.loader.LoadContext
 import top.fifthlight.blazerod.model.loader.LoadParam
 import top.fifthlight.blazerod.model.loader.LoadResult
+import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.loader.util.MMD_SCALE
-import top.fifthlight.blazerod.model.util.MutableFloat
 import top.fifthlight.blazerod.model.loader.util.readAll
 import top.fifthlight.blazerod.model.loader.util.toRadian
+import top.fifthlight.blazerod.model.util.MutableFloat
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
@@ -40,6 +40,7 @@ class VmdLoader : ModelFileLoader {
         private val NEW_VMD_SIGNATURE = "Vocaloid Motion Data 0002".toByteArray()
         private val VMD_SIGNATURES = listOf(OLD_VMD_SIGNATURE, NEW_VMD_SIGNATURE)
 
+        private val SHIFT_JIS = Charset.forName("Shift-JIS")
         private const val FRAME_TIME_SEC = 1f / 30f
     }
 
@@ -57,7 +58,6 @@ class VmdLoader : ModelFileLoader {
         signatureBytes.contentEquals(signature)
     }
 
-    private val SHIFT_JIS = Charset.forName("Shift-JIS")
     private val decoder = SHIFT_JIS.newDecoder()
         .onMalformedInput(CodingErrorAction.REPLACE)
         .onUnmappableCharacter(CodingErrorAction.REPLACE)

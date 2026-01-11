@@ -1,14 +1,15 @@
 package top.fifthlight.touchcontroller.common.model
 
-import org.koin.core.component.KoinComponent
-import top.fifthlight.touchcontroller.common.layout.ContextResult
-import top.fifthlight.touchcontroller.common.layout.ContextStatus
-import top.fifthlight.touchcontroller.common.layout.ContextTimer
-import top.fifthlight.touchcontroller.common.layout.DrawQueue
+import top.fifthlight.touchcontroller.common.layout.data.ContextResult
+import top.fifthlight.touchcontroller.common.layout.data.ContextStatus
+import top.fifthlight.touchcontroller.common.layout.data.ContextTimer
+import top.fifthlight.touchcontroller.common.layout.queue.DrawQueue
 
-class ControllerHudModel : KoinComponent {
+sealed class ControllerHudModel {
     var result = ContextResult()
     val status = ContextStatus()
     val timer = ContextTimer()
     var pendingDrawQueue: DrawQueue? = null
+
+    companion object Global: ControllerHudModel()
 }

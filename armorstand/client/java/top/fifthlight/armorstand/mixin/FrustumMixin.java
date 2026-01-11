@@ -22,14 +22,14 @@ public abstract class FrustumMixin {
         }
     }
 
-    @Inject(method = "cubeInFrustum(DDDDDD)I", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "cubeInFrustum(DDDDDD)I", at = @At("HEAD"))
     public void wrapintersectAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, CallbackInfoReturnable<Integer> cir) {
         var transform = PlayerRenderer.getCurrentCameraTransform();
         if (transform == null) {
             return;
         }
         if (transform instanceof CameraTransform.Orthographic orthographic) {
-
+            // TODO mixin for frustum
         }
     }
 }

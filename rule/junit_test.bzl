@@ -1,3 +1,5 @@
+"""Rules for Kotlin JUnit tests."""
+
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 def _kt_junit_test_impl(name, visibility, srcs, data, test_class, deps, runtime_deps, jvm_flags):

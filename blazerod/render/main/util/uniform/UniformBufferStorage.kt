@@ -70,7 +70,7 @@ class UniformBufferStorage(
                 name,
                 capacity,
                 newCapacity
-            );
+            )
             growBuffer(newCapacity)
         }
         val currentBuffer = buffer.getBlocking()

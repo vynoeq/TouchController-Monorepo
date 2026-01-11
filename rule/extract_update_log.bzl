@@ -1,3 +1,5 @@
+"""Rules for extracting update logs."""
+
 def _update_log_extractor_impl(ctx):
     output_file = ctx.actions.declare_file(ctx.label.name + ".md")
     input_files = depset(ctx.files.inputs)

@@ -143,7 +143,7 @@ def _minecraft_repo_impl(rctx):
                 common_library_name_set = set()
                 platform_library_name_sets = {}
                 for lib_name in version_libraries[version]:
-                    separator_index = lib_name.index('#')
+                    separator_index = lib_name.index("#")
                     platform = lib_name[0:separator_index]
                     library_name = lib_name[separator_index + 1:]
                     library_target = library_id_to_target_name(library_name)
@@ -151,15 +151,14 @@ def _minecraft_repo_impl(rctx):
                         if library_name in library_paths and library_target not in common_library_name_set:
                             common_library_name_set.add(library_target)
                             build_content.append('        "//libraries:%s",' % library_target)
-                    else:
-                        if library_name in library_paths:
-                            if platform not in platform_libs_dict:
-                                platform_libs_dict[platform] = []
-                            if platform not in platform_library_name_sets:
-                                platform_library_name_sets[platform] = set()
-                            if library_target not in platform_library_name_sets[platform]:
-                                platform_library_name_sets[platform].add(library_target)
-                                platform_libs_dict[platform].append("//libraries:%s" % library_target)
+                    elif library_name in library_paths:
+                        if platform not in platform_libs_dict:
+                            platform_libs_dict[platform] = []
+                        if platform not in platform_library_name_sets:
+                            platform_library_name_sets[platform] = set()
+                        if library_target not in platform_library_name_sets[platform]:
+                            platform_library_name_sets[platform].add(library_target)
+                            platform_libs_dict[platform].append("//libraries:%s" % library_target)
 
                 build_content.append("    ]")
 

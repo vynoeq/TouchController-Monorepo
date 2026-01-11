@@ -97,7 +97,7 @@ neoforge_versions = {
     "1.21": {
         "java_target": 21,
         "neoform_version": "1.21-20240613.152323",
-        "neoform_sha256": "fc03b4e32b879a109ec78abeebb002df4231cff03fab4f0bffeb03c63cbb590c",
+        "neoform_sha256": "33bbf6d5dc922c081521b745d73f262a5738f7c6ff7c1e98b4ceef9068398857",
         "neoforge_version": "21.0.167",
         "neoforge_userdev_sha256": "12d1d7536c33a20ab8cd115f23d39842c18206de556cbb15145e3b0ad83ee9bb",
         "neoforge_sources_sha256": "b5beeac99bf131dd309aaa46e24635bf049618feaff90e5cb83863ce2cf40f6a",

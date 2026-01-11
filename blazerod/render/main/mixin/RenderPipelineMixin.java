@@ -11,16 +11,16 @@ import java.util.Set;
 @Mixin(RenderPipeline.class)
 public abstract class RenderPipelineMixin implements RenderPipelineExtInternal {
     @Unique
-    private Set<String> storageBuffers;
+    private Set<String> blazerod$storageBuffers;
 
     @Override
     @NotNull
     public Set<String> blazerod$getStorageBuffers() {
-        return storageBuffers;
+        return blazerod$storageBuffers;
     }
 
     @Override
     public void blazerod$setStorageBuffers(@NotNull Set<String> storageBuffers) {
-        this.storageBuffers = storageBuffers;
+        this.blazerod$storageBuffers = storageBuffers;
     }
 }

@@ -1,0 +1,11 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "itemlist",
+    srcs = glob(["*.kt"]),
+    expect = True,
+    merge_deps = [
+        "//touchcontroller/common/config/item",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+)

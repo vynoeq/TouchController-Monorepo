@@ -34,7 +34,7 @@ class ModelWatcherImpl(
         registerAll(rootDir)
 
         thread = Thread {
-            try {
+            watchService.use { watchService ->
                 while (running.get()) {
                     val key = try {
                         watchService.take()
@@ -75,9 +75,6 @@ class ModelWatcherImpl(
                         watchKeys.remove(key)
                     }
                 }
-            } finally {
-                // Do cleanup
-                watchService.close()
             }
         }.apply {
             name = "ModelWatcher"

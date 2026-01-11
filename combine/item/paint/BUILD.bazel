@@ -1,0 +1,13 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "paint",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//combine/core/paint",
+        "//combine/core/data",
+        "//combine/data",
+        "//combine/item/data",
+    ],
+    visibility = ["//visibility:public"],
+)

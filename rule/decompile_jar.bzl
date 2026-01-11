@@ -1,3 +1,5 @@
+"""Rules for decompiling JAR files."""
+
 load("@rules_java//java:defs.bzl", "JavaInfo", "java_common")
 
 def _decompile_jar_impl(ctx):

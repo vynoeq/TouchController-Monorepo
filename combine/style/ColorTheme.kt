@@ -4,7 +4,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import top.fifthlight.combine.paint.Color
 import top.fifthlight.combine.paint.Colors
 
-val LocalColorTheme = staticCompositionLocalOf<ColorTheme> { ColorTheme.dark }
+val LocalColorTheme = staticCompositionLocalOf { ColorTheme.dark }
 
 data class ColorTheme(
     val background: Color,

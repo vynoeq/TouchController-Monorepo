@@ -28,8 +28,8 @@ value class Size(private val packed: Long) {
     }
 
     operator fun contains(offset: Offset): Boolean {
-        val x = 0 <= offset.x && offset.x < width
-        val y = 0 <= offset.y && offset.y < height
+        val x = offset.x in 0.0..<width.toDouble()
+        val y = offset.y in 0.0..<height.toDouble()
         return x && y
     }
 

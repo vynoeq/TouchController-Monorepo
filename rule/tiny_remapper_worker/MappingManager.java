@@ -120,7 +120,7 @@ public class MappingManager implements Closeable {
             public boolean equals(Object o) {
                 if (this == o) return true;
                 if (o == null || getClass() != o.getClass()) return false;
-                Key key = (Key) o;
+                var key = (Key) o;
                 return Objects.equals(mappingHash, key.mappingHash) &&
                         Objects.equals(fromNamespace, key.fromNamespace) &&
                         Objects.equals(toNamespace, key.toNamespace);

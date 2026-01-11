@@ -4,12 +4,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.minecraft.ChatFormatting
-import net.minecraft.client.gui.screens.Screen
-import net.minecraft.client.gui.components.tabs.TabManager
 import net.minecraft.client.gui.components.Button
-import net.minecraft.client.gui.layouts.LayoutSettings
-import net.minecraft.client.gui.components.tabs.TabNavigationBar
 import net.minecraft.client.gui.components.StringWidget
+import net.minecraft.client.gui.components.tabs.TabManager
+import net.minecraft.client.gui.components.tabs.TabNavigationBar
+import net.minecraft.client.gui.layouts.LayoutSettings
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW

@@ -10,11 +10,12 @@ import net.minecraft.network.chat.Component
 import org.joml.Matrix3x2f
 import top.fifthlight.combine.backend.minecraft_1_21_8.extension.SubmittableGuiGraphics
 import top.fifthlight.combine.data.Text
-import top.fifthlight.combine.paint.Canvas
+import top.fifthlight.combine.item.data.ItemStack
+import top.fifthlight.combine.item.paint.ItemCanvas
 import top.fifthlight.combine.paint.Color
 import top.fifthlight.data.*
 
-class CanvasImpl(val guiGraphics: GuiGraphics) : Canvas {
+class CanvasImpl(val guiGraphics: GuiGraphics) : ItemCanvas {
     private fun GuiGraphics.submitElement(guiElementRenderState: GuiElementRenderState) =
         (this as SubmittableGuiGraphics).`combine$submitElement`(guiElementRenderState)
 
@@ -132,5 +133,17 @@ class CanvasImpl(val guiGraphics: GuiGraphics) : Canvas {
 
     override fun popClip() {
         guiGraphics.disableScissor()
+    }
+
+    override fun drawItemStack(
+        offset: IntOffset,
+        size: IntSize,
+        stack: ItemStack,
+    ) {
+        val minecraftStack = stack.toVanilla()
+        pushState()
+        guiGraphics.pose().scale(size.width.toFloat() / 16f, size.height.toFloat() / 16f)
+        guiGraphics.renderItem(minecraftStack, offset.x, offset.y)
+        popState()
     }
 }

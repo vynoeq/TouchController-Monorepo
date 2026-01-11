@@ -1,4 +1,4 @@
-load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+"""Rules for converting access wideners to Forge access transformer format."""
 
 def _convert_access_widener_impl(ctx):
     output_file = ctx.actions.declare_file(ctx.attr.output_name)
@@ -12,7 +12,7 @@ def _convert_access_widener_impl(ctx):
         outputs = [output_file],
         executable = ctx.executable._converter_bin,
         arguments = [args],
-        progress_message = "Converting access widener to access widener for %s" % ctx.label.name,
+        progress_message = "Converting access widener to access transformer for %s" % ctx.label.name,
     )
 
     return [DefaultInfo(files = depset([output_file]))]
@@ -34,5 +34,5 @@ convert_access_widener = rule(
             cfg = "exec",
         ),
     },
-    doc = "Convert Fabric access transformer to Forge access widener.",
+    doc = "Convert Fabric access widener to Forge access transformer.",
 )

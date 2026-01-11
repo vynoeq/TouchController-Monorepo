@@ -5,7 +5,6 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     actual = True,
     merge_deps = [
-        "//blazerod/render/main/animation/context",
         "//blazerod/render/main/runtime",
         "//blazerod/render/main/runtime/resource",
         "//blazerod/render/api/animation",

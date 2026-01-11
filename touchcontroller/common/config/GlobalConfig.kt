@@ -3,8 +3,9 @@ package top.fifthlight.touchcontroller.common.config
 import kotlinx.serialization.Serializable
 import top.fifthlight.combine.paint.Color
 import top.fifthlight.combine.paint.Colors
+import top.fifthlight.touchcontroller.common.config.item.ItemList
 import top.fifthlight.touchcontroller.common.config.preset.PresetConfig
-import top.fifthlight.touchcontroller.common.gal.DefaultItemListProvider
+import top.fifthlight.touchcontroller.common.gal.itemlist.DefaultItemListProvider
 
 @Serializable
 data class RegularConfig(

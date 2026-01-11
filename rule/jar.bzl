@@ -1,3 +1,5 @@
+"""Rules for creating JAR file."""
+
 load("@rules_java//java:defs.bzl", "JavaInfo")
 
 def _impl(ctx):

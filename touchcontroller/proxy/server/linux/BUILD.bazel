@@ -18,8 +18,8 @@ cc_library(
     includes = ["."],
     target_compatible_with = ["@platforms//os:linux"],
     deps = [
-        "@rules_jni//jni",
         "//touchcontroller/proxy/server/common",
+        "@rules_jni//jni",
         "@wayland//:wayland-client",
     ],
 )

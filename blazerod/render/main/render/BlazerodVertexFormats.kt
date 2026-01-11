@@ -1,8 +1,8 @@
 package top.fifthlight.blazerod.render
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
 
 object BlazerodVertexFormats {
     val POSITION: VertexFormat = DefaultVertexFormat.POSITION             // 12 12

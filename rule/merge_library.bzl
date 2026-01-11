@@ -1,5 +1,8 @@
-load("@rules_java//java:defs.bzl", _JavaInfo = "JavaInfo", _java_common = "java_common")
+"""Rules for merging libraries."""
+
+load("@rules_java//java:defs.bzl", _JavaInfo = "JavaInfo")
 load("@rules_java//java/bazel/rules:bazel_java_library.bzl", _java_library = "java_library")
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("@rules_kotlin//kotlin:jvm.bzl", _kt_jvm_library = "kt_jvm_library")
 load("@rules_kotlin//src/main/starlark/core/compile:common.bzl", _KtJvmInfo = "KtJvmInfo")
 
@@ -47,11 +50,11 @@ def _modify_deps(deps, associates, merge_deps, plugins, expect, actual):
             real_deps.append(merge_dep)
     real_plugins = [plugin for plugin in plugins]
     if expect or actual:
-        real_deps += ["//rule/expect_actual_tools/api:api"]
+        real_deps.append("//rule/expect_actual_tools/api:api")
     if expect:
-        real_plugins += ["//rule/expect_actual_tools/processor/java:expect_processor"]
+        real_plugins.append("//rule/expect_actual_tools/processor/java:expect_processor")
     if actual:
-        real_plugins += ["//rule/expect_actual_tools/processor/java:actual_processor"]
+        real_plugins.append("//rule/expect_actual_tools/processor/java:actual_processor")
     args = {"deps": real_deps, "plugins": real_plugins}
     if associates != []:
         args["associates"] = associates

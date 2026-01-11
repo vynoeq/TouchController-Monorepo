@@ -3,15 +3,20 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "provider",
     srcs = glob(["*.kt"]),
-    visibility = ["//touchcontroller:__subpackages__"],
-    deps = [
+    merge_deps = [
+        "//touchcontroller/common/gal/window",
+        "//touchcontroller/common/gal/library",
         "//touchcontroller/common/platform",
         "//touchcontroller/common/platform/android",
+        "//touchcontroller/common/platform/proxy",
         "//touchcontroller/common/platform/wayland",
         "//touchcontroller/common/platform/win32",
-        "//touchcontroller/common/platform/proxy",
         "//touchcontroller/proxy/message",
         "//touchcontroller/proxy/server/udp",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
         "@maven//:org_slf4j_slf4j_api",
     ],
 )

@@ -1,14 +1,14 @@
+load("@rules_java//java:java_binary.bzl", "java_binary")
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-load("//rule:remap_jar.bzl", "remap_jar")
 
 kt_jvm_library(
-    name = "hello_world_unmapped",
+    name = "hello_world",
     srcs = glob(["*.kt"]),
     resource_strip_prefix = "combine/example/hello_world/resources",
     resources = glob(["resources/**"]),
     deps = [
         "//:compose",
-        "//combine/backend/minecraft/1.21.8",
+        "//combine/backend/minecraft/26.1",
         "//combine/core/data",
         "//combine/core/layout",
         "//combine/core/modifier",
@@ -16,40 +16,34 @@ kt_jvm_library(
         "//combine/core/screen",
         "//combine/core/widget/layout",
         "//combine/data",
-        "//combine/example:remapped_client_access_widened_named",
-        "//combine/example:remapped_deps",
+        "//combine/example/versions/26.1:remapped_client_access_widened_named",
+        "//combine/item/data",
+        "//combine/item/widget",
         "//combine/theme/base",
         "//combine/theme/vanilla",
         "//combine/widget",
-        "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
-        "@minecraft//1.21.8:client_libraries",
+        "//game/26.1:game_client_libraries",
+        "@maven_fabric_26_1//:com_terraformersmc_modmenu",
+        "@maven_fabric_26_1//:net_fabricmc_fabric_api_fabric_api",
+        "@maven_fabric_26_1//:net_fabricmc_fabric_api_fabric_key_mapping_api_v1",
+        "@maven_fabric_26_1//:net_fabricmc_fabric_api_fabric_lifecycle_events_v1",
+        "@maven_fabric_26_1//:net_fabricmc_fabric_loader",
     ],
-)
-
-remap_jar(
-    name = "hello_world",
-    classpath = ["//combine/example:remapped_client_access_widened_named"],
-    from_namespace = "named",
-    inputs = [":hello_world_unmapped"],
-    mapping = "//game/1.21.8:game_merged_mapping",
-    mixin = True,
-    to_namespace = "intermediary",
-    visibility = ["//visibility:public"],
 )
 
 java_binary(
     name = "dev_client",
     srcs = [],
     data = [
+        "//game/26.1:game_client_assets",
         "@minecraft_assets//:assets",
-        "@minecraft_assets//:assets_1.21.8",
     ],
     env = {
         "LANG": "en_US.UTF8",
     },
     jvm_flags = [
         "-Dfabric.development=true",
-        "-Ddev.launch.version=1.21.8",
+        "-Ddev.launch.version=26.1-snapshot-2",
         "-Ddev.launch.type=client",
         "-Ddev.launch.assetsPath=$(rlocationpath @minecraft_assets//:assets)",
         "-Ddev.launch.mainClass=net.fabricmc.loader.impl.launch.knot.KnotClient",
@@ -57,16 +51,15 @@ java_binary(
     ],
     main_class = "top.fifthlight.fabazel.devlaunchwrapper.DevLaunchWrapper",
     runtime_deps = [
-        "//game/1.21.8:game_client_named",
-        "@minecraft//1.21.8:client_libraries",
+        "//game/26.1:game_client",
+        "//game/26.1:game_client_libraries",
         # Classpath separator
-        "//game/1.21.8:game_mapping_jar",
-        "//combine/backend/minecraft/1.21.8/fabric:fabric_unmapped_merged",
-        ":hello_world_unmapped",
+        ":hello_world",
+        "//combine/backend/minecraft/26.1/fabric:fabric_merged",
         "//rule/dev_launch_wrapper",
-        "@maven_fabric_1_21_8//:io_github_llamalad7_mixinextras_fabric",
-        "@maven_fabric_1_21_8//:net_fabricmc_fabric_language_kotlin",
-        "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
-        "@maven_fabric_1_21_8//:net_fabricmc_sponge_mixin",
+        "@maven_fabric_26_1//:io_github_llamalad7_mixinextras_fabric",
+        "@maven_fabric_26_1//:net_fabricmc_fabric_language_kotlin",
+        "@maven_fabric_26_1//:net_fabricmc_fabric_loader",
+        "@maven_fabric_26_1//:net_fabricmc_sponge_mixin",
     ],
 )

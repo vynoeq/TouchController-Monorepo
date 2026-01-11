@@ -4,5 +4,10 @@ maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
     artifacts = [
         "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.4.0",
+        "io.insert-koin:koin-core-jvm:4.1.1",
+        "io.insert-koin:koin-compose-jvm:4.1.1",
+        "io.insert-koin:koin-logger-slf4j:4.1.1",
+        "cafe.adriel.voyager:voyager-navigator-desktop:1.1.0-beta03",
+        "cafe.adriel.voyager:voyager-screenmodel-desktop:1.1.0-beta03",
     ],
 )

@@ -1,16 +1,16 @@
 package top.fifthlight.blazerod.runtime.renderer
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice
+import com.mojang.blaze3d.opengl.GlRenderPass
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.systems.RenderPass
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.GpuTextureView
 import it.unimi.dsi.fastutil.ints.Int2ReferenceAVLTreeMap
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap
 import net.minecraft.client.Minecraft
-import com.mojang.blaze3d.opengl.GlRenderPass
-import com.mojang.blaze3d.shaders.UniformType
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.resources.ResourceLocation
 import org.joml.Matrix4f

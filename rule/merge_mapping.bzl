@@ -1,4 +1,7 @@
+"""Rules for merging mapping files."""
+
 MappingInfo = provider(
+    doc = "Information about mapping file format and namespace mappings.",
     fields = ["format", "namespace_mappings", "file"],
 )
 

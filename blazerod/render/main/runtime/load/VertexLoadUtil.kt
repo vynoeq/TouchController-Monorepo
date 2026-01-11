@@ -5,11 +5,7 @@ import top.fifthlight.blazerod.model.Accessor
 import top.fifthlight.blazerod.model.elementLength
 import top.fifthlight.blazerod.model.read
 import top.fifthlight.blazerod.model.readNormalized
-import top.fifthlight.blazerod.model.util.toNormalizedSByte
-import top.fifthlight.blazerod.model.util.toNormalizedSShort
-import top.fifthlight.blazerod.model.util.toNormalizedUByte
-import top.fifthlight.blazerod.model.util.toNormalizedUInt
-import top.fifthlight.blazerod.model.util.toNormalizedUShort
+import top.fifthlight.blazerod.model.util.*
 import java.nio.ByteBuffer
 
 object VertexLoadUtil {

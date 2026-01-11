@@ -10,7 +10,6 @@ import top.fifthlight.combine.ui.style.DrawableSet
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntPadding
 import top.fifthlight.data.IntRect
-import top.fifthlight.data.IntSize
 
 private data class OutlineDrawable(
     val inner: Drawable,

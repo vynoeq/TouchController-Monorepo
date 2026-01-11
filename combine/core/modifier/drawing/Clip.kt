@@ -2,29 +2,31 @@ package top.fifthlight.combine.modifier.drawing
 
 import top.fifthlight.combine.layout.measure.Placeable
 import top.fifthlight.combine.modifier.Modifier
+import top.fifthlight.combine.node.LayoutNode
 import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.combine.paint.translate
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntRect
 import top.fifthlight.data.IntSize
+import top.fifthlight.data.Offset
 
 fun Modifier.clip() = then(ClipNode)
 
 private data object ClipNode : DrawModifierNode, Modifier.Node<ClipNode> {
-    override fun Canvas.renderBefore(node: Placeable) {
+    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         pushClip(
             IntRect(
-                offset = IntOffset(node.absoluteX, node.absoluteY),
-                size = node.size,
+                offset = IntOffset(wrapperNode.absoluteX, wrapperNode.absoluteY),
+                size = wrapperNode.size,
             ),
             IntRect(
-                offset = IntOffset(node.x, node.y),
-                size = node.size,
+                offset = IntOffset(wrapperNode.x, wrapperNode.y),
+                size = wrapperNode.size,
             ),
         )
     }
 
-    override fun Canvas.renderAfter(node: Placeable) {
+    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         popClip()
     }
 }
@@ -33,30 +35,32 @@ private data object ClipNode : DrawModifierNode, Modifier.Node<ClipNode> {
 fun Modifier.clip(
     width: Float,
     height: Float,
-    anchorOffset: IntOffset? = null
+    anchorOffset: IntOffset? = null,
 ) = then(PercentClipNode(width, height, anchorOffset))
 
 private data class PercentClipNode(
     val width: Float,
     val height: Float,
-    val anchorOffset: IntOffset? = null
+    val anchorOffset: IntOffset? = null,
 ) : DrawModifierNode, Modifier.Node<PercentClipNode> {
     override fun Canvas.renderBefore(
-        node: Placeable
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
     ) {
         val size = IntSize(
-            width = (node.width * width).toInt(),
-            height = (node.height * height).toInt(),
+            width = (wrapperNode.width * width).toInt(),
+            height = (wrapperNode.height * height).toInt(),
         )
         val offset = anchorOffset?.let {
             IntOffset(
-                x = if (node.absoluteX > anchorOffset.x) {
-                    node.width - size.width
+                x = if (wrapperNode.absoluteX > anchorOffset.x) {
+                    wrapperNode.width - size.width
                 } else {
                     0
                 },
-                y = if (node.absoluteY > anchorOffset.y) {
-                    size.height - node.height
+                y = if (wrapperNode.absoluteY > anchorOffset.y) {
+                    size.height - wrapperNode.height
                 } else {
                     0
                 }
@@ -64,7 +68,7 @@ private data class PercentClipNode(
         } ?: IntOffset.ZERO
         pushClip(
             IntRect(
-                offset = IntOffset(node.absoluteX, node.absoluteY),
+                offset = IntOffset(wrapperNode.absoluteX, wrapperNode.absoluteY),
                 size = size,
             ),
             IntRect(
@@ -75,7 +79,7 @@ private data class PercentClipNode(
         translate(offset)
     }
 
-    override fun Canvas.renderAfter(node: Placeable) {
+    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         popClip()
     }
 }

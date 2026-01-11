@@ -1,4 +1,4 @@
-"Rules for uploading mods to Modrinth"
+"""Rules for uploading mods to Modrinth."""
 
 _SH_TOOLCHAIN_TYPE = "@rules_shell//shell:toolchain_type"
 

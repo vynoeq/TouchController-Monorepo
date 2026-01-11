@@ -1,3 +1,5 @@
+"""Rules for extracting files from JAR files."""
+
 def _extract_jar_impl(ctx):
     output_file = ctx.actions.declare_file(ctx.attr.filename)
     args = ctx.actions.args()

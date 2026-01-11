@@ -6,12 +6,12 @@ rust_library(
     crate_name = "proxy_server_android",
     tags = ["clippy"],
     target_compatible_with = ["@platforms//os:android"],
-    deps = [
-        "@crates//:tokio",
-        "@crates//:log",
-        "@crates//:android_logger",
-        "@crates//:jni",
-        "@crates//:bytemuck",
-    ],
     visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "@crates//:android_logger",
+        "@crates//:bytemuck",
+        "@crates//:jni",
+        "@crates//:log",
+        "@crates//:tokio",
+    ],
 )

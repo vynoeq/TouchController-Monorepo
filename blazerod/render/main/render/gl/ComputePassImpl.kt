@@ -2,8 +2,8 @@ package top.fifthlight.blazerod.render.gl
 
 import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.GpuBufferSlice
-import com.mojang.blaze3d.textures.GpuTextureView
 import com.mojang.blaze3d.opengl.GlCommandEncoder
+import com.mojang.blaze3d.textures.GpuTextureView
 import top.fifthlight.blazerod.extension.internal.CommandEncoderExtInternal
 import top.fifthlight.blazerod.extension.internal.gl.GpuDeviceExtInternal
 import top.fifthlight.blazerod.systems.ComputePass
@@ -60,26 +60,26 @@ class ComputePassImpl(
         if (view == null) {
             samplerUniforms.remove(name)
         } else {
-            samplerUniforms.put(name, view)
+            samplerUniforms[name] = view
         }
 
         setSimpleUniforms.add(name)
     }
 
     override fun setUniform(name: String, buffer: GpuBuffer) {
-        simpleUniforms.put(name, buffer.slice())
+        simpleUniforms[name] = buffer.slice()
         setSimpleUniforms.add(name)
     }
 
     override fun setUniform(name: String, slice: GpuBufferSlice) {
         val alignment = device.uniformOffsetAlignment
         require(slice.offset() % alignment == 0) { "Uniform buffer offset must be aligned to $alignment" }
-        simpleUniforms.put(name, slice)
+        simpleUniforms[name] = slice
         setSimpleUniforms.add(name)
     }
 
     override fun setStorageBuffer(name: String, buffer: GpuBufferSlice) {
-        storageBuffers.put(name, buffer)
+        storageBuffers[name] = buffer
     }
 
     private fun requireNotClosed() = require(!closed) { "Can't use a closed compute pass" }

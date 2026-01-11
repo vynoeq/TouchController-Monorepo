@@ -1,7 +1,7 @@
 package top.fifthlight.armorstand.util
 
-import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.formats.ModelFileLoaders
+import top.fifthlight.blazerod.model.loader.ModelFileLoader
 
 object ModelLoaders {
     private val loaders

@@ -8,6 +8,7 @@ import top.fifthlight.combine.layout.measure.MeasureResult
 import top.fifthlight.combine.layout.measure.MeasureScope
 import top.fifthlight.combine.layout.measure.Placeable
 import top.fifthlight.combine.modifier.Modifier
+import top.fifthlight.combine.node.LayoutNode
 import top.fifthlight.combine.node.WrapperFactory
 import top.fifthlight.combine.node.plus
 import top.fifthlight.combine.paint.Canvas
@@ -16,6 +17,7 @@ import top.fifthlight.combine.paint.Drawable
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntRect
 import top.fifthlight.data.IntSize
+import top.fifthlight.data.Offset
 
 fun Modifier.border(size: Int = 0, color: Color): Modifier = border(size, size, color)
 
@@ -31,32 +33,32 @@ private data class BorderNode(
     val bottom: Int = 0,
     val color: Color,
 ) : DrawModifierNode, LayoutModifierNode, Modifier.Node<BorderNode> {
-    override fun Canvas.renderAfter(node: Placeable) {
+    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         if (left > 0) {
             fillRect(
                 offset = IntOffset(0, 0),
-                size = IntSize(left, node.height),
+                size = IntSize(left, wrapperNode.height),
                 color = color
             )
         }
         if (top > 0) {
             fillRect(
                 offset = IntOffset(0, 0),
-                size = IntSize(node.width, top),
+                size = IntSize(wrapperNode.width, top),
                 color = color
             )
         }
         if (right > 0) {
             fillRect(
-                offset = IntOffset(node.width - right, 0),
-                size = IntSize(right, node.height),
+                offset = IntOffset(wrapperNode.width - right, 0),
+                size = IntSize(right, wrapperNode.height),
                 color = color
             )
         }
         if (bottom > 0) {
             fillRect(
-                offset = IntOffset(0, node.height - bottom),
-                size = IntSize(node.width, bottom),
+                offset = IntOffset(0, wrapperNode.height - bottom),
+                size = IntSize(wrapperNode.width, bottom),
                 color = color
             )
         }
@@ -113,8 +115,8 @@ fun Modifier.border(drawable: Drawable): Modifier = then(DrawableBorderNode(draw
 private data class DrawableBorderNode(
     val drawable: Drawable,
 ) : DrawModifierNode, LayoutModifierNode, Modifier.Node<DrawableBorderNode> {
-    override fun Canvas.renderBefore(node: Placeable) {
-        drawable.run { draw(IntRect(offset = IntOffset.ZERO, size = node.size)) }
+    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        drawable.run { draw(IntRect(offset = IntOffset.ZERO, size = wrapperNode.size)) }
     }
 
     override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {

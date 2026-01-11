@@ -7,17 +7,18 @@ import kotlinx.coroutines.*
 import top.fifthlight.combine.animation.LocalTweenManager
 import top.fifthlight.combine.input.focus.FocusManager
 import top.fifthlight.combine.input.focus.LocalFocusManager
-import top.fifthlight.combine.input.text.InputHandler
-import top.fifthlight.combine.input.text.TextInputReceiver
 import top.fifthlight.combine.input.key.KeyEvent
 import top.fifthlight.combine.input.key.KeyEventReceiver
 import top.fifthlight.combine.input.pointer.PointerEvent
 import top.fifthlight.combine.input.pointer.PointerEventReceiver
 import top.fifthlight.combine.input.pointer.PointerEventType
+import top.fifthlight.combine.input.text.InputHandler
+import top.fifthlight.combine.input.text.TextInputReceiver
 import top.fifthlight.combine.layout.constraints.Constraints
 import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.combine.paint.TextMeasurer
 import top.fifthlight.data.IntSize
+import top.fifthlight.data.Offset
 import kotlin.coroutines.CoroutineContext
 
 val LocalCombineOwner: ProvidableCompositionLocal<CombineOwner> =
@@ -53,7 +54,7 @@ class CombineOwner(
     })
 
     private val tweenManager = TweenManager()
-    private var screenSize by mutableStateOf<IntSize>(IntSize.ZERO)
+    private var screenSize by mutableStateOf(IntSize.ZERO)
 
     private val rootLayer
         get() = layers.first()
@@ -157,7 +158,11 @@ class CombineOwner(
     }
 
     private var lastFrameTime: Long = -1L
-    fun render(size: IntSize, canvas: Canvas) {
+    fun render(
+        size: IntSize,
+        cursorPos: Offset,
+        canvas: Canvas,
+    ) {
         screenSize = size
         val nowFrameTime = System.currentTimeMillis()
         if (lastFrameTime != -1L) {
@@ -175,7 +180,7 @@ class CombineOwner(
                 )
             )
             with(canvas) {
-                layer.rootNode.run { render() }
+                layer.rootNode.run { render(cursorPos) }
             }
         }
     }

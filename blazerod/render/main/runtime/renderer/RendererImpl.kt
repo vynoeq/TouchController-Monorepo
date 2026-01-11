@@ -64,11 +64,11 @@ abstract class RendererImpl<R : RendererImpl<R, T>, T : Renderer.Type<R, T>> : R
 
         @JvmStatic
         @ActualConstructor
-        fun createCpuTransform() = VertexShaderTransformRenderer.create()
+        fun createCpuTransform() = CpuTransformRenderer.create()
 
         @JvmStatic
         @ActualConstructor
-        fun createComputeShaderTransform() = VertexShaderTransformRenderer.create()
+        fun createComputeShaderTransform() = ComputeShaderTransformRenderer.create()
     }
 }
 

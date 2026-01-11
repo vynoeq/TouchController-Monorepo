@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "combine",
+  "version": "0.0.1",
+  "name": "Combine",
+  "description": "COMpose Brought to mINEcraft. Bring your favorite UI framework to Minecraft!",
+  "authors": ["fifth_light"],
+  "license": "LGPL-3.0-or-later",
+  "environment": "client",
+  "mixins": ["combine.mixins.json"],
+  "depends": {
+    "minecraft": "~26.1-",
+    "java": ">=25",
+    "fabric-language-kotlin": "*"
+  },
+  "accessWidener": "combine.accesswidener"
+}

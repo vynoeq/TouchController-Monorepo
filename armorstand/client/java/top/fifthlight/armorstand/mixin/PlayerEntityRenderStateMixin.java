@@ -12,29 +12,29 @@ import java.util.UUID;
 @Mixin(PlayerRenderState.class)
 public abstract class PlayerEntityRenderStateMixin implements PlayerRenderStateExtInternal {
     @Unique
-    private UUID uuid;
+    private UUID armorstand$uuid;
 
     @Unique
-    private AnimationItemPendingValues animationPendingValues;
+    private AnimationItemPendingValues armorstand$animationPendingValues;
 
     @Override
     public void armorstand$setUuid(UUID uuid) {
-        this.uuid = uuid;
+        this.armorstand$uuid = uuid;
     }
 
     @Override
     public UUID armorstand$getUuid() {
-        return uuid;
+        return armorstand$uuid;
     }
 
     @Override
     public void armorstand$setAnimationPendingValues(AnimationItemPendingValues pendingValues) {
-        this.animationPendingValues = pendingValues;
+        this.armorstand$animationPendingValues = pendingValues;
     }
 
     @Override
     @Nullable
     public AnimationItemPendingValues armorstand$getAnimationPendingValues() {
-        return animationPendingValues;
+        return armorstand$animationPendingValues;
     }
 }

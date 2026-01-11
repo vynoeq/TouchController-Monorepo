@@ -1,0 +1,12 @@
+load("//rule/touchcontroller:control_texture_set.bzl", "control_texture_group")
+
+control_texture_group(
+    name = "control",
+    visibility = ["//touchcontroller/resources/texture:__pkg__"],
+    deps = [
+        "//touchcontroller/resources/texture/control/classic",
+        "//touchcontroller/resources/texture/control/classic_extension",
+        "//touchcontroller/resources/texture/control/new",
+        "//touchcontroller/resources/texture/control/new_regression",
+    ],
+)

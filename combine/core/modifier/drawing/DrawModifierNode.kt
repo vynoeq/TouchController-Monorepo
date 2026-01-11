@@ -11,10 +11,11 @@ import top.fifthlight.combine.node.WrapperLayoutNode
 import top.fifthlight.combine.node.WrapperModifierNode
 import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.combine.paint.withState
+import top.fifthlight.data.Offset
 
 interface DrawModifierNode : WrapperModifierNode {
-    fun Canvas.renderBefore(node: Placeable) {}
-    fun Canvas.renderAfter(node: Placeable) {}
+    fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {}
+    fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {}
 
     companion object {
         private class DrawWrapperNode(
@@ -27,12 +28,12 @@ interface DrawModifierNode : WrapperModifierNode {
             TextInputReceiver by children,
             KeyEventReceiver by children {
 
-            override fun Canvas.render() {
+            override fun Canvas.render(cursorPos: Offset) {
                 withState {
                     translate(x, y)
-                    modifierNode.run { renderBefore(this@DrawWrapperNode) }
-                    children.run { render() }
-                    modifierNode.run { renderAfter(this@DrawWrapperNode) }
+                    modifierNode.run { renderBefore(this@DrawWrapperNode, node, cursorPos) }
+                    children.run { render(cursorPos) }
+                    modifierNode.run { renderAfter(this@DrawWrapperNode, node, cursorPos) }
                 }
             }
         }

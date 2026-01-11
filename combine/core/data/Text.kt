@@ -47,7 +47,7 @@ interface Text {
         @Composable
         fun format(identifier: Identifier, vararg arguments: Any?): Text {
             val factory = LocalTextFactory.current
-            val outArguments = Array<Any?>(arguments.size) { index ->
+            val outArguments = Array(arguments.size) { index ->
                 val item = arguments[index]
                 if (item is Text) {
                     factory.toNative(item)

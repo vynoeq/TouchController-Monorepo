@@ -56,7 +56,7 @@ sealed class UpdatePhase(
         }
 
         companion object {
-            private val POOL = ObjectPool<DebugRender>(
+            private val POOL = ObjectPool(
                 identifier = "update_phase_debug_render",
                 create = ::DebugRender,
                 onAcquired = {

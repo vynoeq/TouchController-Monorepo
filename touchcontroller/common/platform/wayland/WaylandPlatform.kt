@@ -1,7 +1,7 @@
 package top.fifthlight.touchcontroller.common.platform.wayland
 
 import org.slf4j.LoggerFactory
-import top.fifthlight.touchcontroller.common.gal.NativeWindow
+import top.fifthlight.touchcontroller.common.gal.window.NativeWindow
 import top.fifthlight.touchcontroller.common.platform.Platform
 import top.fifthlight.touchcontroller.proxy.message.MessageDecodeException
 import top.fifthlight.touchcontroller.proxy.message.ProxyMessage

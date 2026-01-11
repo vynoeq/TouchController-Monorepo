@@ -6,15 +6,15 @@
     "defaultRequire": 1
   },
   "client": [
-    "ArmorFeatureRendererMixin",
-    "CameraMixin",
-    "EntityRenderDispatcherMixin",
-    "FrustumMixin",
-    "GameRendererMixin",
-    "MinecraftMixin",
-    "MouseHandlerMixin",
-    "PlayerRendererMixin",
-    "PlayerEntityRenderStateMixin",
-    "PlayerModelMixin"
+      "ArmorFeatureRendererMixin",
+      "CameraMixin",
+      "EntityRenderDispatcherMixin",
+      "FrustumMixin",
+      "GameRendererMixin",
+      "MinecraftMixin",
+      "MouseHandlerMixin",
+      "PlayerEntityRenderStateMixin",
+      "PlayerModelMixin",
+      "PlayerRendererMixin"
   ]
 }

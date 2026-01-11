@@ -6,8 +6,8 @@ import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.path
-import java.nio.file.Path
 import com.squareup.kotlinpoet.*
+import java.nio.file.Path
 import kotlin.io.path.writeText
 
 private class Generator : CliktCommand() {

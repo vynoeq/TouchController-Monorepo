@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
-import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
+import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
-import net.minecraft.util.CommonColors
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.CommonColors
 import top.fifthlight.armorstand.config.ConfigHolder
 import top.fifthlight.armorstand.manage.model.ModelItem
 import top.fifthlight.armorstand.util.BlockableEventLoopDispatcher

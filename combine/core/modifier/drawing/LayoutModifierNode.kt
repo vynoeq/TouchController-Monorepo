@@ -15,6 +15,7 @@ import top.fifthlight.combine.node.WrapperLayoutNode
 import top.fifthlight.combine.node.WrapperModifierNode
 import top.fifthlight.combine.paint.Canvas
 import top.fifthlight.combine.paint.withState
+import top.fifthlight.data.Offset
 
 interface LayoutModifierNode : WrapperModifierNode {
     fun measure(measurable: Measurable, constraints: Constraints) =
@@ -91,10 +92,10 @@ interface LayoutModifierNode : WrapperModifierNode {
             override fun maxIntrinsicWidth(height: Int): Int = modifierNode.maxIntrinsicWidth(children, height)
             override fun maxIntrinsicHeight(width: Int): Int = modifierNode.maxIntrinsicHeight(children, width)
 
-            override fun Canvas.render() {
+            override fun Canvas.render(cursorPos: Offset) {
                 withState {
                     translate(x, y)
-                    children.run { render() }
+                    children.run { render(cursorPos) }
                 }
             }
         }

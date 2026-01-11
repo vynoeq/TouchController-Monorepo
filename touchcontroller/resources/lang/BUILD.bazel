@@ -1,24 +1,11 @@
-load("@bazel_skylib//rules:run_binary.bzl", "run_binary")
-load("//rule:merge_library.bzl", "kt_merge_library")
-load("//touchcontroller/resources/generator:generate_legacy_text.bzl", "generate_legacy_text")
+load("//rule/touchcontroller:generate_legacy_text.bzl", "generate_legacy_text")
+load("//rule/touchcontroller:text_binding.bzl", "kt_text_binding_lib")
 
-run_binary(
-    name = "text_binding_source",
-    srcs = ["en_us.json"],
-    outs = ["Texts.kt"],
-    args = [
-        "$(location en_us.json)",
-        "$(location Texts.kt)",
-    ],
-    tool = "//touchcontroller/resources/generator:text_binding_generator",
-)
-
-kt_merge_library(
+kt_text_binding_lib(
     name = "text_binding",
-    srcs = [":text_binding_source"],
-    merge_deps = [
-        "//combine/core/data",
-    ],
+    package_name = "top.fifthlight.touchcontroller.assets",
+    class_name = "Texts",
+    input = "en_us.json",
     visibility = ["//touchcontroller:__subpackages__"],
 )
 

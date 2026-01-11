@@ -14,13 +14,13 @@ kt_merge_library(
     merge_deps = [
         ":texture_lib",
     ],
+    visibility = ["//visibility:public"],
     deps = [
-        "//combine/data",
         "//combine/core/paint",
+        "//combine/data",
         "//combine/style",
         "//combine/theme/base",
     ],
-    visibility = ["//visibility:public"],
 )
 
 vanilla_pack(

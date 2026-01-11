@@ -15,6 +15,8 @@ kt_merge_library(
         "//combine/core/input/pointer",
         "//combine/core/paint",
         "//combine/style",
+        "//combine/item/paint",
+        "//combine/item/data",
         "//combine/theme/vanilla",
         "//combine/backend/minecraft/1.21.8/extension",
     ],
@@ -22,7 +24,7 @@ kt_merge_library(
     deps = [
         "//:compose",
         "//combine/backend/minecraft/1.21.8/game:remapped_client_access_widened_named",
+        "//game/1.21.8:game_client_libraries",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
-        "@minecraft//1.21.8:client_libraries",
     ],
 )

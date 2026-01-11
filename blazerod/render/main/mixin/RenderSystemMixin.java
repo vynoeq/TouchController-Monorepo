@@ -1,8 +1,8 @@
 package top.fifthlight.blazerod.mixin;
 
+import com.mojang.blaze3d.TracyFrameCapture;
 import com.mojang.blaze3d.shaders.ShaderType;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.TracyFrameCapture;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

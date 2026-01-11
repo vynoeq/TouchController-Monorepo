@@ -1,6 +1,8 @@
 package top.fifthlight.fabazel.jarcreator;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
-import java.util.zip.CRC32;
 
 public class JarCreator {
     public static void main(String[] args) {
@@ -18,11 +19,11 @@ public class JarCreator {
             System.exit(1);
         }
 
-        String outputPath = args[0];
-        Path outputJarPath = Paths.get(outputPath);
+        var outputPath = args[0];
+        var outputJarPath = Paths.get(outputPath);
 
-        try (JarOutputStream jarOut = new JarOutputStream(new FileOutputStream(outputJarPath.toFile()))) {
-            for (int i = 1; i < args.length; i += 3) {
+        try (var jarOut = new JarOutputStream(new FileOutputStream(outputJarPath.toFile()))) {
+            for (var i = 1; i < args.length; i += 3) {
                 if (i + 1 >= args.length) {
                     throw new IllegalArgumentException("Missing file for path: " + args[i]);
                 }
@@ -31,13 +32,13 @@ public class JarCreator {
                     throw new IllegalArgumentException("Expected --entry, got: " + args[i]);
                 }
 
-                String entryPath = args[i + 1];
+                var entryPath = args[i + 1];
                 if (i + 2 >= args.length) {
                     throw new IllegalArgumentException("Missing file for entry: " + entryPath);
                 }
 
-                String filePath = args[i + 2];
-                Path inputPath = Paths.get(filePath);
+                var filePath = args[i + 2];
+                var inputPath = Paths.get(filePath);
 
                 addEntryToJar(jarOut, entryPath, inputPath);
             }
@@ -53,13 +54,13 @@ public class JarCreator {
             throw new FileNotFoundException("File not found: " + filePath);
         }
 
-        JarEntry entry = new JarEntry(entryPath);
+        var entry = new JarEntry(entryPath);
         entry.setCreationTime(FileTime.fromMillis(0));
         entry.setLastAccessTime(FileTime.fromMillis(0));
         entry.setLastModifiedTime(FileTime.fromMillis(0));
         entry.setTimeLocal(LocalDateTime.ofEpochSecond(0L, 0, ZoneOffset.UTC));
         jarOut.putNextEntry(entry);
-        try (InputStream inputStream = Files.newInputStream(filePath)) {
+        try (var inputStream = Files.newInputStream(filePath)) {
             inputStream.transferTo(jarOut);
         }
         jarOut.closeEntry();

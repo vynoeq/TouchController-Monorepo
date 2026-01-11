@@ -1,0 +1,27 @@
+load("//rule:merge_library.bzl", "merge_library_jar")
+load("//rule/fabric:merge_jij.bzl", "fabric_merge_jij")
+
+merge_library_jar(
+    name = "fabric_merged",
+    resources = {
+        "fabric.mod.json": "combine/backend/minecraft/26.1/fabric",
+        "//combine/backend/minecraft/26.1/game:access_widener": "combine/backend/minecraft/26.1/game",
+    },
+    visibility = ["//visibility:public"],
+    deps = [
+        "//combine",
+        "//combine/backend/minecraft/26.1",
+        "//combine/backend/minecraft/26.1/mixin",
+    ],
+)
+
+fabric_merge_jij(
+    name = "fabric",
+    input = ":fabric_merged",
+    visibility = ["//visibility:public"],
+    deps = {
+        "@maven//:androidx_compose_runtime_runtime_desktop": "androidx_compose_runtime_runtime_desktop:1.10.0",
+        "@maven//:androidx_collection_collection_jvm": "androidx_collection_collection_jvm:1.5.0",
+        "@maven//:org_mini2Dx_universal_tween_engine": "org_mini2dx_universal_tween_engine:6.3.3",
+    },
+)

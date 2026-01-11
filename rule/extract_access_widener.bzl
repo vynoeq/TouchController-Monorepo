@@ -1,3 +1,7 @@
+"""Rules for extracting access wideners from JAR files."""
+
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+
 def _extract_access_widener_impl(ctx):
     output_file = ctx.actions.declare_file("_extracted/%s.accesswidener" % ctx.label.name)
     args = ctx.actions.args()

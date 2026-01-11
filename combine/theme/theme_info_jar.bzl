@@ -1,3 +1,5 @@
+"""Rules for generating mod loader metadata JAR for themes."""
+
 load("//combine:properties.bzl", "combine_version", "home_page", "issue_tracker", "license", "sources_page")
 load("//rule:mod_info_jar.bzl", "mod_info_jar")
 

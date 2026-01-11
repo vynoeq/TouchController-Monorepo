@@ -1,11 +1,14 @@
 load("//rule/combine:library.bzl", "kt_texture_lib")
 load("//rule/combine:minecraft.bzl", "atlas_pack", "kt_vanilla_lib", "vanilla_pack")
 load("//rule/combine:texture.bzl", "ninepatch_texture", "texture", "texture_group", "texture_lib")
+load("//rule/touchcontroller:control_texture_set.bzl", "kt_control_texture_set_lib")
 
 texture(
     name = "normal_texture",
     srcs = glob(
-        include = ["**/*.png"],
+        include = [
+            "icon/*.png",
+        ],
         allow_empty = True,
         exclude = ["**/*.9.png"],
     ),
@@ -13,7 +16,9 @@ texture(
 
 ninepatch_texture(
     name = "ninepatch_texture",
-    srcs = glob(["**/*.9.png"]),
+    srcs = glob([
+        "empty/*.9.png",
+    ]),
 )
 
 texture_group(
@@ -31,12 +36,26 @@ texture_lib(
     prefix = "ui",
     deps = [
         ":texture_group",
+        "//touchcontroller/resources/texture/control",
     ],
 )
 
 kt_texture_lib(
     name = "texture_lib",
     dep = ":texture",
+)
+
+kt_control_texture_set_lib(
+    name = "texture_set_lib",
+    class_name = "TextureSet",
+    control_group = "//touchcontroller/resources/texture/control",
+    kt_text_binding_lib = "//touchcontroller/resources/lang:text_binding",
+    kt_texture_lib = ":texture_lib",
+    package = "top.fifthlight.touchcontroller.assets",
+    text_binding_class_name = "Texts",
+    text_binding_package = "top.fifthlight.touchcontroller.assets",
+    texture_lib = ":texture",
+    visibility = ["//touchcontroller:__subpackages__"],
 )
 
 vanilla_pack(
@@ -50,7 +69,7 @@ kt_vanilla_lib(
     dep = ":texture_lib",
     pack = ":vanilla_pack",
     resource_jars = [":vanilla_pack"],
-    visibility = ["//visibility:public"],
+    visibility = ["//touchcontroller:__subpackages__"],
 )
 
 atlas_pack(

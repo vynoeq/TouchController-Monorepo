@@ -2,8 +2,8 @@ load("@rules_java//java:defs.bzl", "java_binary")
 
 java_binary(
     name = "fastmerger",
-    main_class = "top.fifthlight.fastmerger.Main",
     srcs = glob(["*.java"]),
+    main_class = "top.fifthlight.fastmerger.Main",
     deps = [
         "//fastmerger/pkgdeps",
         "@maven//:org_ow2_asm_asm",

@@ -5,7 +5,6 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     merge_deps = [
         "//combine/core/animation",
-        "//combine/core/data",
         "//combine/core/input/focus",
         "//combine/core/input/key",
         "//combine/core/input/pointer",
@@ -19,10 +18,7 @@ kt_merge_library(
     visibility = ["//visibility:public"],
     deps = [
         "//:compose",
-        "//:kotlin_serialization",
-        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
-        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
         "@maven//:org_mini2Dx_universal_tween_engine",
     ],
 )

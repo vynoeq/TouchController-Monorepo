@@ -1,5 +1,6 @@
 package top.fifthlight.touchcontroller.common.input
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -8,27 +9,23 @@ import kotlinx.coroutines.launch
 import top.fifthlight.combine.input.text.InputHandler
 import top.fifthlight.combine.input.text.TextInputState
 import top.fifthlight.data.IntRect
-import top.fifthlight.touchcontroller.common.event.RenderEvents
-import top.fifthlight.touchcontroller.common.gal.GameDispatcher
-import top.fifthlight.touchcontroller.common.gal.WindowHandle
+import top.fifthlight.touchcontroller.common.gal.GameDispatcherProviderFactory
+import top.fifthlight.touchcontroller.common.gal.window.WindowHandle
+import top.fifthlight.touchcontroller.common.gal.window.WindowHandleFactory
+import top.fifthlight.touchcontroller.common.platform.provider.PlatformProvider
 import top.fifthlight.touchcontroller.proxy.client.PlatformCapability
-import top.fifthlight.touchcontroller.proxy.message.FloatRect
-import top.fifthlight.touchcontroller.proxy.message.InputAreaMessage
-import top.fifthlight.touchcontroller.proxy.message.InputCursorMessage
-import top.fifthlight.touchcontroller.proxy.message.InputStatusMessage
-import top.fifthlight.touchcontroller.proxy.message.KeyboardShowMessage
+import top.fifthlight.touchcontroller.proxy.message.*
 import top.fifthlight.touchcontroller.proxy.message.input.TextInputState as ProxyTextInputState
 import top.fifthlight.touchcontroller.proxy.message.input.TextRange as ProxyTextRange
 
 object InputManager : InputHandler {
-    private val platformProvider: PlatformProvider by inject()
     private var inputState: TextInputState? = null
     private var cursorRect: IntRect? = null
     private var areaRect: IntRect? = null
-    private val windowHandle: WindowHandle by inject()
+    private val windowHandle: WindowHandle = WindowHandleFactory.of()
     private val _events = MutableSharedFlow<TextInputState>()
     override val events = _events.asSharedFlow()
-    private val gameDispatcher: GameDispatcher by inject()
+    private val gameDispatcher: CoroutineDispatcher = GameDispatcherProviderFactory.of().gameDispatcher
     private val scope = CoroutineScope(SupervisorJob() + gameDispatcher)
 
     fun updateNativeState(textInputState: TextInputState) {
@@ -46,7 +43,7 @@ object InputManager : InputHandler {
         this.cursorRect = cursorRect
         this.areaRect = areaRect
         if (PlatformCapability.TEXT_STATUS in RenderEvents.platformCapabilities) {
-            platformProvider.platform?.let { platform ->
+            PlatformProvider.platform?.let { platform ->
                 if (inputStateUpdated) {
                     platform.sendEvent(InputStatusMessage(textInputState?.let {
                         ProxyTextInputState(
@@ -96,7 +93,7 @@ object InputManager : InputHandler {
     }
 
     override fun tryShowKeyboard() {
-        platformProvider.platform?.let { platform ->
+        PlatformProvider.platform?.let { platform ->
             if (PlatformCapability.KEYBOARD_SHOW in RenderEvents.platformCapabilities) {
                 platform.sendEvent(KeyboardShowMessage(true))
             }
@@ -104,7 +101,7 @@ object InputManager : InputHandler {
     }
 
     override fun tryHideKeyboard() {
-        platformProvider.platform?.let { platform ->
+        PlatformProvider.platform?.let { platform ->
             if (PlatformCapability.KEYBOARD_SHOW in RenderEvents.platformCapabilities) {
                 platform.sendEvent(KeyboardShowMessage(false))
             }

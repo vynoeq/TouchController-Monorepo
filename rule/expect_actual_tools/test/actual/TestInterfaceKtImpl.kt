@@ -1,4 +1,4 @@
-package top.fifthlight.mergetools.test;
+package top.fifthlight.mergetools.test
 
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl

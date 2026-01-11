@@ -1,0 +1,22 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "texture_set_generator_lib",
+    srcs = ["TextureSetGenerator.kt"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:kotlin_serialization",
+        "@maven//:com_github_ajalt_clikt_clikt_core_jvm",
+        "@maven//:com_github_ajalt_clikt_clikt_jvm",
+        "@maven//:com_squareup_kotlinpoet_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
+)
+
+java_binary(
+    name = "texture_set_generator",
+    main_class = "top.fifthlight.touchcontroller.resources.generator.TextureSetGeneratorKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = [":texture_set_generator_lib"],
+)

@@ -1,4 +1,4 @@
-load("@rules_java//java:defs.bzl", "java_toolchain", "java_plugin")
+load("@rules_java//java:defs.bzl", "java_library", "java_plugin")
 load("@rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_compiler_plugin")
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
@@ -51,15 +51,15 @@ kt_jvm_library(
 
 java_plugin(
     name = "picocli_plugin",
-    deps = ["@maven//:info_picocli_picocli_codegen"],
     processor_class = "picocli.codegen.aot.graalvm.processor.NativeImageConfigGeneratorProcessor",
+    deps = ["@maven//:info_picocli_picocli_codegen"],
 )
 
 java_library(
     name = "picocli",
     exported_plugins = [":picocli_plugin"],
-    exports = ["@maven//:info_picocli_picocli"],
     visibility = ["//visibility:public"],
+    exports = ["@maven//:info_picocli_picocli"],
 )
 
 define_kt_toolchain(

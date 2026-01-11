@@ -5,14 +5,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
-import top.fifthlight.touchcontroller.common.config.ConfigDirectoryProvider
+import top.fifthlight.touchcontroller.common.gal.config.ConfigDirectoryProvider
+import top.fifthlight.touchcontroller.common.gal.config.ConfigDirectoryProviderFactory
+import top.fifthlight.touchcontroller.common.serialization.jsonFormat
 import java.io.IOException
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
@@ -37,18 +35,17 @@ fun PresetsContainer(
 }
 
 data class PresetsContainer(
-    val orderedEntries: PersistentList<Pair<Uuid, LayoutPreset>> = persistentListOf()
-): PersistentMap<Uuid, LayoutPreset> by orderedEntries.toMap().toPersistentMap() {
+    val orderedEntries: PersistentList<Pair<Uuid, LayoutPreset>> = persistentListOf(),
+) : PersistentMap<Uuid, LayoutPreset> by orderedEntries.toMap().toPersistentMap() {
     val order: ImmutableList<Uuid>
         get() = orderedEntries.map { it.first }.toPersistentList()
 }
 
-class PresetManager : KoinComponent {
+object PresetManager {
     private val logger = LoggerFactory.getLogger(PresetManager::class.java)
-    private val configDirectoryProvider: ConfigDirectoryProvider = get()
-    val presetDir: Path = configDirectoryProvider.getConfigDirectory().resolve("preset")
+    private val configDirectoryProvider: ConfigDirectoryProvider = ConfigDirectoryProviderFactory.of()
+    val presetDir: Path = configDirectoryProvider.configDirectory.resolve("preset")
     private val orderFile = presetDir.resolve("order.json")
-    private val json: Json by inject()
     private val _presets = MutableStateFlow(PresetsContainer())
     val presets = _presets.asStateFlow()
 
@@ -57,14 +54,14 @@ class PresetManager : KoinComponent {
         try {
             logger.info("Reading TouchController preset file")
             val order = runCatching<PresetManager, List<Uuid>> {
-                orderFile.inputStream().use(json::decodeFromStream)
+                orderFile.inputStream().use(jsonFormat::decodeFromStream)
             }.getOrNull()?.toPersistentList() ?: persistentListOf()
             val presets = buildMap {
                 for (entry in presetDir.listDirectoryEntries("*.json")) {
                     try {
                         val uuidStr = entry.fileName.toString().lowercase().removeSuffix(".json")
                         val uuid = Uuid.parse(uuidStr)
-                        val preset: LayoutPreset = entry.inputStream().use(json::decodeFromStream)
+                        val preset: LayoutPreset = entry.inputStream().use(jsonFormat::decodeFromStream)
                         put(uuid, preset)
                     } catch (_: Exception) {
                         continue
@@ -85,7 +82,7 @@ class PresetManager : KoinComponent {
     @OptIn(ExperimentalSerializationApi::class)
     private fun saveOrder(order: ImmutableList<Uuid>) {
         logger.info("Saving TouchController preset order file")
-        orderFile.outputStream().use { json.encodeToStream<List<Uuid>>(order, it) }
+        orderFile.outputStream().use { jsonFormat.encodeToStream<List<Uuid>>(order, it) }
     }
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -99,7 +96,7 @@ class PresetManager : KoinComponent {
                 } else {
                     arrayOf(StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)
                 }
-            ).use { json.encodeToStream(preset, it) }
+            ).use { jsonFormat.encodeToStream(preset, it) }
             var addedPresets = false
             val newPresets = _presets.updateAndGet {
                 if (it.containsKey(uuid)) {

@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import org.jetbrains.annotations.NotNull;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @Mixin(RenderPipeline.Builder.class)
 public abstract class RenderPipelineBuilderMixin implements RenderPipelineBuilderExtInternal {
     @Shadow
@@ -35,34 +37,34 @@ public abstract class RenderPipelineBuilderMixin implements RenderPipelineBuilde
     @SuppressWarnings("NotNullFieldNotInitialized")
     @Unique
     @NotNull
-    Set<String> storageBuffers;
+    Set<String> blazerod$storageBuffers;
 
     @Override
     @NotNull
     public Set<String> blazerod$getStorageBuffers() {
-        return storageBuffers;
+        return blazerod$storageBuffers;
     }
 
     @Override
     public void blazerod$withStorageBuffer(@NotNull String name) {
-        storageBuffers.add(name);
+        blazerod$storageBuffers.add(name);
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
-        storageBuffers = new HashSet<>();
+        blazerod$storageBuffers = new HashSet<>();
     }
 
     @Inject(method = "withSnippet", at = @At("HEAD"))
     void withSnippet(@NotNull RenderPipeline.Snippet snippet, CallbackInfo ci) {
         var snippetInternal = ((RenderPipelineSnippetExtInternal) (Object) snippet);
-        this.storageBuffers.addAll(snippetInternal.blazerod$getStorageBuffers());
+        this.blazerod$storageBuffers.addAll(snippetInternal.blazerod$getStorageBuffers());
     }
 
     @ModifyReturnValue(method = "buildSnippet", at = @At("RETURN"))
     public RenderPipeline.Snippet buildSnippet(@NotNull RenderPipeline.Snippet original) {
         var snippetExt = ((RenderPipelineSnippetExtInternal) (Object) original);
-        snippetExt.blazerod$setStorageBuffers(storageBuffers);
+        snippetExt.blazerod$setStorageBuffers(blazerod$storageBuffers);
         return original;
     }
 
@@ -76,7 +78,7 @@ public abstract class RenderPipelineBuilderMixin implements RenderPipelineBuilde
             slice = {
                     @Slice(
                             id = "builder",
-                            from = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;vertexFormatMode:Ljava/util/Optional;"),
+                            from = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;vertexFormatMode:Ljava/util/Optional;", opcode = Opcodes.GETFIELD),
                             to = @At(value = "NEW", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline;")
                     )
             }
@@ -93,8 +95,8 @@ public abstract class RenderPipelineBuilderMixin implements RenderPipelineBuilde
                     target = "Ljava/util/Optional;get()Ljava/lang/Object;"
             ),
             slice = @Slice(
-                    from = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;vertexFormat:Ljava/util/Optional;", ordinal = 1),
-                    to = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;depthBiasScaleFactor:F")
+                    from = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;vertexFormat:Ljava/util/Optional;", ordinal = 1, opcode = Opcodes.GETFIELD),
+                    to = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;depthBiasScaleFactor:F", opcode = Opcodes.GETFIELD)
             )
     )
     public <T> T getVertexFormat(Optional<T> instance) {
@@ -104,7 +106,7 @@ public abstract class RenderPipelineBuilderMixin implements RenderPipelineBuilde
     @ModifyReturnValue(method = "build", at = @At("RETURN"))
     public RenderPipeline afterBuilt(RenderPipeline original) {
         var pipelineExt = ((RenderPipelineExtInternal) original);
-        pipelineExt.blazerod$setStorageBuffers(storageBuffers);
+        pipelineExt.blazerod$setStorageBuffers(blazerod$storageBuffers);
         return original;
     }
 }

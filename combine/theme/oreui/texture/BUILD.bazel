@@ -10,8 +10,8 @@ texture(
     name = "widget",
     srcs = glob(
         include = ["widget/*/*.png"],
-        exclude = ["**/*.9.png"],
         allow_empty = True,
+        exclude = ["**/*.9.png"],
     ),
 )
 

@@ -18,7 +18,7 @@ public class ImportMappingOperation implements Operation {
     @Override
     public MemoryMappingTree run(MemoryMappingTree tree, MergeContext context) throws IOException {
         var input = context.inputEntries().get(name);
-        if (name == null) {
+        if (input == null) {
             throw new IllegalStateException("No input entry: " + name + ", available: " + context.inputEntries().keySet());
         }
         MappingVisitor visitor = tree;

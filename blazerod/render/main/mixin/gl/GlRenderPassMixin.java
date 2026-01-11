@@ -2,8 +2,8 @@ package top.fifthlight.blazerod.mixin.gl;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.opengl.GlCommandEncoder;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.opengl.GlRenderPass;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -28,50 +28,50 @@ public abstract class GlRenderPassMixin implements RenderPassExtInternal {
     private GlCommandEncoder encoder;
 
     @Unique
-    private HashMap<String, GpuBufferSlice> storageBuffers;
+    private HashMap<String, GpuBufferSlice> blazerod$storageBuffers;
 
     @Unique
-    private VertexFormat vertexFormat;
+    private VertexFormat blazerod$vertexFormat;
 
     @Unique
-    private VertexFormat.Mode vertexFormatMode;
+    private VertexFormat.Mode blazerod$vertexFormatMode;
 
     @Override
     public void blazerod$setVertexFormat(VertexFormat vertexFormat) {
-        this.vertexFormat = vertexFormat;
+        this.blazerod$vertexFormat = vertexFormat;
     }
 
     @Override
     @Nullable
     public VertexFormat blazerod$getVertexFormat() {
-        return vertexFormat;
+        return blazerod$vertexFormat;
     }
 
     @Override
     public void blazerod$setVertexFormatMode(VertexFormat.Mode vertexFormatMode) {
-        this.vertexFormatMode = vertexFormatMode;
+        this.blazerod$vertexFormatMode = vertexFormatMode;
     }
 
     @Override
     @Nullable
     public VertexFormat.Mode blazerod$getVertexFormatMode() {
-        return vertexFormatMode;
+        return blazerod$vertexFormatMode;
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void afterInit(GlCommandEncoder resourceManager, boolean hasDepth, CallbackInfo ci) {
-        storageBuffers = new HashMap<>();
+        blazerod$storageBuffers = new HashMap<>();
     }
 
     @Override
     public void blazerod$setStorageBuffer(@NotNull String name, GpuBufferSlice buffer) {
-        storageBuffers.put(name, buffer);
+        blazerod$storageBuffers.put(name, buffer);
     }
 
     @NotNull
     @Override
     public Map<String, GpuBufferSlice> blazerod$getStorageBuffers() {
-        return storageBuffers;
+        return blazerod$storageBuffers;
     }
 
     @Override

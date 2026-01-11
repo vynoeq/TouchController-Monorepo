@@ -1,11 +1,10 @@
 package top.fifthlight.touchcontroller.common.model
 
-import org.koin.core.component.KoinComponent
 import top.fifthlight.data.Offset
 import top.fifthlight.touchcontroller.common.state.Pointer
 import top.fifthlight.touchcontroller.common.state.PointerState
 
-class TouchStateModel : KoinComponent {
+class TouchStateModel {
     val pointers = HashMap<Int, Pointer>()
 
     fun addPointer(index: Int, position: Offset) {

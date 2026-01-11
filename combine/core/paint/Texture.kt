@@ -1,7 +1,9 @@
 package top.fifthlight.combine.paint
 
 import androidx.compose.runtime.Immutable
-import top.fifthlight.data.*
+import top.fifthlight.data.IntPadding
+import top.fifthlight.data.IntRect
+import top.fifthlight.data.Rect
 import top.fifthlight.mergetools.api.ExpectFactory
 
 @Immutable

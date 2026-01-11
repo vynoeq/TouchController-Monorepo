@@ -2,9 +2,9 @@ package top.fifthlight.blazerod.animation.context
 
 import net.minecraft.client.CameraType
 import net.minecraft.core.component.DataComponents
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
-import net.minecraft.util.Mth
 import top.fifthlight.blazerod.model.animation.AnimationContext
 import top.fifthlight.blazerod.model.animation.AnimationContext.Property.*
 import top.fifthlight.blazerod.model.animation.AnimationContext.RenderingTargetType
@@ -85,9 +85,9 @@ open class PlayerEntityAnimationContext(
             }
         }
 
-        PlayerIsSpectator -> booleanBuffer.apply { value = entity.isSpectator() }
+        PlayerIsSpectator -> booleanBuffer.apply { value = entity.isSpectator }
 
-        PlayerIsSneaking -> booleanBuffer.apply { value = entity.isShiftKeyDown() }
+        PlayerIsSneaking -> booleanBuffer.apply { value = entity.isShiftKeyDown }
 
         PlayerIsSprinting -> booleanBuffer.apply { value = entity.isSprinting }
 

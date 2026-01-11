@@ -16,9 +16,9 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import top.fifthlight.blazerod.model.*
 import top.fifthlight.blazerod.model.animation.AnimationInterpolation
+import top.fifthlight.blazerod.model.gltf.format.extension.VrmSpringBoneExtension
 import top.fifthlight.blazerod.model.gltf.format.extension.VrmV0Extension
 import top.fifthlight.blazerod.model.gltf.format.extension.VrmV1Extension
-import top.fifthlight.blazerod.model.gltf.format.extension.VrmSpringBoneExtension
 import top.fifthlight.blazerod.model.Texture as CommonTexture
 
 private abstract class IntEnumSerializer<T>(

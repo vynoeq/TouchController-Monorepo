@@ -1,4 +1,4 @@
-load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+"""Rules for remapping access wideners."""
 
 def _remap_access_widener_impl(ctx):
     output_file = ctx.actions.declare_file("%s.accesswidener" % ctx.label.name)

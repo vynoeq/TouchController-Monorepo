@@ -1,5 +1,6 @@
 package top.fifthlight.armorstand.state
 
+// TODO: implement for NeoForge
 object NetworkModelSyncer {
     /*private val packetSender = MutableStateFlow<PacketSender?>(null)*/
 

@@ -5,6 +5,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import top.fifthlight.combine.input.MutableInteractionSource
 import top.fifthlight.combine.input.focus.LocalFocusManager
+import top.fifthlight.combine.input.pointer.PointerIcon
 import top.fifthlight.combine.layout.Alignment
 import top.fifthlight.combine.layout.Arrangement
 import top.fifthlight.combine.modifier.Modifier
@@ -38,7 +39,7 @@ private fun HsvPicker(
     val focusManager = LocalFocusManager.current
     Canvas(
         modifier = Modifier
-            .draggable { _, absolute ->
+            .draggable(pointerIcon = PointerIcon.ResizeAll) { _, absolute ->
                 focusManager.requestBlur()
                 val s = (absolute.x / size.width).coerceIn(0f..1f)
                 val v = 1 - (absolute.y / size.height).coerceIn(0f..1f)

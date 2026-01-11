@@ -12,7 +12,7 @@ import top.fifthlight.blazerod.util.objectpool.ObjectPool
  */
 class CowBuffer<C : CowBuffer.Content<C>> private constructor() : AbstractRefCount() {
     companion object {
-        private val POOL = ObjectPool<CowBuffer<*>>(
+        private val POOL = ObjectPool(
             identifier = "cow_buffer",
             create = ::CowBuffer,
             onReleased = CowBuffer<*>::resetState,

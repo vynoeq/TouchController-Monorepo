@@ -1,3 +1,5 @@
+"""Rules for Combine texture libraries."""
+
 load("//rule:merge_library.bzl", "kt_merge_library")
 load(":texture.bzl", "TextureLibraryInfo")
 

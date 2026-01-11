@@ -1,4 +1,4 @@
-"Utils for byte handling"
+"""Utilities for byte handling and conversions."""
 
 def _hex_to_bytes(hex_str):
     if len(hex_str) % 2 != 0:
@@ -36,7 +36,14 @@ def _bytes_to_base64(bytes):
     return "".join(result)
 
 def hex_sha1_to_sri(hex_str):
-    "Convert a SHA-1 hex string to SRI"
+    """Convert a SHA-1 hex string to Subresource Integrity (SRI) format.
+
+    Args:
+        hex_str: A 40-character hexadecimal string representing the SHA-1 hash.
+
+    Returns:
+        The SRI-formatted string (e.g., "sha1-<base64>").
+    """
     bytes = _hex_to_bytes(hex_str)
     if len(bytes) != 20:
         fail("SHA1 must be 20 bytes (40 hex chars)")
@@ -44,7 +51,14 @@ def hex_sha1_to_sri(hex_str):
     return "sha1-" + base64_str
 
 def hex_sha512_to_sri(hex_str):
-    "Convert a SHA-512 hex string to SRI"
+    """Convert a SHA-512 hex string to Subresource Integrity (SRI) format.
+
+    Args:
+        hex_str: A 128-character hexadecimal string representing the SHA-512 hash.
+
+    Returns:
+        The SRI-formatted string (e.g., "sha512-<base64>").
+    """
     bytes = _hex_to_bytes(hex_str)
     if len(bytes) != 64:
         fail("SHA512 must be 64 bytes (128 hex chars)")

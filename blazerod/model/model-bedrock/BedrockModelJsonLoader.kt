@@ -1,6 +1,5 @@
 package top.fifthlight.blazerod.model.bedrock
 
-import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import it.unimi.dsi.fastutil.bytes.ByteArrayList
@@ -21,9 +20,7 @@ import top.fifthlight.blazerod.model.loader.util.toRadian
 import java.io.StringReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.file.Path
 import java.util.*
-import kotlin.io.path.bufferedReader
 import kotlin.math.floor
 
 internal class BedrockModelJsonLoader(
@@ -1073,16 +1070,14 @@ internal class BedrockModelJsonLoader(
                     var startDelay: MolangValue = MolangValue.ZERO
                     var loopDelay: MolangValue = MolangValue.ZERO
                     var animTimeUpdate: MolangValue? = null
-                    var blendWeight: MolangValue = MolangValue.ZERO
-                    var overridePreviousAnimation: Boolean = false
                     obj { key ->
                         when (key) {
                             "animation_length" -> animationLength = nextDouble().toFloat()
-                            "override_previous_animation" -> overridePreviousAnimation = nextBoolean()
+                            "override_previous_animation" -> nextBoolean() // 读取但不使用
                             "start_delay" -> startDelay = nextMolangValue()
                             "loop_delay" -> loopDelay = nextMolangValue()
                             "anim_time_update" -> animTimeUpdate = nextMolangValue()
-                            "blend_weight" -> blendWeight = nextMolangValue()
+                            "blend_weight" -> nextMolangValue() // 读取但不使用
 
                             "loop" -> loop = when (val token = peek()) {
                                 JsonToken.STRING -> when (val mode = nextString()) {
