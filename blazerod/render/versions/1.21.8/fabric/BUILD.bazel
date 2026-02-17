@@ -44,10 +44,14 @@ kt_merge_library(
         "//blazerod/render/versions/1.21.8/runtime/uniform",
         "//blazerod/render/versions/1.21.8/util/dispatchers",
     ],
+    merge_runtime_deps = [
+        "//blazerod/render/versions/1.21.8",
+    ],
     resource_jars = [
         "//blazerod:icon",
         ":fabric_mod_json",
         "//blazerod/render/versions/1.21.8/game:access_widener",
+        "//blazerod/render/versions/1.21.8/resources",
     ],
     visibility = ["//blazerod/render:__subpackages__"],
     deps = [

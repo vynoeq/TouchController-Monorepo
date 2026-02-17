@@ -1,0 +1,8 @@
+load("//rule:merge_library.bzl", "java_merge_library")
+
+java_merge_library(
+    name = "resources",
+    resource_strip_prefix = "blazerod/render/versions/1.21.8/resources",
+    resources = glob(["**"]),
+    visibility = ["//blazerod/render/versions/1.21.8:__subpackages__"],
+)

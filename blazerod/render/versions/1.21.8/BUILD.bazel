@@ -3,7 +3,7 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "1.21.8",
     srcs = ["BlazeRodMain.kt"],
-    merge_only_deps = [
+    merge_runtime_deps = [
         "//blazerod/render/versions/1.21.8/animation",
         "//blazerod/render/versions/1.21.8/animation/context",
         "//blazerod/render/versions/1.21.8/api/animation",
@@ -11,7 +11,6 @@ kt_merge_library(
         "//blazerod/render/versions/1.21.8/api/resource",
         "//blazerod/render/versions/1.21.8/expect",
         "//blazerod/render/versions/1.21.8/extension",
-        "//blazerod/render/versions/1.21.8/mixin",
         "//blazerod/render/versions/1.21.8/render",
         "//blazerod/render/versions/1.21.8/runtime",
         "//blazerod/render/versions/1.21.8/runtime/data",
@@ -26,7 +25,5 @@ kt_merge_library(
         "//blazerod/render/versions/1.21.8/util/math",
         "//blazerod/render/versions/1.21.8/util/uniform",
     ],
-    resource_strip_prefix = "blazerod/render/versions/1.21.8/resources",
-    resources = glob(["resources/**"]),
     visibility = ["//blazerod/render:__subpackages__"],
 )
