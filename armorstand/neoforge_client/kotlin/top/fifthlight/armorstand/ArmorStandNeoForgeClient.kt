@@ -31,7 +31,7 @@ import top.fifthlight.armorstand.ui.screen.ConfigScreen
 import top.fifthlight.armorstand.ui.screen.ModelSwitchScreen
 import top.fifthlight.armorstand.util.BlockableEventLoopDispatcher
 import top.fifthlight.armorstand.util.RendererManager
-import top.fifthlight.blazerod.api.event.RenderEvents
+import top.fifthlight.blazerod.render.api.event.RenderEvents
 import top.fifthlight.blazerod.model.formats.ModelFileLoaders
 import javax.swing.SwingUtilities
 
@@ -168,7 +168,10 @@ object ArmorStandNeoForgeClient : ArmorStandNeoForge(), ArmorStandClient {
         event.registrar("armorstand")
             .versioned(ModInfo.MOD_VERSION)
             .optional()
-            .playToClient(PlayerModelUpdateS2CPayload.ID, PlayerModelUpdateS2CPayload.STREAM_CODEC) { payload, context ->
+            .playToClient(
+                PlayerModelUpdateS2CPayload.ID,
+                PlayerModelUpdateS2CPayload.STREAM_CODEC
+            ) { payload, context ->
                 scope.launch {
                     ModelHashManager.putModelHash(payload.uuid, payload.modelHash)
                 }

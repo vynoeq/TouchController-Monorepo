@@ -1,0 +1,17 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "render",
+    srcs = glob(["**/*.kt"]),
+    merge_deps = [
+        "//blazerod/render/common/util/refcount",
+        "//blazerod/render/versions/1.21.8/expect",
+        "//blazerod/render/versions/1.21.8/extension",
+        "//blazerod/render/versions/1.21.8/systems",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+        "//game/1.21.8:game_client_libraries",
+    ],
+)

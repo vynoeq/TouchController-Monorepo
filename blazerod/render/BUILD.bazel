@@ -4,13 +4,13 @@ load("//rule:remap_jar.bzl", "remap_jar")
 
 alias(
     name = "render_fabric_unmapped",
-    actual = "//blazerod/render/fabric:fabric_unmapped",
+    actual = "//blazerod/render/versions/1.21.8/fabric:fabric_unmapped",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "render_fabric_unmapped_merged",
-    actual = "//blazerod/render/fabric:fabric_unmapped_merged",
+    actual = "//blazerod/render/versions/1.21.8/fabric:fabric_unmapped_merged",
     visibility = ["//visibility:public"],
 )
 
@@ -29,7 +29,7 @@ maven_publish(
     name = "render_fabric.publish",
     src = ":render_fabric_merged",
     artifacts = {
-        "sources": "//blazerod/render/fabric:fabric_unmapped_merged_sources",
+        "sources": "//blazerod/render/versions/1.21.8/fabric:fabric_unmapped_merged_sources",
     },
     coordinates = "top.fifthlight.blazerod:render-fabric:%s" % blazerod_version,
     deps = [
@@ -42,26 +42,26 @@ maven_publish(
 
 alias(
     name = "render_main",
-    actual = "//blazerod/render/main",
+    actual = "//blazerod/render/versions/1.21.8/runtime",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "render_neoforge",
-    actual = "//blazerod/render/neoforge",
+    actual = "//blazerod/render/versions/1.21.8/neoforge:neoforge",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "render_neoforge_merged",
-    actual = "//blazerod/render/neoforge:neoforge_merged",
+    actual = "//blazerod/render/versions/1.21.8/neoforge:neoforge_merged",
     visibility = ["//visibility:public"],
 )
 
 test_suite(
     name = "test",
     tests = [
-        "//blazerod/render/main/layout/test",
-        "//blazerod/render/main/runtime/test",
+        "//blazerod/render/common/layout/test",
+        "//blazerod/render/versions/1.21.8/runtime/test",
     ],
 )

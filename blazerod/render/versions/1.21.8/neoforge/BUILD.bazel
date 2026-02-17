@@ -1,0 +1,61 @@
+load("//blazerod:properties.bzl", "blazerod_version", "home_page", "issue_tracker", "license", "sources_page")
+load("//rule:merge_library.bzl", "kt_merge_library", "merge_library_jar")
+load("//rule/neoforge:mod_toml_jar.bzl", "neoforge_mod_toml_jar")
+
+neoforge_mod_toml_jar(
+    name = "neoforge_mod_toml",
+    src = "resources/META-INF/neoforge.mods.toml",
+    resource_strip_prefix = "blazerod/render/versions/1.21.8/neoforge",
+    substitutions = {
+        "${version}": blazerod_version,
+        "${game_version}": "1.21.8",
+        "${neoforge_version}": "21.8.36",
+        "${license}": license,
+        "${home_page}": home_page,
+        "${sources_page}": sources_page,
+        "${issue_tracker}": issue_tracker,
+    },
+)
+
+kt_merge_library(
+    name = "neoforge",
+    srcs = glob(["**/*.kt"]),
+    actual = True,
+    merge_deps = [
+        "//blazerod/render/api/event",
+        "//blazerod/render/common",
+        "//blazerod/render/common/debug",
+        "//blazerod/render/common/layout",
+        "//blazerod/render/common/util/dispatchers",
+        "//blazerod/render/common/util/objectpool",
+        "//blazerod/render/versions/1.21.8",
+        "//blazerod/render/versions/1.21.8/expect",
+        "//blazerod/render/versions/1.21.8/runtime",
+        "//blazerod/render/versions/1.21.8/runtime/uniform",
+        "//blazerod/render/versions/1.21.8/util/dispatchers",
+    ],
+    resource_jars = [
+        "//blazerod:icon",
+        ":neoforge_mod_toml",
+        "//blazerod/render/versions/1.21.8/game:access_transformer",
+    ],
+    resource_strip_prefix = "blazerod/render/neoforge/resources",
+    resources = glob(
+        include = ["resources/**"],
+        allow_empty = True,
+        exclude = ["resources/META-INF/neoforge.mods.toml"],
+    ),
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//game/1.21.8:game_client_neoforge",
+        "@iris_neoforge_1_21_6//:primary",
+        "@neoforge_1_21_8//:neoforge_deps",
+        "@sodium_neoforge_1_21_6//:primary",
+    ],
+)
+
+merge_library_jar(
+    name = "neoforge_merged",
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [":neoforge"],
+)

@@ -1,0 +1,24 @@
+load("//rule:merge_library.bzl", "java_merge_library")
+
+java_merge_library(
+    name = "mixin",
+    srcs = glob(["**/*.java"]),
+    merge_deps = [
+        "//blazerod/render/api/event",
+        "//blazerod/render/versions/1.21.8/extension",
+        "//blazerod/render/versions/1.21.8/render",
+        "//blazerod/render/versions/1.21.8/systems",
+        "//blazerod/render/versions/1.21.8/util/glsl",
+    ],
+    resource_strip_prefix = "blazerod/render/versions/1.21.8/mixin/resources",
+    resources = glob(["resources/**"]),
+    visibility = ["//blazerod/render/versions/1.21.8:__subpackages__"],
+    deps = [
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+        "//game/1.21.8:game_client_libraries",
+        "@maven//:org_jetbrains_annotations",
+        "@maven_fabric_1_21_8//:io_github_llamalad7_mixinextras_fabric",
+        "@maven_fabric_1_21_8//:net_fabricmc_sponge_mixin",
+        "@maven_fabric_1_21_8//:org_ow2_asm_asm",
+    ],
+)

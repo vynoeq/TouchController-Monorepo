@@ -1,0 +1,7 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "math",
+    srcs = ["MathUtil.kt"],
+    visibility = ["//blazerod/render:__subpackages__"],
+)

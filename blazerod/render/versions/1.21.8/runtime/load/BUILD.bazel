@@ -1,0 +1,25 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "load",
+    srcs = glob(["*.kt"]),
+    actual = True,
+    merge_deps = [
+        "//blazerod/render/api/loader",
+        "//blazerod/render/api/refcount",
+        "//blazerod/render/api/resource",
+        "//blazerod/render/common/util/dispatchers",
+        "//blazerod/render/versions/1.21.8/extension",
+        "//blazerod/render/versions/1.21.8/render",
+        "//blazerod/render/versions/1.21.8/runtime",
+        "//blazerod/render/versions/1.21.8/util/blaze3d",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//blazerod/model/model-base",
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+        "//game/1.21.8:game_client_libraries",
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

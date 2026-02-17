@@ -1,0 +1,10 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "glsl",
+    srcs = ["GlslExtensionProcessor.kt"],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+    ],
+)

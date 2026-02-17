@@ -1,4 +1,4 @@
-package top.fifthlight.blazerod.api.resource
+package top.fifthlight.blazerod.render.api.resource
 
 import org.joml.Matrix4f
 import org.joml.Quaternionf

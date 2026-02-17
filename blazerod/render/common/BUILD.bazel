@@ -1,0 +1,27 @@
+load("//rule:merge_library.bzl", "kt_merge_library", "merge_library_group")
+
+kt_merge_library(
+    name = "common",
+    srcs = ["BlazeRod.kt"],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)
+
+merge_library_group(
+    name = "common_group",
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//blazerod/render/common",
+        "//blazerod/render/common/debug",
+        "//blazerod/render/common/layout",
+        "//blazerod/render/common/util/bitmap",
+        "//blazerod/render/common/util/cowbuffer",
+        "//blazerod/render/common/util/dispatchers",
+        "//blazerod/render/common/util/iterator",
+        "//blazerod/render/common/util/math",
+        "//blazerod/render/common/util/objectpool",
+        "//blazerod/render/common/util/refcount",
+    ],
+)

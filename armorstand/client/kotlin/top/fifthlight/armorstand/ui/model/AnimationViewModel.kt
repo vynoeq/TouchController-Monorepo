@@ -13,13 +13,13 @@ import top.fifthlight.armorstand.manage.ModelManagerHolder
 import top.fifthlight.armorstand.state.ModelController
 import top.fifthlight.armorstand.state.ModelInstanceManager
 import top.fifthlight.armorstand.ui.state.AnimationScreenState
-import top.fifthlight.blazerod.api.animation.AnimationContextsFactory
-import top.fifthlight.blazerod.api.animation.AnimationItem
-import top.fifthlight.blazerod.api.animation.AnimationItemFactory
-import top.fifthlight.blazerod.api.animation.AnimationItemInstanceFactory
-import top.fifthlight.blazerod.api.resource.ModelInstance
 import top.fifthlight.blazerod.model.animation.SimpleAnimationState
 import top.fifthlight.blazerod.model.formats.ModelFileLoaders
+import top.fifthlight.blazerod.render.api.animation.AnimationItem
+import top.fifthlight.blazerod.render.api.animation.AnimationItemFactory
+import top.fifthlight.blazerod.render.api.animation.AnimationItemInstanceFactory
+import top.fifthlight.blazerod.render.api.resource.ModelInstance
+import top.fifthlight.blazerod.render.version_1_21_8.api.animation.AnimationContextsFactory
 import java.lang.ref.WeakReference
 
 class AnimationViewModel(scope: CoroutineScope) : ViewModel(scope) {

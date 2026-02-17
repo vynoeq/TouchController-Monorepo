@@ -17,9 +17,9 @@ def _kt_junit_test_impl(name, visibility, srcs, data, test_class, deps, runtime_
             "@maven//:org_junit_platform_junit_platform_suite_engine",
         ],
         deps = ([] if not deps else deps) + [
+            "@maven//:org_jetbrains_kotlin_kotlin_test",
             "@maven//:org_jetbrains_kotlin_kotlin_test_junit5",
             "@maven//:org_junit_jupiter_junit_jupiter_api",
-            "@maven//:org_junit_platform_junit_platform_suite_api",
         ],
         jvm_flags = jvm_flags,
     )
@@ -48,11 +48,9 @@ def _java_junit_test_impl(name, visibility, srcs, data, test_class, deps, runtim
         runtime_deps = ([] if not runtime_deps else runtime_deps) + [
             "@maven//:org_junit_jupiter_junit_jupiter_engine",
             "@maven//:org_junit_platform_junit_platform_console",
-            "@maven//:org_junit_platform_junit_platform_suite_engine",
         ],
         deps = ([] if not deps else deps) + [
             "@maven//:org_junit_jupiter_junit_jupiter_api",
-            "@maven//:org_junit_platform_junit_platform_suite_api",
         ],
         jvm_flags = jvm_flags,
     )

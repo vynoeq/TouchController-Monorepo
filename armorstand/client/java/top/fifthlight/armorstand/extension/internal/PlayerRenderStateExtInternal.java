@@ -1,7 +1,7 @@
 package top.fifthlight.armorstand.extension.internal;
 
 import org.jetbrains.annotations.Nullable;
-import top.fifthlight.blazerod.api.animation.AnimationItemPendingValues;
+import top.fifthlight.blazerod.render.api.animation.AnimationItemPendingValues;
 
 import java.util.UUID;
 

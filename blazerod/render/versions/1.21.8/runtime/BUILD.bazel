@@ -1,0 +1,27 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "runtime",
+    srcs = glob(["**/*.kt"]),
+    actual = True,
+    merge_deps = [
+        "//blazerod/render/api/refcount",
+        "//blazerod/render/api/resource",
+        "//blazerod/render/common",
+        "//blazerod/render/common/util/cowbuffer",
+        "//blazerod/render/common/util/iterator",
+        "//blazerod/render/common/util/objectpool",
+        "//blazerod/render/common/util/refcount",
+        "//blazerod/render/versions/1.21.8/api/resource",
+        "//blazerod/render/versions/1.21.8/extension",
+        "//blazerod/render/versions/1.21.8/render",
+        "//blazerod/render/versions/1.21.8/runtime/data",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//blazerod/model/model-base",
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+        "@maven//:it_unimi_dsi_fastutil",
+        "@maven//:org_joml_joml",
+    ],
+)

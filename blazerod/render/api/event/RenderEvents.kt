@@ -1,4 +1,4 @@
-package top.fifthlight.blazerod.api.event
+package top.fifthlight.blazerod.render.api.event
 
 object RenderEvents {
     @JvmField

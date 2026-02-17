@@ -11,8 +11,8 @@ import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import org.slf4j.LoggerFactory
 import top.fifthlight.armorstand.util.GameDirectoryGetter
-import top.fifthlight.blazerod.api.render.Renderer
-import top.fifthlight.blazerod.api.render.RendererTypeHolderFactory
+import top.fifthlight.blazerod.render.version_1_21_8.api.render.Renderer
+import top.fifthlight.blazerod.render.version_1_21_8.api.render.RendererTypeHolder
 import java.nio.file.InvalidPathException
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
@@ -44,19 +44,19 @@ data class GlobalConfig(
         @SerialName("vertex")
         VERTEX_SHADER_TRANSFORM(
             nameKey = "armorstand.renderer.vertex_shader_transform",
-            type = RendererTypeHolderFactory.of().vertexShaderTransform,
+            type = RendererTypeHolder.vertexShaderTransform,
         ),
 
         @SerialName("cpu")
         CPU_TRANSFORM(
             nameKey = "armorstand.renderer.cpu_transform",
-            type = RendererTypeHolderFactory.of().cpuTransform,
+            type = RendererTypeHolder.cpuTransform,
         ),
 
         @SerialName("compute")
         COMPUTE_SHADER_TRANSFORM(
             nameKey = "armorstand.renderer.compute_shader_transform",
-            type = RendererTypeHolderFactory.of().computeShaderTransform,
+            type = RendererTypeHolder.computeShaderTransform,
         ),
     }
 
