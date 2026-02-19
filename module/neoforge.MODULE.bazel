@@ -195,8 +195,9 @@ neoforge_versions = {
     },
     "26.1": {
         "java_target": 25,
-        "version": "26.1-snapshot-6",
+        "version": "26.1-snapshot-9",
         "mapping": False,
+        # TODO: Update to 26.1 snapshot 9
         "neoform_version": "26.1-snapshot-6-1",
         "neoform_sha256": "49f6a00758c38a6e16393f2407124887dd74a0b87963640969b4548ac8b14e95",
         "neoforge_version": "26.1.0.0-alpha.10+snapshot-6",

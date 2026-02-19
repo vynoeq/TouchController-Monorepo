@@ -34,6 +34,6 @@ kt_merge_library(
         "//combine/item/data",
         "//game/26.1:game_client",
         "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
-        "@minecraft//26.1-snapshot-6:client_libraries",
+        "@minecraft//26.1-snapshot-9:client_libraries",
     ],
 )

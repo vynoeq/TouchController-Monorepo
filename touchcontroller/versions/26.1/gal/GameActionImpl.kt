@@ -26,7 +26,7 @@ object GameActionImpl: GameAction {
     }
 
     override fun sendMessage(text: Text) {
-        client.gui.chat.addMessage(text.toMinecraft())
+        client.gui.chat.addClientSystemMessage(text.toMinecraft())
     }
 
     override fun nextPerspective() {
@@ -44,7 +44,7 @@ object GameActionImpl: GameAction {
             client.mainRenderTarget,
         ) { message ->
             this.client.execute {
-                this.client.gui.chat.addMessage(message)
+                this.client.gui.chat.addClientSystemMessage(message)
             }
         }
     }
@@ -60,7 +60,7 @@ object GameActionImpl: GameAction {
             client.gameDirectory,
         ).let { message ->
             this.client.execute {
-                this.client.gui.chat.addMessage(message)
+                this.client.gui.chat.addClientSystemMessage(message)
             }
         }
     }

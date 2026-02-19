@@ -6,6 +6,7 @@
         "defaultRequire": 1
     },
     "client": [
+        "CameraAccessor",
         "ChatComponentMixin",
         "ClientInputAccessor",
         "ControlsScreenMixin",
@@ -13,7 +14,6 @@
         "MinecraftMixin",
         "InputConstantsMixin",
         "DisableMouseDirectionMixin",
-        "GameRendererInvoker",
         "OptionsSubScreenAccessor",
         "InGameHudMixin",
         "KeyboardInputMixin",

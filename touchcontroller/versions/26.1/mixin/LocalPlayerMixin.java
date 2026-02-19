@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,12 +35,12 @@ public abstract class LocalPlayerMixin {
     )
     private static HitResult cameraRaycast(Entity instance, double maxDistance, float tickDelta, boolean includeFluids) {
         var gameRenderer = Minecraft.getInstance().gameRenderer;
-        var fov = ((GameRendererInvoker) gameRenderer).callGetFov(gameRenderer.getMainCamera(), tickDelta, true);
         var cameraPitch = Math.toRadians(instance.getViewXRot(tickDelta));
         var cameraYaw = Math.toRadians(instance.getViewYRot(tickDelta));
 
         var position = instance.getEyePosition(tickDelta);
-        var projectionMatrix = Minecraft.getInstance().gameRenderer.getProjectionMatrix(fov);
+        var projection = ((CameraAccessor) gameRenderer.getMainCamera()).getProjection();
+        var projectionMatrix = projection.getMatrix(new Matrix4f());
         var direction = CrosshairTargetHelper.getCrosshairDirection(projectionMatrix, cameraPitch, cameraYaw);
         CrosshairTargetHelper.INSTANCE.setLastCrosshairDirection(direction);
 
