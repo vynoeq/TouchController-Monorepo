@@ -68,6 +68,22 @@ class ModelInstanceImpl(
         lateinit var transformArray: FloatArray
             private set
 
+        // Adaptive throttling state
+        lateinit var previousTransforms: FloatArray
+            private set
+        lateinit var currentTransforms: FloatArray
+            private set
+        var physicsAccumulator: Float = 0f
+        var physicsStepTimeMs: Float = 0f
+        var currentPhysicsInterval: Float = MIN_INTERVAL
+
+        companion object {
+            const val BUDGET_HIGH_MS = 4.0f
+            const val BUDGET_LOW_MS = 1.0f
+            const val MIN_INTERVAL = 1f / 120f
+            const val MAX_INTERVAL = 1f / 15f
+        }
+
         fun initialize() {
             if (_world != null) {
                 return
@@ -79,9 +95,14 @@ class ModelInstanceImpl(
                     nodeWorldTransform.get(component.rigidBodyIndex * 64, initialTransform)
                 }
                 _world = PhysicsWorld(physicsScene, initialTransform)
-                transformArray = FloatArray(scene.rigidBodyComponents.size * 7)
-                // Initial pull to populate array
+                val arraySize = scene.rigidBodyComponents.size * 7
+                transformArray = FloatArray(arraySize)
+                previousTransforms = FloatArray(arraySize)
+                currentTransforms = FloatArray(arraySize)
+                // Initial pull to populate all arrays
                 _world!!.pullTransforms(transformArray)
+                transformArray.copyInto(previousTransforms)
+                transformArray.copyInto(currentTransforms)
             }
         }
 

@@ -1,6 +1,7 @@
 package top.fifthlight.blazerod.runtime
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.MultiBufferSource
 import org.joml.Matrix4f
 import org.joml.Matrix4fc
@@ -25,6 +26,7 @@ import top.fifthlight.blazerod.runtime.node.component.RigidBodyComponent
 import top.fifthlight.blazerod.runtime.node.forEach
 import top.fifthlight.blazerod.runtime.resource.RenderPhysicsJoint
 import top.fifthlight.blazerod.runtime.resource.RenderSkin
+import kotlin.math.sqrt
 import kotlin.time.measureTime
 
 class RenderSceneImpl(
@@ -41,6 +43,12 @@ class RenderSceneImpl(
         private const val PHYSICS_MAX_SUB_STEP_COUNT = 10
         private const val PHYSICS_FPS = 120f
         private const val PHYSICS_TIME_STEP = 1f / PHYSICS_FPS
+
+        // Distance LOD thresholds (in blocks, squared for comparison)
+        private const val DIST_CLOSE_SQ = 8f * 8f       // 0-8 blocks: full rate
+        private const val DIST_MEDIUM_SQ = 24f * 24f     // 8-24 blocks: half rate
+        private const val DIST_FAR_SQ = 48f * 48f        // 24-48 blocks: quarter rate
+        // >48 blocks: frozen (culled)
     }
 
     override val typeId: String
@@ -130,11 +138,62 @@ class RenderSceneImpl(
         }
     }
 
+    /**
+     * Computes a physics rate multiplier based on camera distance to the model.
+     * Returns 0.0 if the model should be culled (frozen), or a multiplier (0.25, 0.5, 1.0).
+     */
+    private fun computeDistanceMultiplier(instance: ModelInstanceImpl): Float {
+        val camera = Minecraft.getInstance().gameRenderer.mainCamera ?: return 1.0f
+        val cameraPos = camera.position ?: return 1.0f
+        val rootTransform = instance.modelData.worldTransforms[0]
+        val modelX = rootTransform.m30()
+        val modelY = rootTransform.m31()
+        val modelZ = rootTransform.m32()
+        val dx = cameraPos.x.toFloat() - modelX
+        val dy = cameraPos.y.toFloat() - modelY
+        val dz = cameraPos.z.toFloat() - modelZ
+        val distSq = dx * dx + dy * dy + dz * dz
+        return when {
+            distSq > DIST_FAR_SQ -> 0.0f      // >48 blocks: frozen
+            distSq > DIST_MEDIUM_SQ -> 0.25f   // 24-48 blocks: quarter rate
+            distSq > DIST_CLOSE_SQ -> 0.5f     // 8-24 blocks: half rate
+            else -> 1.0f                        // 0-8 blocks: full rate
+        }
+    }
+
+    /**
+     * Interpolates between previous and current transform arrays using nlerp for rotations.
+     * Each rigid body has 7 floats: [px, py, pz, qx, qy, qz, qw].
+     */
+    private fun interpolateTransforms(
+        prev: FloatArray, curr: FloatArray, dst: FloatArray,
+        count: Int, alpha: Float
+    ) {
+        for (i in 0 until count) {
+            val o = i * 7
+            // Position: linear interpolation
+            dst[o + 0] = prev[o + 0] + (curr[o + 0] - prev[o + 0]) * alpha
+            dst[o + 1] = prev[o + 1] + (curr[o + 1] - prev[o + 1]) * alpha
+            dst[o + 2] = prev[o + 2] + (curr[o + 2] - prev[o + 2]) * alpha
+            // Rotation: nlerp (normalized linear interpolation, cheaper than slerp)
+            var qx = prev[o + 3] + (curr[o + 3] - prev[o + 3]) * alpha
+            var qy = prev[o + 4] + (curr[o + 4] - prev[o + 4]) * alpha
+            var qz = prev[o + 5] + (curr[o + 5] - prev[o + 5]) * alpha
+            var qw = prev[o + 6] + (curr[o + 6] - prev[o + 6]) * alpha
+            val invLen = 1f / sqrt(qx * qx + qy * qy + qz * qz + qw * qw)
+            dst[o + 3] = qx * invLen
+            dst[o + 4] = qy * invLen
+            dst[o + 5] = qz * invLen
+            dst[o + 6] = qw * invLen
+        }
+    }
+
     private fun updatePhysics(
         instance: ModelInstanceImpl,
         time: Float, // For physics, in seconds
     ) {
         instance.physicsData?.let { data ->
+            // --- Initialization (first frame) ---
             if (data.lastPhysicsTime < 0) {
                 data.lastPhysicsTime = time
 
@@ -151,27 +210,77 @@ class RenderSceneImpl(
                     data.world.resetRigidBody(component.rigidBodyIndex, initPos, initRot)
                 }
                 data.world.pullTransforms(data.transformArray)
+                data.transformArray.copyInto(data.previousTransforms)
+                data.transformArray.copyInto(data.currentTransforms)
 
                 return@let
             }
+
             val timeStep = time - data.lastPhysicsTime
             if (timeStep <= 0f) {
                 return@let
             }
-
-            val maxTimeStep = PHYSICS_MAX_SUB_STEP_COUNT * PHYSICS_TIME_STEP
-            val clampedTimeStep = minOf(timeStep, maxTimeStep)
-
             data.lastPhysicsTime = time
 
-            instance.updateWorldTransformsNoPhysics()
-            executePhase(instance, UpdatePhase.PhysicsUpdatePre)
-            data.world.pushTransforms(data.transformArray)
-            data.world.step(clampedTimeStep, PHYSICS_MAX_SUB_STEP_COUNT, PHYSICS_TIME_STEP)
-            data.world.pullTransforms(data.transformArray)
+            // --- Layer 2: Distance LOD ---
+            val distanceMultiplier = computeDistanceMultiplier(instance)
+            if (distanceMultiplier == 0f) {
+                // Model is culled (>48 blocks away), keep last transforms frozen
+                return@let
+            }
 
-            executePhase(instance, UpdatePhase.PhysicsUpdatePost)
-            executePhase(instance, UpdatePhase.GlobalTransformPropagation)
+            // --- Layer 3: Adaptive throttling ---
+            val effectiveInterval = data.currentPhysicsInterval / distanceMultiplier
+            val maxAccumulator = effectiveInterval * 2f // Prevent accumulating too many steps
+            data.physicsAccumulator = minOf(data.physicsAccumulator + timeStep, maxAccumulator)
+
+            if (data.physicsAccumulator >= effectiveInterval) {
+                // Time to step physics
+                data.currentTransforms.copyInto(data.previousTransforms)
+
+                instance.updateWorldTransformsNoPhysics()
+                executePhase(instance, UpdatePhase.PhysicsUpdatePre)
+                data.world.pushTransforms(data.transformArray)
+
+                val stepStart = System.nanoTime()
+                val maxTimeStep = PHYSICS_MAX_SUB_STEP_COUNT * PHYSICS_TIME_STEP
+                val clampedAccumulator = minOf(data.physicsAccumulator, maxTimeStep)
+                data.world.step(clampedAccumulator, PHYSICS_MAX_SUB_STEP_COUNT, PHYSICS_TIME_STEP)
+                val stepTimeMs = (System.nanoTime() - stepStart) / 1_000_000f
+
+                data.world.pullTransforms(data.transformArray)
+                data.transformArray.copyInto(data.currentTransforms)
+                data.physicsAccumulator -= effectiveInterval
+
+                // Adapt physics rate based on step cost (EMA with hysteresis)
+                data.physicsStepTimeMs = 0.8f * data.physicsStepTimeMs + 0.2f * stepTimeMs
+                if (data.physicsStepTimeMs > ModelInstanceImpl.PhysicsData.BUDGET_HIGH_MS) {
+                    // Physics is too expensive, reduce rate
+                    data.currentPhysicsInterval = minOf(
+                        data.currentPhysicsInterval * 2f,
+                        ModelInstanceImpl.PhysicsData.MAX_INTERVAL
+                    )
+                } else if (data.physicsStepTimeMs < ModelInstanceImpl.PhysicsData.BUDGET_LOW_MS) {
+                    // Physics is cheap, increase rate
+                    data.currentPhysicsInterval = maxOf(
+                        data.currentPhysicsInterval / 2f,
+                        ModelInstanceImpl.PhysicsData.MIN_INTERVAL
+                    )
+                }
+
+                executePhase(instance, UpdatePhase.PhysicsUpdatePost)
+                executePhase(instance, UpdatePhase.GlobalTransformPropagation)
+            } else {
+                // No step this frame — interpolate between previous and current transforms
+                val alpha = data.physicsAccumulator / effectiveInterval
+                interpolateTransforms(
+                    data.previousTransforms, data.currentTransforms, data.transformArray,
+                    rigidBodyComponents.size, alpha
+                )
+
+                executePhase(instance, UpdatePhase.PhysicsUpdatePost)
+                executePhase(instance, UpdatePhase.GlobalTransformPropagation)
+            }
         }
     }
 
