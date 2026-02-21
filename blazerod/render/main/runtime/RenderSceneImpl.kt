@@ -37,7 +37,7 @@ class RenderSceneImpl(
     override val expressionGroups: List<RenderExpressionGroup>,
     override val cameras: List<Camera>,
     val physicsJoints: List<RenderPhysicsJoint>,
-    val renderTransform: NodeTransform?,
+    override val renderTransform: NodeTransform?,
 ) : AbstractRefCount(), RenderScene {
     companion object {
         private const val PHYSICS_MAX_SUB_STEP_COUNT = 10

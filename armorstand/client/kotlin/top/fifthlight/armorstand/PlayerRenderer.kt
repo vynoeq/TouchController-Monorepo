@@ -107,7 +107,7 @@ object PlayerRenderer {
 
         itemLocalMatrix.identity()
         itemLocalMatrix.scale(config.modelScale)
-        (instance.scene as? top.fifthlight.blazerod.runtime.RenderSceneImpl)?.renderTransform?.applyOnMatrix(itemLocalMatrix)
+        instance.scene.renderTransform?.applyOnMatrix(itemLocalMatrix)
         itemLocalMatrix.mul(handWorldNoScaleMatrix)
 
         itemLocalMatrix.rotateX(Math.toRadians(config.heldItemRotX.toDouble()).toFloat())
