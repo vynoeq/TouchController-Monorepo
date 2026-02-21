@@ -65,7 +65,7 @@ public class JarInJarMerger {
                     var manifest = entryInputStream.getManifest();
                     if (manifest == null) {
                         manifest = new java.util.jar.Manifest();
-                        manifest.getMainAttributes().putValue(java.util.jar.Attributes.Name.MANIFEST_VERSION, "1.0");
+                        manifest.getMainAttributes().put(java.util.jar.Attributes.Name.MANIFEST_VERSION, "1.0");
                     }
                     if (!jijEntry.fmlType.isBlank()) {
                         manifest.getMainAttributes().putValue("FMLType", jijEntry.fmlType);
