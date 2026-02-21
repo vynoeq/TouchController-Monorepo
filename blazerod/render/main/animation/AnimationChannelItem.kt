@@ -15,6 +15,7 @@ import top.fifthlight.blazerod.runtime.resource.CameraTransformImpl
 sealed class AnimationChannelItem<T : Any, D, P : Any>(
     val channel: AnimationChannel<T, D>,
 ) {
+    open val targetNodeIndex: Int? = null
     abstract fun createPendingValue(): P
 
     // run on client thread
@@ -28,6 +29,8 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         private val transformId: TransformId,
         channel: AnimationChannel<Vector3f, Unit>,
     ) : AnimationChannelItem<Vector3f, Unit, Vector3f>(channel) {
+        override val targetNodeIndex: Int = index
+
         init {
             require(channel.type == AnimationChannel.Type.Translation) { "Unmatched animation channel: want translation, but got ${channel.type}" }
         }
@@ -50,6 +53,8 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         private val transformId: TransformId,
         channel: AnimationChannel<Vector3f, Unit>,
     ) : AnimationChannelItem<Vector3f, Unit, Vector3f>(channel) {
+        override val targetNodeIndex: Int = index
+
         init {
             require(channel.type == AnimationChannel.Type.Scale) { "Unmatched animation channel: want scale, but got ${channel.type}" }
         }
@@ -72,6 +77,8 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         private val transformId: TransformId,
         channel: AnimationChannel<Quaternionf, Unit>,
     ) : AnimationChannelItem<Quaternionf, Unit, Quaternionf>(channel) {
+        override val targetNodeIndex: Int = index
+
         init {
             require(channel.type == AnimationChannel.Type.Rotation) { "Unmatched animation channel: want rotation, but got ${channel.type}" }
         }
@@ -95,6 +102,8 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         private val transformId: TransformId,
         channel: AnimationChannel<Vector3f, Unit>,
     ) : AnimationChannelItem<Vector3f, Unit, Vector3f>(channel) {
+        override val targetNodeIndex: Int = index
+
         init {
             require(channel.type == AnimationChannel.Type.BedrockTranslation) { "Unmatched animation channel: want translation, but got ${channel.type}" }
         }
@@ -117,6 +126,8 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         private val transformId: TransformId,
         channel: AnimationChannel<Vector3f, Unit>,
     ) : AnimationChannelItem<Vector3f, Unit, Vector3f>(channel) {
+        override val targetNodeIndex: Int = index
+
         init {
             require(channel.type == AnimationChannel.Type.BedrockScale) { "Unmatched animation channel: want scale, but got ${channel.type}" }
         }
@@ -139,6 +150,8 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         private val transformId: TransformId,
         channel: AnimationChannel<Quaternionf, Unit>,
     ) : AnimationChannelItem<Quaternionf, Unit, Quaternionf>(channel) {
+        override val targetNodeIndex: Int = index
+
         init {
             require(channel.type == AnimationChannel.Type.BedrockRotation) { "Unmatched animation channel: want rotation, but got ${channel.type}" }
         }

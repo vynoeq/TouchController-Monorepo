@@ -1,7 +1,6 @@
 package top.fifthlight.blazerod.runtime
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.MultiBufferSource
 import org.joml.Matrix4f
 import org.joml.Matrix4fc
@@ -26,7 +25,7 @@ import top.fifthlight.blazerod.runtime.node.component.RigidBodyComponent
 import top.fifthlight.blazerod.runtime.node.forEach
 import top.fifthlight.blazerod.runtime.resource.RenderPhysicsJoint
 import top.fifthlight.blazerod.runtime.resource.RenderSkin
-import kotlin.math.sqrt
+
 import kotlin.time.measureTime
 
 class RenderSceneImpl(
@@ -43,12 +42,6 @@ class RenderSceneImpl(
         private const val PHYSICS_MAX_SUB_STEP_COUNT = 10
         private const val PHYSICS_FPS = 120f
         private const val PHYSICS_TIME_STEP = 1f / PHYSICS_FPS
-
-        // Distance LOD thresholds (in blocks, squared for comparison)
-        private const val DIST_CLOSE_SQ = 8f * 8f       // 0-8 blocks: full rate
-        private const val DIST_MEDIUM_SQ = 24f * 24f     // 8-24 blocks: half rate
-        private const val DIST_FAR_SQ = 48f * 48f        // 24-48 blocks: quarter rate
-        // >48 blocks: frozen (culled)
     }
 
     override val typeId: String
@@ -138,28 +131,7 @@ class RenderSceneImpl(
         }
     }
 
-    /**
-     * Computes a physics rate multiplier based on camera distance to the model.
-     * Returns 0.0 if the model should be culled (frozen), or a multiplier (0.25, 0.5, 1.0).
-     */
-    private fun computeDistanceMultiplier(instance: ModelInstanceImpl): Float {
-        val camera = Minecraft.getInstance().gameRenderer.mainCamera ?: return 1.0f
-        val cameraPos = camera.position ?: return 1.0f
-        val rootTransform = instance.modelData.worldTransforms[0]
-        val modelX = rootTransform.m30()
-        val modelY = rootTransform.m31()
-        val modelZ = rootTransform.m32()
-        val dx = cameraPos.x.toFloat() - modelX
-        val dy = cameraPos.y.toFloat() - modelY
-        val dz = cameraPos.z.toFloat() - modelZ
-        val distSq = dx * dx + dy * dy + dz * dz
-        return when {
-            distSq > DIST_FAR_SQ -> 0.0f      // >48 blocks: frozen
-            distSq > DIST_MEDIUM_SQ -> 0.25f   // 24-48 blocks: quarter rate
-            distSq > DIST_CLOSE_SQ -> 0.5f     // 8-24 blocks: half rate
-            else -> 1.0f                        // 0-8 blocks: full rate
-        }
-    }
+
 
     /**
      * Interpolates between previous and current transform arrays using nlerp for rotations.
@@ -222,15 +194,8 @@ class RenderSceneImpl(
             }
             data.lastPhysicsTime = time
 
-            // --- Layer 2: Distance LOD ---
-            val distanceMultiplier = computeDistanceMultiplier(instance)
-            if (distanceMultiplier == 0f) {
-                // Model is culled (>48 blocks away), keep last transforms frozen
-                return@let
-            }
-
-            // --- Layer 3: Adaptive throttling ---
-            val effectiveInterval = data.currentPhysicsInterval / distanceMultiplier
+            // --- Adaptive throttling ---
+            val effectiveInterval = data.currentPhysicsInterval
             val maxAccumulator = effectiveInterval * 2f // Prevent accumulating too many steps
             data.physicsAccumulator = minOf(data.physicsAccumulator + timeStep, maxAccumulator)
 

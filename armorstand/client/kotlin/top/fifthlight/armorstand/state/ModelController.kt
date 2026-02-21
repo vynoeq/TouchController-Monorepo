@@ -3,8 +3,10 @@ package top.fifthlight.armorstand.state
 import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.client.renderer.entity.state.PlayerRenderState
 import net.minecraft.core.Direction
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.EntityTypeTags
 import net.minecraft.util.Mth
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.HumanoidArm
 import net.minecraft.world.entity.Pose
@@ -13,6 +15,8 @@ import top.fifthlight.armorstand.util.toRadians
 import top.fifthlight.armorstand.vmc.VmcMarionetteManager
 import top.fifthlight.blazerod.api.animation.AnimationContextsFactory
 import top.fifthlight.blazerod.api.animation.AnimationItemInstance
+import top.fifthlight.blazerod.api.animation.AnimationItemPendingValues
+import top.fifthlight.blazerod.api.animation.MaskableAnimationItemInstance
 import top.fifthlight.blazerod.api.resource.ModelInstance
 import top.fifthlight.blazerod.api.resource.RenderExpression
 import top.fifthlight.blazerod.api.resource.RenderExpressionGroup
@@ -309,10 +313,35 @@ sealed interface ModelController {
             }
         }
 
+        private data class ActionSelection(
+            val item: AnimationItemInstance,
+            val arm: HumanoidArm,
+        )
+
+        private class LayeredPendingValues(
+            val baseItem: AnimationItemInstance,
+            val basePendingValues: AnimationItemPendingValues,
+            val actionItem: AnimationItemInstance?,
+            val actionPendingValues: AnimationItemPendingValues?,
+            val actionArm: HumanoidArm?,
+        ) : AnimationItemPendingValues
+
         private var playState: PlayState = PlayState.Idle
-        override var animationState: AnimationState = playState.getItem(animationSet).createState(context)
-        private var item: AnimationItemInstance? = null
+        private var item: AnimationItemInstance = playState.getItem(animationSet)
+        override var animationState: AnimationState = item.createState(context)
+
+        private var actionItem: AnimationItemInstance? = null
+        private var actionAnimationState: AnimationState? = null
+        private var actionArm: HumanoidArm? = null
+        private var lastUsingItem: Boolean = false
+        private var lastHandSwinging: Boolean = false
+
         private var reset = false
+
+        private var upperBodyMaskNodeCount: Int = -1
+        private var upperBodyMaskScene: RenderScene? = null
+        private var leftUpperBodyMask: BooleanArray = BooleanArray(0)
+        private var rightUpperBodyMask: BooleanArray = BooleanArray(0)
 
         companion object {
             private val horseEntityTypes = listOf(
@@ -325,7 +354,167 @@ sealed interface ModelController {
             )
         }
 
-        private fun getState(
+        private fun HumanoidArm.toHandSide() = when (this) {
+            HumanoidArm.LEFT -> AnimationSet.ItemActiveKey.HandSide.LEFT
+            HumanoidArm.RIGHT -> AnimationSet.ItemActiveKey.HandSide.RIGHT
+        }
+
+        private fun getItemActiveAnimation(
+            itemId: net.minecraft.resources.ResourceLocation,
+            arm: HumanoidArm,
+            actionType: AnimationSet.ItemActiveKey.ActionType,
+        ): AnimationItemInstance? {
+            val key = AnimationSet.ItemActiveKey(
+                itemName = itemId,
+                hand = arm.toHandSide(),
+                actionType = actionType,
+            )
+            return animationSet.itemActive[key]
+        }
+
+        private fun getSwingingHand(mainArm: HumanoidArm, arm: HumanoidArm): InteractionHand = if (arm == mainArm) {
+            InteractionHand.MAIN_HAND
+        } else {
+            InteractionHand.OFF_HAND
+        }
+
+        private fun getActionSelection(
+            player: AbstractClientPlayer,
+            renderState: PlayerRenderState,
+        ): ActionSelection? {
+            if (player.isDeadOrDying) {
+                return null
+            }
+
+            if (player.isUsingItem) {
+                val usedArm = when (player.usedItemHand) {
+                    InteractionHand.MAIN_HAND -> renderState.mainArm
+                    InteractionHand.OFF_HAND -> if (renderState.mainArm == HumanoidArm.RIGHT) HumanoidArm.LEFT else HumanoidArm.RIGHT
+                    else -> renderState.mainArm
+                }
+                val stack = player.getItemInHand(player.usedItemHand)
+                val itemId = BuiltInRegistries.ITEM.getKey(stack.item)
+                val itemActive = getItemActiveAnimation(
+                    itemId = itemId,
+                    arm = usedArm,
+                    actionType = AnimationSet.ItemActiveKey.ActionType.USING,
+                ) ?: return null
+                return ActionSelection(item = itemActive, arm = usedArm)
+            }
+
+            if (renderState.swinging) {
+                return when (renderState.attackArm) {
+                    HumanoidArm.LEFT -> {
+                        val stack = player.getItemInHand(getSwingingHand(renderState.mainArm, HumanoidArm.LEFT))
+                        val itemId = BuiltInRegistries.ITEM.getKey(stack.item)
+                        val itemActive = getItemActiveAnimation(
+                            itemId = itemId,
+                            arm = HumanoidArm.LEFT,
+                            actionType = AnimationSet.ItemActiveKey.ActionType.SWINGING,
+                        )
+                        ActionSelection(item = itemActive ?: animationSet.swingLeft, arm = HumanoidArm.LEFT)
+                    }
+
+                    HumanoidArm.RIGHT -> {
+                        val stack = player.getItemInHand(getSwingingHand(renderState.mainArm, HumanoidArm.RIGHT))
+                        val itemId = BuiltInRegistries.ITEM.getKey(stack.item)
+                        val itemActive = getItemActiveAnimation(
+                            itemId = itemId,
+                            arm = HumanoidArm.RIGHT,
+                            actionType = AnimationSet.ItemActiveKey.ActionType.SWINGING,
+                        )
+                        ActionSelection(item = itemActive ?: animationSet.swingRight, arm = HumanoidArm.RIGHT)
+                    }
+                }
+            }
+
+            return null
+        }
+
+        private fun ensureUpperBodyMasks(scene: RenderScene) {
+            val nodeCount = scene.nodes.size
+            if (upperBodyMaskScene === scene && upperBodyMaskNodeCount == nodeCount) {
+                return
+            }
+            upperBodyMaskScene = scene
+            upperBodyMaskNodeCount = nodeCount
+
+            fun BooleanArray.enable(tag: HumanoidTag) {
+                scene.humanoidTagMap[tag]?.let { node ->
+                    val idx = node.nodeIndex
+                    if (idx in indices) {
+                        this[idx] = true
+                    }
+                }
+            }
+
+            fun BooleanArray.enableAll(tags: Array<HumanoidTag>) {
+                for (tag in tags) {
+                    enable(tag)
+                }
+            }
+
+            val torsoTags = arrayOf(
+                HumanoidTag.SPINE,
+                HumanoidTag.CHEST,
+                HumanoidTag.UPPER_CHEST,
+                HumanoidTag.NECK,
+                HumanoidTag.HEAD,
+            )
+
+            val leftArmTags = arrayOf(
+                HumanoidTag.LEFT_SHOULDER,
+                HumanoidTag.LEFT_UPPER_ARM,
+                HumanoidTag.LEFT_LOWER_ARM,
+                HumanoidTag.LEFT_HAND,
+                HumanoidTag.LEFT_THUMB_METACARPAL,
+                HumanoidTag.LEFT_THUMB_PROXIMAL,
+                HumanoidTag.LEFT_THUMB_DISTAL,
+                HumanoidTag.LEFT_INDEX_PROXIMAL,
+                HumanoidTag.LEFT_INDEX_INTERMEDIATE,
+                HumanoidTag.LEFT_INDEX_DISTAL,
+                HumanoidTag.LEFT_MIDDLE_PROXIMAL,
+                HumanoidTag.LEFT_MIDDLE_INTERMEDIATE,
+                HumanoidTag.LEFT_MIDDLE_DISTAL,
+                HumanoidTag.LEFT_RING_PROXIMAL,
+                HumanoidTag.LEFT_RING_INTERMEDIATE,
+                HumanoidTag.LEFT_RING_DISTAL,
+                HumanoidTag.LEFT_LITTLE_PROXIMAL,
+                HumanoidTag.LEFT_LITTLE_INTERMEDIATE,
+                HumanoidTag.LEFT_LITTLE_DISTAL,
+            )
+
+            val rightArmTags = arrayOf(
+                HumanoidTag.RIGHT_SHOULDER,
+                HumanoidTag.RIGHT_UPPER_ARM,
+                HumanoidTag.RIGHT_LOWER_ARM,
+                HumanoidTag.RIGHT_HAND,
+                HumanoidTag.RIGHT_THUMB_METACARPAL,
+                HumanoidTag.RIGHT_THUMB_PROXIMAL,
+                HumanoidTag.RIGHT_THUMB_DISTAL,
+                HumanoidTag.RIGHT_INDEX_PROXIMAL,
+                HumanoidTag.RIGHT_INDEX_INTERMEDIATE,
+                HumanoidTag.RIGHT_INDEX_DISTAL,
+                HumanoidTag.RIGHT_MIDDLE_PROXIMAL,
+                HumanoidTag.RIGHT_MIDDLE_INTERMEDIATE,
+                HumanoidTag.RIGHT_MIDDLE_DISTAL,
+                HumanoidTag.RIGHT_RING_PROXIMAL,
+                HumanoidTag.RIGHT_RING_INTERMEDIATE,
+                HumanoidTag.RIGHT_RING_DISTAL,
+                HumanoidTag.RIGHT_LITTLE_PROXIMAL,
+                HumanoidTag.RIGHT_LITTLE_INTERMEDIATE,
+                HumanoidTag.RIGHT_LITTLE_DISTAL,
+            )
+
+            leftUpperBodyMask = BooleanArray(nodeCount)
+            rightUpperBodyMask = BooleanArray(nodeCount)
+            leftUpperBodyMask.enableAll(torsoTags)
+            rightUpperBodyMask.enableAll(torsoTags)
+            leftUpperBodyMask.enableAll(leftArmTags)
+            rightUpperBodyMask.enableAll(rightArmTags)
+        }
+
+        private fun getBaseState(
             player: AbstractClientPlayer,
             renderState: PlayerRenderState,
         ): PlayState {
@@ -363,12 +552,6 @@ sealed interface ModelController {
                 player.isSprinting -> PlayState.Sprinting
 
                 player.knownMovement.horizontalDistance() > .05 -> PlayState.Walking
-
-                renderState.swinging -> when (player.mainArm) {
-                    HumanoidArm.LEFT -> PlayState.LeftArmSwinging
-                    HumanoidArm.RIGHT -> PlayState.RightArmSwinging
-                }
-
                 else -> PlayState.Idle
             }
         }
@@ -378,29 +561,106 @@ sealed interface ModelController {
             player: AbstractClientPlayer,
             renderState: PlayerRenderState,
         ): Unit = AnimationContextsFactory.create().player(player).let { context ->
-            val newState = getState(player, renderState)
+            val newState = getBaseState(player, renderState)
             if (newState != playState) {
                 this.playState = newState
             }
             val newItem = newState.getItem(animationSet)
             if (newItem != item) {
-                animationState = newItem.createState(context)
                 item = newItem
+                animationState = newItem.createState(context)
                 reset = true
             }
             animationState.updateTime(context)
-            renderState.animationPendingValues = item?.update(context, animationState)
+            val basePending = item.update(context, animationState)
+
+            val actionSelection = getActionSelection(player, renderState)
+            if (actionSelection == null) {
+                actionItem = null
+                actionAnimationState = null
+                actionArm = null
+                lastUsingItem = player.isUsingItem
+                lastHandSwinging = renderState.swinging
+                renderState.animationPendingValues = LayeredPendingValues(
+                    baseItem = item,
+                    basePendingValues = basePending,
+                    actionItem = null,
+                    actionPendingValues = null,
+                    actionArm = null,
+                )
+                return@let
+            }
+
+            val needRestartByEdge = (player.isUsingItem && !lastUsingItem) || (renderState.swinging && !lastHandSwinging)
+
+            if (needRestartByEdge || actionSelection.item != actionItem || actionSelection.arm != actionArm) {
+                actionItem = actionSelection.item
+                actionAnimationState = actionSelection.item.createState(context)
+                actionArm = actionSelection.arm
+            }
+
+            val currentActionItem = actionItem
+            val currentActionAnimationState = actionAnimationState
+            val currentActionArm = actionArm
+            if (currentActionItem == null || currentActionAnimationState == null || currentActionArm == null) {
+                lastUsingItem = player.isUsingItem
+                lastHandSwinging = renderState.swinging
+                renderState.animationPendingValues = LayeredPendingValues(
+                    baseItem = item,
+                    basePendingValues = basePending,
+                    actionItem = null,
+                    actionPendingValues = null,
+                    actionArm = null,
+                )
+                return@let
+            }
+
+            currentActionAnimationState.updateTime(context)
+            val actionPending = currentActionItem.update(context, currentActionAnimationState)
+            renderState.animationPendingValues = LayeredPendingValues(
+                baseItem = item,
+                basePendingValues = basePending,
+                actionItem = currentActionItem,
+                actionPendingValues = actionPending,
+                actionArm = currentActionArm,
+            )
+
+            lastUsingItem = player.isUsingItem
+            lastHandSwinging = renderState.swinging
         }
 
         override fun apply(uuid: UUID, instance: ModelInstance, renderState: PlayerRenderState) {
-            val item = item ?: return
             if (reset) {
                 instance.clearTransform()
                 reset = false
             }
-            renderState.animationPendingValues?.let {
-                item.apply(instance, it)
-                renderState.animationPendingValues = null
+            val pending = renderState.animationPendingValues
+            when (pending) {
+                is LayeredPendingValues -> {
+                    pending.baseItem.apply(instance, pending.basePendingValues)
+                    if (pending.actionItem != null && pending.actionPendingValues != null && pending.actionArm != null) {
+                        ensureUpperBodyMasks(instance.scene)
+                        val mask = if (pending.actionArm == HumanoidArm.LEFT) {
+                            leftUpperBodyMask
+                        } else {
+                            rightUpperBodyMask
+                        }
+                        val maskable = pending.actionItem as? MaskableAnimationItemInstance
+                        if (maskable != null) {
+                            maskable.applyMasked(instance, pending.actionPendingValues, mask)
+                        } else {
+                            pending.actionItem.apply(instance, pending.actionPendingValues)
+                        }
+                    }
+                    renderState.animationPendingValues = null
+                }
+
+                null -> Unit
+
+                else -> {
+                    item.apply(instance, pending)
+                    renderState.animationPendingValues = null
+                }
             }
 
             val bedOrientation = renderState.bedOrientation
