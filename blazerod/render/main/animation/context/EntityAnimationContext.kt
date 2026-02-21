@@ -47,7 +47,7 @@ open class EntityAnimationContext(
             Direction.UP, Direction.DOWN -> throw AssertionError("Invalid cardinal facing")
         }.let { intBuffer.apply { value = it } }
 
-        EntityHorizontalSpeed -> doubleBuffer.apply {
+        EntityGroundSpeed -> doubleBuffer.apply {
             value = entity.deltaMovement.horizontalDistance()
         }
 
