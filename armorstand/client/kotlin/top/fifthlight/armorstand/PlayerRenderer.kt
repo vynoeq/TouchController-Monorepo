@@ -107,7 +107,7 @@ object PlayerRenderer {
 
         itemLocalMatrix.identity()
         itemLocalMatrix.scale(config.modelScale)
-        instance.scene.renderTransform?.applyOnMatrix(itemLocalMatrix)
+        (instance.scene as? top.fifthlight.blazerod.runtime.RenderSceneImpl)?.renderTransform?.applyOnMatrix(itemLocalMatrix)
         itemLocalMatrix.mul(handWorldNoScaleMatrix)
 
         itemLocalMatrix.rotateX(Math.toRadians(config.heldItemRotX.toDouble()).toFloat())
@@ -143,7 +143,7 @@ object PlayerRenderer {
                 player,
                 itemStack,
                 displayContext,
-                false,
+                tag == HumanoidTag.LEFT_HAND,
                 matrixStack,
                 consumers,
                 player.level(),

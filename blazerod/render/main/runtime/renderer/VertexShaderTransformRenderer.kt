@@ -238,9 +238,9 @@ class VertexShaderTransformRenderer private constructor() :
             setStorageBuffer("MorphColorBlock", targets.color.slice!!)
             setStorageBuffer("MorphTexCoordBlock", targets.texCoord.slice!!)
         } else {
-            setUniform("MorphPositionData", targets.position.gpuBuffer)
-            setUniform("MorphColorData", targets.color.gpuBuffer)
-            setUniform("MorphTexCoordData", targets.texCoord.gpuBuffer)
+            setUniform("MorphPositionData", targets.position.gpuBuffer?.inner)
+            setUniform("MorphColorData", targets.color.gpuBuffer?.inner)
+            setUniform("MorphTexCoordData", targets.texCoord.gpuBuffer?.inner)
         }
     }
 
@@ -361,7 +361,7 @@ class VertexShaderTransformRenderer private constructor() :
                         val overlayTexture = gameRenderer.overlayTexture().texture.textureView
                         bindSampler("SamplerOverlay", overlayTexture)
                         val lightUniform = RenderSystem.getShaderLights()
-                        setUniform("Lighting", lightUniform)
+                        setUniform("Lighting", lightUniform?.inner)
                     }
                 }
 
