@@ -530,7 +530,7 @@ sealed interface ModelController {
                 renderState.pose == Pose.SLEEPING -> PlayState.Sleeping
                 renderState.pose == Pose.FALL_FLYING -> PlayState.ElytraFly
                 player.isSwimming -> PlayState.Swimming
-                renderState.pose == Pose.SWIMMING -> if (player.knownMovement.horizontalDistance() > .01) {
+                renderState.pose == Pose.SWIMMING -> if (player.deltaMovement.horizontalDistance() > .01) {
                     PlayState.Crawling
                 } else {
                     PlayState.CrawlIdle
@@ -543,7 +543,7 @@ sealed interface ModelController {
                     else -> PlayState.Idle
                 }
 
-                renderState.pose == Pose.CROUCHING -> if (player.knownMovement.horizontalDistance() > .01) {
+                renderState.pose == Pose.CROUCHING -> if (player.deltaMovement.horizontalDistance() > .01) {
                     PlayState.Sneaking
                 } else {
                     PlayState.SneakIdle
@@ -551,7 +551,7 @@ sealed interface ModelController {
 
                 player.isSprinting -> PlayState.Sprinting
 
-                player.knownMovement.horizontalDistance() > .05 -> PlayState.Walking
+                player.deltaMovement.horizontalDistance() > .05 -> PlayState.Walking
                 else -> PlayState.Idle
             }
         }

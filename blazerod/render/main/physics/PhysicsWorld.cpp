@@ -191,10 +191,9 @@ PhysicsWorld::PhysicsWorld(const PhysicsScene& scene, size_t initial_transform_c
     this->world = std::make_unique<btDiscreteDynamicsWorld>(this->dispatcher.get(), this->broadphase.get(),
                                                             this->solver.get(), this->collision_config.get());
     this->world->setGravity(btVector3(0, -98.0f, 0));
-    this->world->setForceUpdateAllAabbs(false);
 
     btContactSolverInfo& solver_info = this->world->getSolverInfo();
-    solver_info.m_numIterations = 10;
+    solver_info.m_numIterations = 20;
     solver_info.m_splitImpulse = 1;
     solver_info.m_splitImpulsePenetrationThreshold = -0.04f;
 

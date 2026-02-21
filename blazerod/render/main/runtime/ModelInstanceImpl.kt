@@ -263,6 +263,10 @@ class ModelInstanceImpl(
         }
     }
 
+    override fun copyNodeWorldTransform(nodeIndex: Int, dest: Matrix4f) {
+        modelData.worldTransforms[nodeIndex].get(dest)
+    }
+
     override fun getCameraTransform(index: Int) = modelData.cameraTransforms.getOrNull(index)
 
     override fun debugRender(viewProjectionMatrix: Matrix4fc, bufferSource: MultiBufferSource, time: Float) {

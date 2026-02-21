@@ -25,6 +25,7 @@ interface ModelInstance : RefCount {
     fun setIkEnabled(index: Int, enabled: Boolean)
     fun setGroupWeight(morphedPrimitiveIndex: Int, targetGroupIndex: Int, weight: Float)
 
+    fun copyNodeWorldTransform(nodeIndex: Int, dest: Matrix4f)
     fun getCameraTransform(index: Int): CameraTransform?
 
     fun debugRender(viewProjectionMatrix: Matrix4fc, bufferSource: MultiBufferSource, time: Float)
