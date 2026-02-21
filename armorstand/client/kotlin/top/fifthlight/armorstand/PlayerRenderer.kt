@@ -143,7 +143,6 @@ object PlayerRenderer {
                 player,
                 itemStack,
                 displayContext,
-                tag == HumanoidTag.LEFT_HAND,
                 matrixStack,
                 consumers,
                 player.level(),
