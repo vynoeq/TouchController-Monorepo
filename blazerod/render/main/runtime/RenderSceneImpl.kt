@@ -18,6 +18,7 @@ import top.fifthlight.blazerod.physics.PhysicsInterface
 import top.fifthlight.blazerod.physics.PhysicsScene
 import top.fifthlight.blazerod.runtime.node.RenderNodeImpl
 import top.fifthlight.blazerod.runtime.node.UpdatePhase
+import kotlin.math.sqrt
 import top.fifthlight.blazerod.runtime.node.component.IkTargetComponent
 import top.fifthlight.blazerod.runtime.node.component.PrimitiveComponent
 import top.fifthlight.blazerod.runtime.node.component.RenderNodeComponent
