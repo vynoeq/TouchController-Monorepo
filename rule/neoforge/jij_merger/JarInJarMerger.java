@@ -63,6 +63,10 @@ public class JarInJarMerger {
                 try (var entryByteOutputStream = new ByteArrayOutputStream();
                      var entryInputStream = new JarInputStream(Files.newInputStream(jijEntry.path()))) {
                     var manifest = entryInputStream.getManifest();
+                    if (manifest == null) {
+                        manifest = new java.util.jar.Manifest();
+                        manifest.getMainAttributes().putValue(java.util.jar.Attributes.Name.MANIFEST_VERSION, "1.0");
+                    }
                     if (!jijEntry.fmlType.isBlank()) {
                         manifest.getMainAttributes().putValue("FMLType", jijEntry.fmlType);
                     }
