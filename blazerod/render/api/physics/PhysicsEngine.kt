@@ -19,7 +19,7 @@ object PhysicsEngine {
         val iterator = activeWorlds.iterator()
         while (iterator.hasNext()) {
             val (instance, world) = iterator.next()
-            if (instance.refCount <= 0) {
+            if (instance.referenceCount <= 0) {
                 world.dispose()
                 iterator.remove()
             } else {
