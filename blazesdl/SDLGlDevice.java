@@ -1,0 +1,21 @@
+package top.fifthlight.blazesdl;
+
+import com.mojang.blaze3d.opengl.GlDevice;
+import com.mojang.blaze3d.shaders.GpuDebugOptions;
+import com.mojang.blaze3d.shaders.ShaderSource;
+import org.lwjgl.sdl.SDLVideo;
+
+public class SDLGlDevice extends GlDevice {
+    public long context;
+
+    public SDLGlDevice(long windowHandle, long context, ShaderSource defaultShaderSource, GpuDebugOptions debugOptions) {
+        super(windowHandle, defaultShaderSource, debugOptions);
+        this.context = context;
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        SDLVideo.SDL_GL_DestroyContext(context);
+    }
+}

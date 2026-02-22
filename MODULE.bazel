@@ -161,6 +161,8 @@ include("//module:combine.MODULE.bazel")
 
 include("//module:touchcontroller.MODULE.bazel")
 
+include("//module:blazesdl.MODULE.bazel")
+
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
     artifacts = [

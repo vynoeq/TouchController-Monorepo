@@ -1,0 +1,21 @@
+"MODULE.bazel BlazeSDL part"
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    name = "maven_blazesdl",
+    artifacts = [
+        "org.lwjgl:lwjgl:3.4.1",
+        "org.lwjgl:lwjgl-sdl:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-windows:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-windows-x86:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-windows-arm64:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-linux-arm32:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-linux-arm64:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-linux:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-macos:3.4.1",
+        "org.lwjgl:lwjgl-sdl:jar:natives-macos-arm64:3.4.1",
+    ],
+    fetch_sources = True,
+    lock_file = "//blazesdl:maven_install.json",
+)
+use_repo(maven, "maven_blazesdl")
