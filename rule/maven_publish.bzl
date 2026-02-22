@@ -1,8 +1,8 @@
 """Rules for publishing artifacts to Maven repositories."""
 
+load("@bazel_lib//lib:windows_utils.bzl", "create_windows_native_launcher_script")
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-load("@bazel_lib//lib:windows_utils.bzl", "create_windows_native_launcher_script")
 load("//rule:merge_jar.bzl", "merge_jar_action")
 load("//rule:merge_library.bzl", "kt_merge_library")
 
@@ -180,17 +180,19 @@ def _maven_publish_impl(ctx):
             files = [
                 output_pom,
                 output_script,
-            ] + ctx.files._rlocation_library + input_files,
-        ).merge(
+            ] + input_files,
+        ).merge_all([
             ctx.attr._maven_publisher_binary[DefaultInfo].default_runfiles,
-        )
+            ctx.attr._rlocation_library[DefaultInfo].default_runfiles,
+        ])
     else:
         output_executable = ctx.actions.declare_file(ctx.attr.name + ".sh")
         runfiles = ctx.runfiles(
-            files = [output_pom] + ctx.files._rlocation_library + input_files,
-        ).merge(
+            files = [output_pom] + input_files,
+        ).merge_all([
             ctx.attr._maven_publisher_binary[DefaultInfo].default_runfiles,
-        )
+            ctx.attr._rlocation_library[DefaultInfo].default_runfiles,
+        ])
 
         ctx.actions.expand_template(
             output = output_executable,

@@ -110,17 +110,19 @@ def _upload_modrinth_impl(ctx):
             files = [
                 input_file,
                 output_script,
-            ] + ctx.files._rlocation_library + ([changelog_file] if changelog_file else []),
-        ).merge(
+            ] + ([changelog_file] if changelog_file else []),
+        ).merge_all([
             ctx.attr._modrinth_uploader_binary[DefaultInfo].default_runfiles,
-        )
+            ctx.attr._rlocation_library[DefaultInfo].default_runfiles,
+        ])
     else:
         output_executable = ctx.actions.declare_file(ctx.attr.name + ".sh")
         runfiles = ctx.runfiles(
-            files = [input_file] + ctx.files._rlocation_library + ([changelog_file] if changelog_file else []),
-        ).merge(
+            files = [input_file]  + ([changelog_file] if changelog_file else []),
+        ).merge_all([
             ctx.attr._modrinth_uploader_binary[DefaultInfo].default_runfiles,
-        )
+            ctx.attr._rlocation_library[DefaultInfo].default_runfiles,
+        ])
 
         ctx.actions.expand_template(
             output = output_executable,
