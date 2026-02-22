@@ -27,6 +27,7 @@ import java.util.*
 
 object PlayerRenderer {
     private const val NANOSECONDS_PER_SECOND = 1_000_000_000L
+    private val startNanoTime = System.nanoTime()
     private var renderingWorld = false
 
     private var prevModelItem = WeakReference<ModelInstanceManager.ModelInstanceItem.Model?>(null)
@@ -186,7 +187,7 @@ object PlayerRenderer {
         val controller = entry.controller
         val instance = entry.instance
 
-        val time = System.nanoTime().toFloat() / NANOSECONDS_PER_SECOND.toFloat()
+        val time = (System.nanoTime() - startNanoTime).toFloat() / NANOSECONDS_PER_SECOND.toFloat()
         controller.apply(uuid, instance, vanillaState)
         instance.updateRenderData(time)
 
