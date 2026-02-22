@@ -38,8 +38,8 @@ cc_jni_library(
         "//:config_release": [
             "@//platforms:android_arm64",
             "@//platforms:android_x86_64",
-            "@//platforms:linux_arm64_glibc",
-            "@//platforms:linux_x86_64_glibc",
+            "@//platforms:linux_arm64",
+            "@//platforms:linux_x86_64",
             "@//platforms:windows_arm64",
             "@//platforms:windows_x86_64",
         ],
