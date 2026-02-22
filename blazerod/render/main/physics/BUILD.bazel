@@ -6,7 +6,10 @@ load("//rule:merge_library.bzl", "java_merge_library", "kt_merge_library")
 java_merge_library(
     name = "physics_declaration",
     srcs = ["PhysicsLibrary.java"],
-    deps = ["@maven//:org_slf4j_slf4j_api"],
+    deps = [
+        "//blazerod/util/nativeloader",
+        "@maven//:org_slf4j_slf4j_api",
+    ],
 )
 
 jni_headers(
@@ -35,8 +38,8 @@ cc_jni_library(
         "//:config_release": [
             "@//platforms:android_arm64",
             "@//platforms:android_x86_64",
-            "@//platforms:linux_arm64",
-            "@//platforms:linux_x86_64",
+            "@//platforms:linux_arm64_glibc",
+            "@//platforms:linux_x86_64_glibc",
             "@//platforms:windows_arm64",
             "@//platforms:windows_x86_64",
         ],

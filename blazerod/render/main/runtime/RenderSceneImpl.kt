@@ -39,6 +39,7 @@ class RenderSceneImpl(
     val physicsJoints: List<RenderPhysicsJoint>,
     override val renderTransform: NodeTransform?,
 ) : AbstractRefCount(), RenderScene {
+    override val attachments: Map<Class<*>, Any>
     companion object {
         private const val PHYSICS_MAX_SUB_STEP_COUNT = 10
         private const val PHYSICS_FPS = 120f
@@ -116,14 +117,19 @@ class RenderSceneImpl(
         this.nodeIdMap = nodeIdMap
         this.nodeNameMap = nodeNameMap
         this.humanoidTagMap = humanoidTagMap
+        
+        val attachmentsMap = mutableMapOf<Class<*>, Any>()
         this.physicsScene = this.rigidBodyComponents.takeIf {
             PhysicsInterface.isPhysicsAvailable && it.isNotEmpty()
         }?.let { components ->
             PhysicsScene(
                 rigidBodies = components.map { (nodeIndex, component) -> component.rigidBodyData },
                 joints = physicsJoints,
-            )
+            ).also { scene ->
+                attachmentsMap[PhysicsScene::class.java] = scene
+            }
         }
+        this.attachments = attachmentsMap
     }
 
     private fun executePhase(instance: ModelInstanceImpl, phase: UpdatePhase) {
@@ -163,10 +169,9 @@ class RenderSceneImpl(
 
     private fun updatePhysics(
         instance: ModelInstanceImpl,
-        time: Float, // For physics, in seconds
+        time: Float,
     ) {
         instance.physicsData?.let { data ->
-            // --- Initialization (first frame) ---
             if (data.lastPhysicsTime < 0) {
                 data.lastPhysicsTime = time
 
@@ -197,11 +202,10 @@ class RenderSceneImpl(
 
             // --- Adaptive throttling ---
             val effectiveInterval = data.currentPhysicsInterval
-            val maxAccumulator = effectiveInterval * 2f // Prevent accumulating too many steps
+            val maxAccumulator = effectiveInterval * 2f
             data.physicsAccumulator = minOf(data.physicsAccumulator + timeStep, maxAccumulator)
 
             if (data.physicsAccumulator >= effectiveInterval) {
-                // Time to step physics
                 data.currentTransforms.copyInto(data.previousTransforms)
 
                 instance.updateWorldTransformsNoPhysics()
@@ -219,13 +223,11 @@ class RenderSceneImpl(
                 // Adapt physics rate based on step cost (EMA with hysteresis)
                 data.physicsStepTimeMs = 0.8f * data.physicsStepTimeMs + 0.2f * stepTimeMs
                 if (data.physicsStepTimeMs > ModelInstanceImpl.PhysicsData.BUDGET_HIGH_MS) {
-                    // Physics is too expensive, reduce rate
                     data.currentPhysicsInterval = minOf(
                         data.currentPhysicsInterval * 2f,
                         ModelInstanceImpl.PhysicsData.MAX_INTERVAL
                     )
                 } else if (data.physicsStepTimeMs < ModelInstanceImpl.PhysicsData.BUDGET_LOW_MS) {
-                    // Physics is cheap, increase rate
                     data.currentPhysicsInterval = maxOf(
                         data.currentPhysicsInterval / 2f,
                         ModelInstanceImpl.PhysicsData.MIN_INTERVAL
@@ -235,7 +237,6 @@ class RenderSceneImpl(
                 executePhase(instance, UpdatePhase.PhysicsUpdatePost)
                 executePhase(instance, UpdatePhase.GlobalTransformPropagation)
             } else {
-                // No step this frame — interpolate between previous and current transforms
                 val alpha = data.physicsAccumulator / effectiveInterval
                 interpolateTransforms(
                     data.previousTransforms, data.currentTransforms, data.transformArray,

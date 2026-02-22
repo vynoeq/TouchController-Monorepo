@@ -82,7 +82,6 @@ public class PhysicsLibrary {
             system = "windows";
             extension = "dll";
         } else if (systemName.contains("android")) {
-            // Most OpenJDK on Android declare themselves as Linux, but just in case
             system = "android";
             extension = "so";
         } else {
@@ -100,46 +99,16 @@ public class PhysicsLibrary {
             return false;
         }
 
-        var resourcePath = "bullet_%s_%s/libbullet.%s".formatted(system, arch, extension);
-        try (var libraryUrl = PhysicsLibrary.class.getClassLoader().getResourceAsStream(resourcePath)) {
-            if (libraryUrl == null) {
-                logger.error("Failed to find physics library: {}", resourcePath);
-                return false;
-            }
-
-            var outputPath = Files.createTempFile("bullet_", "." + extension);
-            logger.info("Extracting {} to {}", resourcePath, outputPath);
-
-            Files.copy(libraryUrl, outputPath, StandardCopyOption.REPLACE_EXISTING);
-            try {
-                // Set file to read only after extracting
-                if ("windows".equals(system)) {
-                    var attributeView = Files.getFileAttributeView(outputPath, DosFileAttributeView.class);
-                    attributeView.setReadOnly(true);
-                } else {
-                    var attributeView = Files.getFileAttributeView(outputPath, PosixFileAttributeView.class);
-                    // 500
-                    attributeView.setPermissions(Set.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_EXECUTE));
-                }
-            } catch (Exception ignored) {
-            }
-
-            try {
-                System.load(outputPath.toAbsolutePath().toString());
-            } catch (UnsatisfiedLinkError ex) {
-                logger.error("Failed to load bullet physics native library", ex);
-                return false;
-            }
-            try {
-                Files.delete(outputPath);
-            } catch (Exception ignored) {
-                // On Windows, the file is locked.
-            }
-
+        try {
+            top.fifthlight.blazerod.util.nativeloader.NativeLoader.load(
+                PhysicsLibrary.class.getClassLoader(), 
+                "bullet", 
+                "bullet_%s_%s/libbullet.%s".formatted(system, arch, extension)
+            );
             isPhysicsAvailable = true;
             logger.info("Loaded bullet physics native library");
             return true;
-        } catch (Exception ex) {
+        } catch (Exception | LinkageError ex) {
             logger.error("Failed to load bullet physics native library", ex);
             return false;
         }

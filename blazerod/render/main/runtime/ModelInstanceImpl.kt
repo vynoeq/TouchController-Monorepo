@@ -39,8 +39,10 @@ class ModelInstanceImpl(
         get() = "model_instance"
 
     val modelData = ModelData(scene)
-    internal val physicsData = if (PhysicsInterface.isPhysicsAvailable && scene.physicsScene != null) {
-        PhysicsData(scene, modelData, scene.physicsScene)
+    
+    internal val physicsData = if (PhysicsInterface.isPhysicsAvailable && scene.attachments[PhysicsScene::class.java] != null) {
+        val physicsScene = scene.attachments[PhysicsScene::class.java] as PhysicsScene
+        PhysicsData(scene, modelData, physicsScene)
     } else {
         null
     }
@@ -48,12 +50,27 @@ class ModelInstanceImpl(
     init {
         scene.increaseReferenceCount()
         scene.attachToInstance(this)
-        // Ensure transforms are calculated (Bind Pose) before initializing physics
-        // Otherwise rigid bodies will be initialized with Identity transforms, leading to incorrect offsets
         for (i in scene.nodes.indices) {
             updateNodeTransform(i)
         }
         physicsData?.initialize()
+        
+        if (physicsData != null) {
+            top.fifthlight.blazerod.api.physics.PhysicsEngine.register(
+                this,
+                object : top.fifthlight.blazerod.api.physics.PhysicsProvider {
+                    override fun createWorld(instance: ModelInstance): top.fifthlight.blazerod.api.physics.PhysicsWorld {
+                        return object : top.fifthlight.blazerod.api.physics.PhysicsWorld {
+                            override fun update(time: Float) {
+                            }
+                            override fun dispose() {
+                                physicsData.close()
+                            }
+                        }
+                    }
+                }
+            )
+        }
     }
 
     class PhysicsData(
@@ -76,6 +93,8 @@ class ModelInstanceImpl(
         var physicsAccumulator: Float = 0f
         var physicsStepTimeMs: Float = 0f
         var currentPhysicsInterval: Float = MIN_INTERVAL
+        var explosionLogCount: Int = 0
+        var debugStepCount: Int = 0
 
         companion object {
             const val BUDGET_HIGH_MS = 4.0f
@@ -99,7 +118,6 @@ class ModelInstanceImpl(
                 transformArray = FloatArray(arraySize)
                 previousTransforms = FloatArray(arraySize)
                 currentTransforms = FloatArray(arraySize)
-                // Initial pull to populate all arrays
                 _world!!.pullTransforms(transformArray)
                 transformArray.copyInto(previousTransforms)
                 transformArray.copyInto(currentTransforms)
@@ -324,7 +342,6 @@ class ModelInstanceImpl(
             localMatricesBuffer = modelData.localMatricesBuffer.copy(),
             skinBuffer = modelData.skinBuffers.copy(),
             morphTargetBuffer = modelData.targetBuffers.copy().also { buffer ->
-                // Upload indices don't change the actual data
                 buffer.forEach {
                     it.content.uploadIndices()
                 }
@@ -337,6 +354,7 @@ class ModelInstanceImpl(
     }
 
     override fun onClosed() {
+        top.fifthlight.blazerod.api.physics.PhysicsEngine.unregister(this)
         scene.decreaseReferenceCount()
         physicsData?.close()
         modelData.close()
