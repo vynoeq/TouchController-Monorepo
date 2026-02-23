@@ -42,7 +42,7 @@ class ModelInstanceImpl(
     
     internal val physicsData = if (PhysicsInterface.isPhysicsAvailable && scene.attachments[PhysicsScene::class.java] != null) {
         val physicsScene = scene.attachments[PhysicsScene::class.java] as PhysicsScene
-        PhysicsData(scene, modelData, physicsScene)
+        PhysicsData(this, scene, modelData, physicsScene)
     } else {
         null
     }
@@ -53,35 +53,54 @@ class ModelInstanceImpl(
         for (i in scene.nodes.indices) {
             updateNodeTransform(i)
         }
-        physicsData?.initialize()
-        
         if (physicsData != null) {
             top.fifthlight.blazerod.api.physics.PhysicsEngine.register(
                 this,
                 object : top.fifthlight.blazerod.api.physics.PhysicsProvider {
                     override fun createWorld(instance: ModelInstance): top.fifthlight.blazerod.api.physics.PhysicsWorld {
+                        val bulletWorld = MemoryStack.stackPush().use { stack ->
+                            val initialTransform = stack.malloc(scene.rigidBodyComponents.size * 64)
+                            scene.rigidBodyComponents.forEach { (nodeIndex, component) ->
+                                val nodeWorldTransform = modelData.worldTransforms[nodeIndex]
+                                nodeWorldTransform.get(component.rigidBodyIndex * 64, initialTransform)
+                            }
+                            top.fifthlight.blazerod.physics.PhysicsWorld(physicsData.physicsScene, initialTransform)
+                        }
+
                         return object : top.fifthlight.blazerod.api.physics.PhysicsWorld {
-                            override fun update(time: Float) {
+                            override fun resetRigidBody(rigidBodyIndex: Int, position: org.joml.Vector3f, rotation: org.joml.Quaternionf) {
+                                bulletWorld.resetRigidBody(rigidBodyIndex, position, rotation)
+                            }
+                            override fun pullTransforms(dst: FloatArray) {
+                                bulletWorld.pullTransforms(dst)
+                            }
+                            override fun pushTransforms(src: FloatArray) {
+                                bulletWorld.pushTransforms(src)
+                            }
+                            override fun step(deltaTime: Float, maxSubSteps: Int, fixedTimeStep: Float) {
+                                bulletWorld.step(deltaTime, maxSubSteps, fixedTimeStep)
                             }
                             override fun dispose() {
-                                physicsData.close()
+                                bulletWorld.close()
                             }
                         }
                     }
                 }
             )
         }
+        
+        physicsData?.initialize()
     }
 
     class PhysicsData(
+        val instance: ModelInstanceImpl,
         private val scene: RenderSceneImpl,
         private val modelData: ModelData,
-        private val physicsScene: PhysicsScene,
+        val physicsScene: PhysicsScene,
     ) : AutoCloseable {
         var lastPhysicsTime: Float = -1f
-        private var _world: PhysicsWorld? = null
-        val world: PhysicsWorld
-            get() = _world ?: error("PhysicsWorld is not initialized")
+        val world: top.fifthlight.blazerod.api.physics.PhysicsWorld
+            get() = top.fifthlight.blazerod.api.physics.PhysicsEngine.getWorld(instance) ?: error("PhysicsWorld is not initialized")
         lateinit var transformArray: FloatArray
             private set
 
@@ -104,28 +123,17 @@ class ModelInstanceImpl(
         }
 
         fun initialize() {
-            if (_world != null) {
-                return
-            }
-            MemoryStack.stackPush().use { stack ->
-                val initialTransform = stack.malloc(scene.rigidBodyComponents.size * 64)
-                scene.rigidBodyComponents.forEach { (nodeIndex, component) ->
-                    val nodeWorldTransform = modelData.worldTransforms[nodeIndex]
-                    nodeWorldTransform.get(component.rigidBodyIndex * 64, initialTransform)
-                }
-                _world = PhysicsWorld(physicsScene, initialTransform)
-                val arraySize = scene.rigidBodyComponents.size * 7
-                transformArray = FloatArray(arraySize)
-                previousTransforms = FloatArray(arraySize)
-                currentTransforms = FloatArray(arraySize)
-                _world!!.pullTransforms(transformArray)
-                transformArray.copyInto(previousTransforms)
-                transformArray.copyInto(currentTransforms)
-            }
+            // Memory is initialized when PhysicsWorld is created in the provider
+            val arraySize = scene.rigidBodyComponents.size * 7
+            transformArray = FloatArray(arraySize)
+            previousTransforms = FloatArray(arraySize)
+            currentTransforms = FloatArray(arraySize)
+            world.pullTransforms(transformArray)
+            transformArray.copyInto(previousTransforms)
+            transformArray.copyInto(currentTransforms)
         }
 
         override fun close() {
-            _world?.close()
         }
     }
 

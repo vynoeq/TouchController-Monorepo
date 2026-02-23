@@ -15,6 +15,10 @@ object PhysicsEngine {
         activeWorlds.remove(instance)?.dispose()
     }
 
+    fun getWorld(instance: ModelInstance): PhysicsWorld? {
+        return activeWorlds[instance]
+    }
+
     fun update(time: Float) {
         val iterator = activeWorlds.iterator()
         while (iterator.hasNext()) {
@@ -30,7 +34,10 @@ object PhysicsEngine {
 }
 
 interface PhysicsWorld {
-    fun update(time: Float)
+    fun resetRigidBody(rigidBodyIndex: Int, position: org.joml.Vector3f, rotation: org.joml.Quaternionf)
+    fun pullTransforms(dst: FloatArray)
+    fun pushTransforms(src: FloatArray)
+    fun step(deltaTime: Float, maxSubSteps: Int, fixedTimeStep: Float)
     fun dispose()
 }
 
