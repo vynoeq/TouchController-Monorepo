@@ -268,8 +268,6 @@ PhysicsWorld::PhysicsWorld(const PhysicsScene& scene, size_t initial_transform_c
             }
         }
         
-        shape->setMargin(0.02f);
-
         float mass = rigidbody_item.physics_mode == PhysicsMode::FOLLOW_BONE ? 0.0f : rigidbody_item.mass;
         btVector3 local_inertia(0, 0, 0);
         if (mass != 0.0f) {
@@ -309,9 +307,6 @@ PhysicsWorld::PhysicsWorld(const PhysicsScene& scene, size_t initial_transform_c
 
         auto rigidbody = std::make_unique<btRigidBody>(rigidbody_info);
         rigidbody->setSleepingThresholds(0.01f, 0.0017453293f);
-        // Only process contacts that are immediately relevant to reduce vibration
-        rigidbody->setContactProcessingThreshold(0.0f);
-        
         this->world->addRigidBody(rigidbody.get(), rigidbody_item.collision_group, rigidbody_item.collision_mask);
         if (rigidbody_item.physics_mode != PhysicsMode::PHYSICS) {
             rigidbody->setActivationState(DISABLE_DEACTIVATION);
@@ -449,21 +444,6 @@ void PhysicsWorld::ResetRigidBody(size_t rigidbody_index, float px, float py, fl
     dst[4] = qy;
     dst[5] = qz;
     dst[6] = qw;
-}
-
-void PhysicsWorld::ApplyVelocityDamping(size_t rigidbody_index, float linear_attenuation, float angular_attenuation) {
-    if (rigidbody_index >= this->rigidbodies.size()) {
-        throw std::out_of_range("Invalid rigidbody index");
-    }
-    auto& rigidbody_data = this->rigidbodies[rigidbody_index];
-    if (rigidbody_data.physics_mode == PhysicsMode::FOLLOW_BONE) {
-        return;
-    }
-    
-    btVector3 linVel = rigidbody_data.rigidbody->getLinearVelocity();
-    btVector3 angVel = rigidbody_data.rigidbody->getAngularVelocity();
-    rigidbody_data.rigidbody->setLinearVelocity(linVel * linear_attenuation);
-    rigidbody_data.rigidbody->setAngularVelocity(angVel * angular_attenuation);
 }
 
 void PhysicsWorld::Step(float delta_time, int max_sub_steps, float fixed_time_step) {
