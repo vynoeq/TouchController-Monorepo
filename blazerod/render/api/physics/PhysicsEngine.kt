@@ -26,8 +26,6 @@ object PhysicsEngine {
             if (instance.referenceCount <= 0) {
                 world.dispose()
                 iterator.remove()
-            } else {
-                world.update(time)
             }
         }
     }
