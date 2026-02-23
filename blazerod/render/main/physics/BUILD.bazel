@@ -6,8 +6,10 @@ load("//rule:merge_library.bzl", "java_merge_library", "kt_merge_library")
 java_merge_library(
     name = "physics_declaration",
     srcs = ["PhysicsLibrary.java"],
-    deps = [
+    merge_deps = [
         "//blazerod/util/nativeloader",
+    ],
+    deps = [
         "@maven//:org_slf4j_slf4j_api",
     ],
 )
