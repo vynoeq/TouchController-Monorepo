@@ -38,6 +38,8 @@ class ModelInstanceImpl(
     override val typeId: String
         get() = "model_instance"
 
+    override var lodDistance: Float = 0f
+
     val modelData = ModelData(scene)
     
     internal val physicsData = if (PhysicsInterface.isPhysicsAvailable && scene.attachments[PhysicsScene::class.java] != null) {
@@ -99,6 +101,7 @@ class ModelInstanceImpl(
         val physicsScene: PhysicsScene,
     ) : AutoCloseable {
         var lastPhysicsTime: Float = -1f
+        var lastRootPos = org.joml.Vector3f()
         val world: top.fifthlight.blazerod.api.physics.PhysicsWorld
             get() = top.fifthlight.blazerod.api.physics.PhysicsEngine.getWorld(instance) ?: error("PhysicsWorld is not initialized")
         lateinit var transformArray: FloatArray

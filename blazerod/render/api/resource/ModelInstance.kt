@@ -12,6 +12,7 @@ import java.util.function.Consumer
 
 interface ModelInstance : RefCount {
     val scene: RenderScene
+    var lodDistance: Float
 
     fun clearTransform()
     fun setTransformMatrix(nodeIndex: Int, transformId: TransformId, matrix: Matrix4f)

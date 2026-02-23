@@ -41,7 +41,7 @@ class RenderSceneImpl(
 ) : AbstractRefCount(), RenderScene {
     override val attachments: Map<Class<*>, Any>
     companion object {
-        private const val PHYSICS_MAX_SUB_STEP_COUNT = 10
+        private const val PHYSICS_MAX_SUB_STEP_COUNT = 3
         private const val PHYSICS_FPS = 120f
         private const val PHYSICS_TIME_STEP = 1f / PHYSICS_FPS
     }
@@ -171,6 +171,11 @@ class RenderSceneImpl(
         instance: ModelInstanceImpl,
         time: Float,
     ) {
+        val distance = instance.lodDistance
+        if (distance > 64f) {
+            return
+        }
+
         instance.physicsData?.let { data ->
             if (data.lastPhysicsTime < 0) {
                 data.lastPhysicsTime = time
@@ -187,6 +192,10 @@ class RenderSceneImpl(
                     nodeWorld.getUnnormalizedRotation(initRot)
                     data.world.resetRigidBody(component.rigidBodyIndex, initPos, initRot)
                 }
+                
+                // Initialize root pos
+                instance.modelData.worldTransformsNoPhysics[rootNode.nodeIndex].getTranslation(data.lastRootPos)
+
                 data.world.pullTransforms(data.transformArray)
                 data.transformArray.copyInto(data.previousTransforms)
                 data.transformArray.copyInto(data.currentTransforms)
@@ -200,8 +209,16 @@ class RenderSceneImpl(
             }
             data.lastPhysicsTime = time
 
+            // Limit max physics step to FPS based on LOD
+            val distanceFpsMultiplier = when {
+                distance < 16f -> 1f
+                distance < 32f -> 0.5f
+                else -> 0.25f
+            }
+
             // --- Adaptive throttling ---
-            val effectiveInterval = data.currentPhysicsInterval
+            val minInterval = ModelInstanceImpl.PhysicsData.MIN_INTERVAL / distanceFpsMultiplier
+            val effectiveInterval = maxOf(data.currentPhysicsInterval, minInterval)
             val maxAccumulator = effectiveInterval * 2f
             data.physicsAccumulator = minOf(data.physicsAccumulator + timeStep, maxAccumulator)
 
@@ -210,6 +227,23 @@ class RenderSceneImpl(
 
                 instance.updateWorldTransformsNoPhysics()
                 executePhase(instance, UpdatePhase.PhysicsUpdatePre)
+                
+                // Acceleration dampener (Teleport if moved > 2 blocks in a single frame)
+                val rootPos = Vector3f()
+                instance.modelData.worldTransformsNoPhysics[rootNode.nodeIndex].getTranslation(rootPos)
+                if (rootPos.distanceSquared(data.lastRootPos) > 4.0f) { 
+                    val initPos = Vector3f()
+                    val initRot = Quaternionf()
+                    for ((nodeIndex, component) in rigidBodyComponents) {
+                        val nodeWorld = instance.modelData.worldTransformsNoPhysics[nodeIndex]
+                        nodeWorld.getTranslation(initPos)
+                        nodeWorld.getUnnormalizedRotation(initRot)
+                        data.world.resetRigidBody(component.rigidBodyIndex, initPos, initRot)
+                    }
+                    executePhase(instance, UpdatePhase.PhysicsUpdatePre)
+                }
+                data.lastRootPos.set(rootPos)
+
                 data.world.pushTransforms(data.transformArray)
 
                 val stepStart = System.nanoTime()

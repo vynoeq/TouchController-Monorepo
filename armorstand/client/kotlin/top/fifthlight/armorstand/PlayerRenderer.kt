@@ -189,6 +189,7 @@ object PlayerRenderer {
 
         val time = (System.nanoTime() - startNanoTime).toFloat() / NANOSECONDS_PER_SECOND.toFloat()
         controller.apply(uuid, instance, vanillaState)
+        instance.lodDistance = matrixStack.last().pose().getTranslation(Vector3f()).length()
         instance.updateRenderData(time)
 
         val playerEntity = Minecraft.getInstance().level?.getPlayerByUUID(uuid) as? AbstractClientPlayer
