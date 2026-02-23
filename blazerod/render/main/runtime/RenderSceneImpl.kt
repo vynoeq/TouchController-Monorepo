@@ -229,8 +229,10 @@ class RenderSceneImpl(
                 val rootPos = Vector3f()
                 instance.modelData.worldTransformsNoPhysics[rootNode.nodeIndex].getTranslation(rootPos)
                 val distSq = rootPos.distanceSquared(data.lastRootPos)
-                if (distSq > 4.0f || (data.lastFrameDistSq > 0.1f && distSq < 0.001f)) {
-                    // Teleport OR sudden stop: reset all rigid bodies to their bone rest pose
+                
+                val avgSpeed = data.averageRecentSpeed()
+                if (distSq > 4.0f || (avgSpeed > ModelInstanceImpl.PhysicsData.SPRINT_SPEED_THRESHOLD && distSq < ModelInstanceImpl.PhysicsData.STOP_SPEED_THRESHOLD)) {
+                    // Teleport OR deceleration from sprint: reset all rigid bodies to their bone rest pose
                     val initPos = Vector3f()
                     val initRot = Quaternionf()
                     for ((nodeIndex, component) in rigidBodyComponents) {
@@ -242,6 +244,7 @@ class RenderSceneImpl(
                     executePhase(instance, UpdatePhase.PhysicsUpdatePre)
                 }
                 
+                data.recordSpeed(distSq)
                 data.lastFrameDistSq = distSq
                 data.lastRootPos.set(rootPos)
 

@@ -43,6 +43,8 @@ class AssimpLoader : ModelFileLoader {
             available = true
         } catch (ex: ExceptionInInitializerError) {
             logger.warn("Failed to load assimp library", ex)
+        } catch (ex: NoClassDefFoundError) {
+            logger.warn("Assimp library not available", ex)
         }
     }
 
