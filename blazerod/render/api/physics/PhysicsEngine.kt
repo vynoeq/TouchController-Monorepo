@@ -32,6 +32,7 @@ object PhysicsEngine {
 }
 
 interface PhysicsWorld {
+    fun applyVelocityDamping(rigidBodyIndex: Int, linearAttenuation: Float, angularAttenuation: Float)
     fun resetRigidBody(rigidBodyIndex: Int, position: org.joml.Vector3f, rotation: org.joml.Quaternionf)
     fun pullTransforms(dst: FloatArray)
     fun pushTransforms(src: FloatArray)

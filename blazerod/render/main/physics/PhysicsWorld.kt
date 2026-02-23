@@ -85,6 +85,18 @@ class PhysicsWorld(
         }
     }
 
+    fun applyVelocityDamping(rigidBodyIndex: Int, linearAttenuation: Float, angularAttenuation: Float) {
+        Objects.checkIndex(rigidBodyIndex, rigidBodyCount)
+        requireNotClosed {
+            PhysicsLibrary.applyVelocityDamping(
+                pointer,
+                rigidBodyIndex,
+                linearAttenuation,
+                angularAttenuation
+            )
+        }
+    }
+
     fun pullTransforms(dst: FloatArray) {
         requireNotClosed {
             require(dst.size >= rigidBodyCount * 7)

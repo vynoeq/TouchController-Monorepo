@@ -70,8 +70,9 @@ class PhysicsWorld {
     size_t GetTransformBufferSize() { return rigidbodies.size() * 7 * sizeof(float); }
     void ResetRigidBody(size_t rigidbody_index, float px, float py, float pz,
                         float qx, float qy, float qz, float qw);
+    void ApplyVelocityDamping(size_t rigidbody_index, float linear_attenuation, float angular_attenuation);
     void Step(float delta_time, int max_sub_steps, float fixed_time_step);
 };
-}  // namespace blazerod::physics
+} 
 
-#endif  // BLAZEROD_PHYSICSWORLD_H
+#endif

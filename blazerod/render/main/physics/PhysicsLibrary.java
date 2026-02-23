@@ -35,6 +35,9 @@ public class PhysicsLibrary {
                                              float px, float py, float pz,
                                              float qx, float qy, float qz, float qw);
 
+    public native static void applyVelocityDamping(long physicsWorld, int rigidBodyIndex,
+                                                   float linearAttenuation, float angularAttenuation);
+
     public native static void destroyPhysicsWorld(long physicsWorld);
 
     public static boolean isPhysicsAvailable() {

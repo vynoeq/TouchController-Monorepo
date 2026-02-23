@@ -70,6 +70,9 @@ class ModelInstanceImpl(
                         }
 
                         return object : top.fifthlight.blazerod.api.physics.PhysicsWorld {
+                            override fun applyVelocityDamping(rigidBodyIndex: Int, linearAttenuation: Float, angularAttenuation: Float) {
+                                bulletWorld.applyVelocityDamping(rigidBodyIndex, linearAttenuation, angularAttenuation)
+                            }
                             override fun resetRigidBody(rigidBodyIndex: Int, position: org.joml.Vector3f, rotation: org.joml.Quaternionf) {
                                 bulletWorld.resetRigidBody(rigidBodyIndex, position, rotation)
                             }
@@ -102,6 +105,7 @@ class ModelInstanceImpl(
     ) : AutoCloseable {
         var lastPhysicsTime: Float = -1f
         var lastRootPos = org.joml.Vector3f()
+        var lastFrameDistSq: Float = 0f
         val world: top.fifthlight.blazerod.api.physics.PhysicsWorld
             get() = top.fifthlight.blazerod.api.physics.PhysicsEngine.getWorld(instance) ?: error("PhysicsWorld is not initialized")
         lateinit var transformArray: FloatArray

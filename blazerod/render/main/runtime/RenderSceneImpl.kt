@@ -193,7 +193,6 @@ class RenderSceneImpl(
                     data.world.resetRigidBody(component.rigidBodyIndex, initPos, initRot)
                 }
                 
-                // Initialize root pos
                 instance.modelData.worldTransformsNoPhysics[rootNode.nodeIndex].getTranslation(data.lastRootPos)
 
                 data.world.pullTransforms(data.transformArray)
@@ -209,7 +208,6 @@ class RenderSceneImpl(
             }
             data.lastPhysicsTime = time
 
-            // Limit max physics step to FPS based on LOD
             val distanceFpsMultiplier = when {
                 distance < 16f -> 1f
                 distance < 32f -> 0.5f
@@ -228,10 +226,10 @@ class RenderSceneImpl(
                 instance.updateWorldTransformsNoPhysics()
                 executePhase(instance, UpdatePhase.PhysicsUpdatePre)
                 
-                // Acceleration dampener (Teleport if moved > 2 blocks in a single frame)
                 val rootPos = Vector3f()
                 instance.modelData.worldTransformsNoPhysics[rootNode.nodeIndex].getTranslation(rootPos)
-                if (rootPos.distanceSquared(data.lastRootPos) > 4.0f) { 
+                val distSq = rootPos.distanceSquared(data.lastRootPos)
+                if (distSq > 4.0f) { 
                     val initPos = Vector3f()
                     val initRot = Quaternionf()
                     for ((nodeIndex, component) in rigidBodyComponents) {
@@ -241,7 +239,13 @@ class RenderSceneImpl(
                         data.world.resetRigidBody(component.rigidBodyIndex, initPos, initRot)
                     }
                     executePhase(instance, UpdatePhase.PhysicsUpdatePre)
+                } else if (data.lastFrameDistSq > 0.05f && distSq < 0.001f) {
+                    for ((_, component) in rigidBodyComponents) {
+                        data.world.applyVelocityDamping(component.rigidBodyIndex, 0.2f, 0.2f)
+                    }
                 }
+                
+                data.lastFrameDistSq = distSq
                 data.lastRootPos.set(rootPos)
 
                 data.world.pushTransforms(data.transformArray)
