@@ -103,7 +103,7 @@ public class PhysicsLibrary {
             top.fifthlight.blazerod.util.nativeloader.NativeLoader.load(
                 PhysicsLibrary.class.getClassLoader(), 
                 "bullet", 
-                "bullet_%s_%s/libbullet.%s".formatted(system, arch, extension)
+                "bullet"
             );
             isPhysicsAvailable = true;
             logger.info("Loaded bullet physics native library");

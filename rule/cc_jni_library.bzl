@@ -76,7 +76,12 @@ Ensure each (os, cpu) pair is unique.""".format(
         seen_platforms[identifier] = info.platform
 
         lib_basename = info.file.basename
-        lib_extension = lib_basename.split(".")[-1]
+        if os == "windows":
+            lib_extension = "dll"
+        elif os == "macos":
+            lib_extension = "dylib"
+        else:
+            lib_extension = "so"
 
         output_path = "{original_name}_{os}_{cpu}/lib{lib_basename}.{lib_extension}".format(
             original_name = original_name,
