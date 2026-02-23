@@ -110,6 +110,8 @@ public class PhysicsLibrary {
             return true;
         } catch (Exception | LinkageError ex) {
             logger.error("Failed to load bullet physics native library", ex);
+            System.err.println("CRITICAL JNI LOAD ERROR:");
+            ex.printStackTrace(System.err);
             return false;
         }
     }
