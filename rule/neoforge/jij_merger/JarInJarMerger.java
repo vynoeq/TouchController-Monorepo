@@ -8,16 +8,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class JarInJarMerger {
+    private static final long DOS_EPOCH = 315532800000L;
+
+    private static void setJarEntryTime(ZipEntry entry) {
+        entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastAccessTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setTimeLocal(LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC));
+    }
+
     private record JijMetadata(@JsonProperty("jars") List<Jar> jars) {
         public record Jar(@JsonProperty("identifier") Identifier identifier, @JsonProperty("version") Version version,
                           @JsonProperty("path") String path, @JsonProperty("isObfuscated") Boolean isObfuscated) {
@@ -63,25 +76,28 @@ public class JarInJarMerger {
                 try (var entryByteOutputStream = new ByteArrayOutputStream();
                      var entryInputStream = new JarInputStream(Files.newInputStream(jijEntry.path()))) {
                     var manifest = entryInputStream.getManifest();
+                    if (manifest == null) {
+                        manifest = new Manifest();
+                    }
                     if (!jijEntry.fmlType.isBlank()) {
                         manifest.getMainAttributes().putValue("FMLType", jijEntry.fmlType);
                     }
                     try (var entryOutputStream = new ZipOutputStream(entryByteOutputStream)) {
                         var entry = new JarEntry("META-INF/MANIFEST.MF");
-                        entry.setTime(0L);
+                        setJarEntryTime(entry);
                         entryOutputStream.putNextEntry(entry);
                         manifest.write(entryOutputStream);
                         entryOutputStream.closeEntry();
 
                         while ((entry = entryInputStream.getNextJarEntry()) != null) {
-                            entry.setTime(0L);
+                            setJarEntryTime(entry);
                             entryOutputStream.putNextEntry(entry);
                             entryInputStream.transferTo(entryOutputStream);
                             entryOutputStream.closeEntry();
                         }
                     }
                     var entry = new JarEntry(path);
-                    entry.setTime(0L);
+                    setJarEntryTime(entry);
                     outputStream.putNextEntry(entry);
                     entryByteOutputStream.writeTo(outputStream);
                     outputStream.closeEntry();
@@ -91,14 +107,14 @@ public class JarInJarMerger {
             }
             var jijMetadata = new JijMetadata(jijJarEntries);
             var jijMetadataEntry = new JarEntry("META-INF/jarjar/metadata.json");
-            jijMetadataEntry.setTime(0L);
+            setJarEntryTime(jijMetadataEntry);
             outputStream.putNextEntry(jijMetadataEntry);
             mapper.writeValue(outputStream, jijMetadata);
             outputStream.closeEntry();
 
             ZipEntry entry;
             while ((entry = inputStream.getNextEntry()) != null) {
-                entry.setTime(0L);
+                setJarEntryTime(entry);
                 outputStream.putNextEntry(entry);
                 inputStream.transferTo(outputStream);
                 outputStream.closeEntry();

@@ -7,6 +7,7 @@ java_binary(
     visibility = ["//visibility:public"],
     deps = [
         "//rule/worker_api",
-        "@maven//:net_fabricmc_access_widener",
+        "@maven//:net_fabricmc_class_tweaker",
+        "@maven//:org_jetbrains_annotations",
     ],
 )

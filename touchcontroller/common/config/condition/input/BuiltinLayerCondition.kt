@@ -1,4 +1,4 @@
-package top.fifthlight.touchcontroller.common.config.condition
+package top.fifthlight.touchcontroller.common.config.condition.input
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,29 +34,11 @@ enum class BuiltinLayerCondition(val text: Identifier) {
     @SerialName("using_item")
     USING_ITEM(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_USING_ITEM),
 
-    @SerialName("on_minecart")
-    ON_MINECART(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_MINECART),
-
-    @SerialName("on_boat")
-    ON_BOAT(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_BOAT),
-
-    @SerialName("on_pig")
-    ON_PIG(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_PIG),
-
-    @SerialName("on_horse")
-    ON_HORSE(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_HORSE),
-
-    @SerialName("on_camel")
-    ON_CAMEL(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_CAMEL),
-
-    @SerialName("on_llama")
-    ON_LLAMA(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_LLAMA),
-
-    @SerialName("on_strider")
-    ON_STRIDER(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ON_STRIDER),
-
     @SerialName("riding")
     RIDING(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_RIDING),
+
+    @SerialName("entity_selected")
+    ENTITY_SELECTED(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_ENTITY_SELECTED),
 
     @SerialName("block_selected")
     BLOCK_SELECTED(Texts.SCREEN_CUSTOM_CONTROL_LAYOUT_LAYERS_CONDITIONS_BLOCK_SELECTED),

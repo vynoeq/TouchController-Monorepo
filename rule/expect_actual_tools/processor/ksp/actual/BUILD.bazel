@@ -1,0 +1,19 @@
+load("@rules_kotlin//kotlin:core.bzl", "kt_ksp_plugin")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "actual_lib",
+    srcs = [
+        "ActualSymbolProcessor.kt",
+        "ActualSymbolProcessorProvider.kt",
+    ],
+    deps = [
+        "@rules_kotlin//kotlin/compiler:symbol-processing-api",
+    ],
+)
+
+kt_ksp_plugin(
+    name = "actual",
+    processor_class = "top.fifthlight.mergetools.processor.ksp.actual.ActualSymbolProcessorProvider",
+    deps = [],
+)

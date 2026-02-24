@@ -22,8 +22,6 @@ class ItemSerializer : KSerializer<Item> {
 
     override fun serialize(encoder: Encoder, value: Item) = encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, serializer<Identifier>(), value.id)
-        @OptIn(ExperimentalSerializationApi::class)
-        encodeNullableSerializableElement(descriptor, 1, serializer<Int?>(), null)
     }
 
     override fun deserialize(decoder: Decoder): Item {
@@ -33,7 +31,6 @@ class ItemSerializer : KSerializer<Item> {
                 @OptIn(ExperimentalSerializationApi::class)
                 when (val index = decodeElementIndex(descriptor)) {
                     0 -> id = decodeSerializableElement(descriptor, 0, serializer<Identifier>())
-                    1 -> decodeNullableSerializableElement(descriptor, 1, serializer<Int?>(), null)
                     CompositeDecoder.DECODE_DONE -> break
                     else -> error("Unexpected index: $index")
                 }

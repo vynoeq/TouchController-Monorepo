@@ -1,0 +1,16 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "theme",
+    srcs = glob(["*.kt"]),
+    merge_deps = ["//touchcontroller/resources/texture:texture_lib"],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/paint",
+        "//combine/style",
+        "//combine/theme/base",
+        "//combine/theme/blackstone",
+        "//combine/theme/blackstone:texture_lib",
+    ],
+)

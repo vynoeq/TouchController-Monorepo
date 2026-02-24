@@ -122,7 +122,7 @@ val BlackstoneTheme = run {
             selectIconUp = BlackstoneTextures.icon_up,
             selectIconDown = BlackstoneTextures.icon_down,
 
-            radioBoxBorder = BlackstoneTextures.widget_handle_handle,
+            radioBoxBorder = BlackstoneTextures.widget_background_float_window,
 
             iconButton = DrawableSet(
                 normal = BlackstoneTextures.widget_icon_button_icon_button,
@@ -131,9 +131,9 @@ val BlackstoneTheme = run {
                 disabled = BlackstoneTextures.widget_icon_button_icon_button_disabled,
             ),
             selectedIconButton = DrawableSet(
-                normal = BlackstoneTextures.widget_icon_button_icon_button_active,
-                hover = BlackstoneTextures.widget_icon_button_icon_button_active,
-                active = BlackstoneTextures.widget_icon_button_icon_button_active,
+                normal = BlackstoneTextures.widget_icon_button_icon_button_presslock,
+                hover = BlackstoneTextures.widget_icon_button_icon_button_presslock_hover,
+                active = BlackstoneTextures.widget_icon_button_icon_button_presslock_active,
                 disabled = BlackstoneTextures.widget_icon_button_icon_button_disabled,
             ),
 
@@ -164,6 +164,8 @@ val BlackstoneTheme = run {
         ),
         colors = Theme.Colors(
             button = ColorTheme.light,
+            guideButton = ColorTheme.dark,
+            warningButton = ColorTheme.dark,
         ),
     )
 }

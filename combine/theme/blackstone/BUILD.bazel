@@ -57,6 +57,10 @@ kt_vanilla_lib(
 
 merge_library_jar(
     name = "vanilla_lib",
+    resources = {
+        "icon.png": ".",
+    },
+    visibility = ["//visibility:public"],
     deps = [
         ":blackstone",
         ":vanilla_lib_unmerged",

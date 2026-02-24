@@ -23,6 +23,78 @@ import top.fifthlight.data.Rect
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl
 
+private fun GuiGraphics.getSprite(identifier: Identifier) =
+    (this as SpriteAccessibleGuiGraphics).`combine$getSprite`(identifier)
+
+private fun GuiGraphics.submitElement(guiElementRenderState: GuiElementRenderState) =
+    (this as SubmittableGuiGraphics).`combine$submitElement`(guiElementRenderState)
+
+private fun GuiGraphics.peekScissorStack() =
+    (this as SubmittableGuiGraphics).`combine$peekScissorStack`()
+
+private data class BlitRenderState(
+    val pipeline: RenderPipeline,
+    val textureSetup: TextureSetup,
+    val pose: Matrix3x2f,
+    val x0: Float,
+    val y0: Float,
+    val x1: Float,
+    val y1: Float,
+    val u0: Float,
+    val u1: Float,
+    val v0: Float,
+    val v1: Float,
+    val color: Int,
+    val scissorArea: ScreenRectangle?,
+    val bounds: ScreenRectangle?,
+) : GuiElementRenderState {
+    constructor(
+        pipeline: RenderPipeline,
+        textureSetup: TextureSetup,
+        pose: Matrix3x2f,
+        x0: Float,
+        y0: Float,
+        x1: Float,
+        y1: Float,
+        u0: Float,
+        u1: Float,
+        v0: Float,
+        v1: Float,
+        color: Int,
+        screenRectangle: ScreenRectangle?,
+    ) : this(
+        pipeline = pipeline,
+        textureSetup = textureSetup,
+        pose = pose,
+        x0 = x0,
+        y0 = y0,
+        x1 = x1,
+        y1 = y1,
+        u0 = u0,
+        u1 = u1,
+        v0 = v0,
+        v1 = v1,
+        color = color,
+        scissorArea = screenRectangle,
+        bounds = GuiElementUtil.getBounds(x0, y0, x1, y1, pose, screenRectangle)
+    )
+
+    override fun buildVertices(vertexConsumer: VertexConsumer) {
+        vertexConsumer.addVertexWith2DPose(pose, x0, y0).setUv(u0, v0).setColor(color)
+        vertexConsumer.addVertexWith2DPose(pose, x0, y1).setUv(u0, v1).setColor(color)
+        vertexConsumer.addVertexWith2DPose(pose, x1, y1).setUv(u1, v1).setColor(color)
+        vertexConsumer.addVertexWith2DPose(pose, x1, y0).setUv(u1, v0).setColor(color)
+    }
+
+    override fun pipeline() = pipeline
+
+    override fun textureSetup() = textureSetup
+
+    override fun scissorArea() = scissorArea
+
+    override fun bounds() = bounds
+}
+
 @ActualImpl(Texture::class)
 data class TextureImpl(
     val identifier: Identifier,
@@ -45,84 +117,13 @@ data class TextureImpl(
         )
     }
 
-    private fun GuiGraphics.getSprite(identifier: Identifier) =
-        (this as SpriteAccessibleGuiGraphics).`combine$getSprite`(identifier)
-
-    private fun GuiGraphics.submitElement(guiElementRenderState: GuiElementRenderState) =
-        (this as SubmittableGuiGraphics).`combine$submitElement`(guiElementRenderState)
-
-    private fun GuiGraphics.peekScissorStack() =
-        (this as SubmittableGuiGraphics).`combine$peekScissorStack`()
-
-    private data class BlitRenderState(
-        val pipeline: RenderPipeline,
-        val textureSetup: TextureSetup,
-        val pose: Matrix3x2f,
-        val x0: Float,
-        val y0: Float,
-        val x1: Float,
-        val y1: Float,
-        val u0: Float,
-        val u1: Float,
-        val v0: Float,
-        val v1: Float,
-        val color: Int,
-        val scissorArea: ScreenRectangle?,
-        val bounds: ScreenRectangle?,
-    ) : GuiElementRenderState {
-        constructor(
-            pipeline: RenderPipeline,
-            textureSetup: TextureSetup,
-            pose: Matrix3x2f,
-            x0: Float,
-            y0: Float,
-            x1: Float,
-            y1: Float,
-            u0: Float,
-            u1: Float,
-            v0: Float,
-            v1: Float,
-            color: Int,
-            screenRectangle: ScreenRectangle?,
-        ) : this(
-            pipeline = pipeline,
-            textureSetup = textureSetup,
-            pose = pose,
-            x0 = x0,
-            y0 = y0,
-            x1 = x1,
-            y1 = y1,
-            u0 = u0,
-            u1 = u1,
-            v0 = v0,
-            v1 = v1,
-            color = color,
-            scissorArea = screenRectangle,
-            bounds = GuiElementUtil.getBounds(x0, y0, x1, y1, pose, screenRectangle)
-        )
-
-        override fun buildVertices(vertexConsumer: VertexConsumer) {
-            vertexConsumer.addVertexWith2DPose(pose, x0, y0).setUv(u0, v0).setColor(color)
-            vertexConsumer.addVertexWith2DPose(pose, x0, y1).setUv(u0, v1).setColor(color)
-            vertexConsumer.addVertexWith2DPose(pose, x1, y1).setUv(u1, v1).setColor(color)
-            vertexConsumer.addVertexWith2DPose(pose, x1, y0).setUv(u1, v0).setColor(color)
-        }
-
-        override fun pipeline() = pipeline
-
-        override fun textureSetup() = textureSetup
-
-        override fun scissorArea() = scissorArea
-
-        override fun bounds() = bounds
-    }
-
-    override fun Canvas.draw(
+    override fun draw(
+        canvas: Canvas,
         dstRect: Rect,
         tint: Color,
         srcRect: Rect,
     ) {
-        val guiGraphics = (this as CanvasImpl).guiGraphics
+        val guiGraphics = (canvas as CanvasImpl).guiGraphics
         val client = Minecraft.getInstance()
         val sprite = guiGraphics.getSprite(identifier)
         val atlasLocation = sprite.atlasLocation()
@@ -147,11 +148,12 @@ data class TextureImpl(
         )
     }
 
-    override fun Canvas.draw(
+    override fun draw(
+        canvas: Canvas,
         dstRect: IntRect,
         tint: Color,
     ) {
-        val guiGraphics = (this as CanvasImpl).guiGraphics
+        val guiGraphics = (canvas as CanvasImpl).guiGraphics
         guiGraphics.blitSprite(
             RenderPipelines.GUI_TEXTURED,
             identifier,
@@ -183,16 +185,30 @@ data class BackgroundTextureImpl(
         )
     }
 
-    override fun Canvas.draw(
+    override fun draw(
+        canvas: Canvas,
         dstRect: Rect,
         tint: Color,
         scale: Float,
     ) {
-    }
-
-    override fun Canvas.draw(
-        dstRect: IntRect,
-        tint: Color,
-    ) {
+        val guiGraphics = (canvas as CanvasImpl).guiGraphics
+        val texture = canvas.client.textureManager.getTexture(identifier)
+        guiGraphics.submitElement(
+            BlitRenderState(
+                pipeline = RenderPipelines.GUI_TEXTURED,
+                textureSetup = TextureSetup.singleTexture(texture.textureView, texture.sampler),
+                pose = Matrix3x2f(guiGraphics.pose()),
+                x0 = dstRect.offset.x,
+                y0 = dstRect.offset.y,
+                x1 = dstRect.offset.x + dstRect.size.width,
+                y1 = dstRect.offset.y + dstRect.size.height,
+                u0 = 0f,
+                u1 = dstRect.size.width / size.width / scale,
+                v0 = 0f,
+                v1 = dstRect.size.height / size.height / scale,
+                color = tint.value,
+                screenRectangle = guiGraphics.peekScissorStack(),
+            )
+        )
     }
 }

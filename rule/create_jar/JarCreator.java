@@ -1,68 +1,97 @@
 package top.fifthlight.fabazel.jarcreator;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 public class JarCreator {
-    public static void main(String[] args) {
+    private static final long DOS_EPOCH = 315532800000L;
+
+    private static void setJarEntryTime(JarEntry entry) {
+        entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastAccessTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setTimeLocal(LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC));
+    }
+
+    private final Path sandboxDir;
+
+    public JarCreator(Path sandboxDir) {
+        this.sandboxDir = sandboxDir;
+    }
+
+    public static void run(PrintWriter out, Path sandboxDir, String... args) throws Exception {
         if (args.length < 1) {
-            System.err.println("Usage: JarCreator <output-jar> [--entry path file]...");
-            System.exit(1);
+            out.println("Usage: JarCreator <output-jar> [options]");
+            out.println("Options:");
+            out.println("  --entry <jar-path> <file-path>  Add file path in JAR");
+            out.println("  --output <output-jar> Output JAR path");
         }
 
-        var outputPath = args[0];
-        var outputJarPath = Paths.get(outputPath);
+        var creator = new JarCreator(sandboxDir);
+        creator.processArgs(args);
+        creator.createJar();
+    }
 
-        try (var jarOut = new JarOutputStream(new FileOutputStream(outputJarPath.toFile()))) {
-            for (var i = 1; i < args.length; i += 3) {
-                if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("Missing file for path: " + args[i]);
+    private final Map<String, Path> entries = new HashMap<>();
+    private Path outputPath;
+
+    private void processArgs(String[] args) {
+        for (var i = 0; i < args.length; i++) {
+            var arg = args[i];
+
+            switch (arg) {
+                case "--entry" -> {
+                    if (i + 2 >= args.length) {
+                        throw new IllegalArgumentException("Missing arguments for --entry");
+                    }
+                    var entryPath = args[++i];
+                    if (entries.containsKey(entryPath)) {
+                        throw new IllegalArgumentException("Duplicate entry: " + entryPath);
+                    }
+                    entries.put(entryPath, sandboxDir.resolve(Path.of(args[++i])));
                 }
 
-                if (!args[i].equals("--entry")) {
-                    throw new IllegalArgumentException("Expected --entry, got: " + args[i]);
+                case "--output" -> {
+                    if (i + 1 >= args.length) {
+                        throw new IllegalArgumentException("Missing arguments for --output");
+                    }
+                    outputPath = sandboxDir.resolve(Path.of(args[++i]));
                 }
 
-                var entryPath = args[i + 1];
-                if (i + 2 >= args.length) {
-                    throw new IllegalArgumentException("Missing file for entry: " + entryPath);
-                }
-
-                var filePath = args[i + 2];
-                var inputPath = Paths.get(filePath);
-
-                addEntryToJar(jarOut, entryPath, inputPath);
+                default -> throw new IllegalArgumentException("Unknown argument: " + arg);
             }
-        } catch (Exception e) {
-            System.err.println("Error creating JAR: " + e.getMessage());
-            e.printStackTrace();
-            System.exit(1);
         }
     }
 
-    private static void addEntryToJar(JarOutputStream jarOut, String entryPath, Path filePath) throws IOException {
-        if (!Files.exists(filePath)) {
-            throw new FileNotFoundException("File not found: " + filePath);
-        }
+    private record JarEntryData(String entry, Path filePath) {
+    }
 
-        var entry = new JarEntry(entryPath);
-        entry.setCreationTime(FileTime.fromMillis(0));
-        entry.setLastAccessTime(FileTime.fromMillis(0));
-        entry.setLastModifiedTime(FileTime.fromMillis(0));
-        entry.setTimeLocal(LocalDateTime.ofEpochSecond(0L, 0, ZoneOffset.UTC));
-        jarOut.putNextEntry(entry);
-        try (var inputStream = Files.newInputStream(filePath)) {
-            inputStream.transferTo(jarOut);
+    private void createJar() throws IOException {
+        var entries = this.entries.entrySet().stream()
+                .map(entry -> new JarEntryData(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(JarEntryData::entry))
+                .toList();
+        try (var jarOut = new JarOutputStream(new FileOutputStream(outputPath.toFile()))) {
+            for (var data : entries) {
+                var jarEntry = new JarEntry(data.entry);
+                setJarEntryTime(jarEntry);
+                jarOut.putNextEntry(jarEntry);
+                try (var inputStream = Files.newInputStream(data.filePath)) {
+                    inputStream.transferTo(jarOut);
+                }
+                jarOut.closeEntry();
+            }
         }
-        jarOut.closeEntry();
     }
 }

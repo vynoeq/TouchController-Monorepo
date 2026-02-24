@@ -1,0 +1,29 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "1.21.8",
+    srcs = ["BlazeRodMain.kt"],
+    merge_runtime_deps = [
+        "//blazerod/render/versions/1.21.8/animation",
+        "//blazerod/render/versions/1.21.8/animation/context",
+        "//blazerod/render/versions/1.21.8/api/animation",
+        "//blazerod/render/versions/1.21.8/api/render",
+        "//blazerod/render/versions/1.21.8/api/resource",
+        "//blazerod/render/versions/1.21.8/expect",
+        "//blazerod/render/versions/1.21.8/extension",
+        "//blazerod/render/versions/1.21.8/render",
+        "//blazerod/render/versions/1.21.8/runtime",
+        "//blazerod/render/versions/1.21.8/runtime/data",
+        "//blazerod/render/versions/1.21.8/runtime/load",
+        "//blazerod/render/versions/1.21.8/runtime/renderer",
+        "//blazerod/render/versions/1.21.8/runtime/uniform",
+        "//blazerod/render/versions/1.21.8/systems",
+        "//blazerod/render/versions/1.21.8/util/blaze3d",
+        "//blazerod/render/versions/1.21.8/util/dispatchers",
+        "//blazerod/render/versions/1.21.8/util/glsl",
+        "//blazerod/render/versions/1.21.8/util/gpushaderpool",
+        "//blazerod/render/versions/1.21.8/util/math",
+        "//blazerod/render/versions/1.21.8/util/uniform",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+)

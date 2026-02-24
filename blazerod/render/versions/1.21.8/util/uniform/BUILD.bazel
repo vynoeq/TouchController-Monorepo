@@ -1,0 +1,16 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "uniform",
+    srcs = ["UniformBufferStorage.kt"],
+    merge_deps = [
+        "//blazerod/render/common/debug",
+        "//blazerod/render/common/util/math",
+        "//blazerod/render/versions/1.21.8/util/gpushaderpool",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+        "//game/1.21.8:game_client_libraries",
+    ],
+)

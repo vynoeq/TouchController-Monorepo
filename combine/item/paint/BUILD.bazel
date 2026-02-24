@@ -5,7 +5,6 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     merge_deps = [
         "//combine/core/paint",
-        "//combine/core/data",
         "//combine/data",
         "//combine/item/data",
     ],

@@ -1,10 +1,10 @@
-package top.fifthlight.mergetools.processor.expect;
+package top.fifthlight.mergetools.processor.java.expect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.palantir.javapoet.*;
 import top.fifthlight.mergetools.api.ExpectFactory;
 import top.fifthlight.mergetools.processor.ExpectData;
-import top.fifthlight.mergetools.processor.Util;
+import top.fifthlight.mergetools.processor.java.util.Util;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;

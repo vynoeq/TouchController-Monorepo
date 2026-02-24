@@ -3,14 +3,15 @@ load("//game:game.bzl", "game_version")
 game_version(
     name = "game",
     client = "@minecraft//b1.7.3:client",
+    client_assets = "@minecraft_assets//:assets_b1.7.3",
+    client_assets_version = "@minecraft_assets//:version_b1.7.3",
     client_legacy = True,
     client_legacy_assets = True,
-    client_native_manifest = "@minecraft//b1.7.3:client_extract_libraries",
-    client_assets = "@minecraft_assets//:assets_b1.7.3",
     client_libraries = "@minecraft//b1.7.3:client_libraries",
+    client_native_manifest = "@minecraft//b1.7.3:client_extract_libraries",
     intermediary = "@maven_fabric_b1_7_3//:babric_intermediary_v2",
+    split_source_namespace = True,
     version = "b1.7.3",
     visibility = ["//visibility:public"],
     yarn = "@maven_fabric_b1_7_3//:net_glasslauncher_biny_v2",
-    split_source_namespace = True,
 )

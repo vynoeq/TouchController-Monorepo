@@ -8,7 +8,6 @@ kt_jvm_library(
     resources = glob(["resources/**"]),
     deps = [
         "//:compose",
-        "//combine/backend/minecraft/26.1",
         "//combine/core/data",
         "//combine/core/layout",
         "//combine/core/modifier",
@@ -29,6 +28,9 @@ kt_jvm_library(
         "@maven_fabric_26_1//:net_fabricmc_fabric_api_fabric_lifecycle_events_v1",
         "@maven_fabric_26_1//:net_fabricmc_fabric_loader",
     ],
+    runtime_deps = [
+        "//combine/backend/minecraft/26.1",
+    ],
 )
 
 java_binary(
@@ -36,16 +38,16 @@ java_binary(
     srcs = [],
     data = [
         "//game/26.1:game_client_assets",
-        "@minecraft_assets//:assets",
+        "//game/26.1:game_client_assets_version",
     ],
     env = {
         "LANG": "en_US.UTF8",
     },
     jvm_flags = [
         "-Dfabric.development=true",
-        "-Ddev.launch.version=26.1-snapshot-2",
+        "-Ddev.launch.version=26.1-snapshot-9",
         "-Ddev.launch.type=client",
-        "-Ddev.launch.assetsPath=$(rlocationpath @minecraft_assets//:assets)",
+        "-Ddev.launch.assetsVersion=$(rlocationpath //game/26.1:game_client_assets_version)",
         "-Ddev.launch.mainClass=net.fabricmc.loader.impl.launch.knot.KnotClient",
         "-Xmx4G",
     ],

@@ -5,12 +5,12 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     expect = True,
     merge_deps = [
-        "//combine/core/data",
-        "//combine/item/data",
         "//touchcontroller/common/gal/player",
     ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
+        "//combine/core/data",
+        "//combine/item/data",
         "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
     ],
 )

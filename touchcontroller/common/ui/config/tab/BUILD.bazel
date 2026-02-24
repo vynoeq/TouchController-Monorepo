@@ -1,0 +1,17 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "tab",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/config",
+        "//touchcontroller/resources/lang:text_binding",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "@maven//:cafe_adriel_voyager_voyager_core_desktop",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
+)

@@ -9,15 +9,16 @@ interface Drawable {
     val size: IntSize
     val padding: IntPadding
 
-    fun Canvas.draw(dstRect: IntRect, tint: Color = Colors.WHITE)
+    fun draw(canvas: Canvas, dstRect: IntRect, tint: Color = Colors.WHITE)
 
-    object Empty: Drawable {
+    object Empty : Drawable {
         override val size: IntSize
             get() = IntSize.ZERO
         override val padding: IntPadding
             get() = IntPadding.ZERO
 
-        override fun Canvas.draw(
+        override fun draw(
+            canvas: Canvas,
             dstRect: IntRect,
             tint: Color,
         ) = Unit
@@ -54,9 +55,9 @@ data class LayeredDrawable(
         IntPadding(maxLeft, maxTop, maxRight, maxBottom)
     }
 
-    override fun Canvas.draw(dstRect: IntRect, tint: Color) {
+    override fun draw(canvas: Canvas, dstRect: IntRect, tint: Color) {
         for (layer in layers) {
-            layer.run { draw(dstRect, tint) }
+            layer.draw(canvas, dstRect, tint)
         }
     }
 }
@@ -69,9 +70,11 @@ data class PaddingDrawable(
     override val size = drawable.size + extraPadding.size
     override val padding = drawable.padding + extraPadding
 
-    override fun Canvas.draw(dstRect: IntRect, tint: Color) {
-        drawable.run { draw(dstRect + extraPadding, tint) }
-    }
+    override fun draw(canvas: Canvas, dstRect: IntRect, tint: Color) = drawable.draw(
+        canvas = canvas,
+        dstRect = dstRect + extraPadding,
+        tint = tint
+    )
 }
 
 @Immutable
@@ -81,8 +84,8 @@ data class ColorDrawable(val color: Color) : Drawable {
     override val padding: IntPadding
         get() = IntPadding.ZERO
 
-    override fun Canvas.draw(dstRect: IntRect, tint: Color) {
-        fillRect(
+    override fun draw(canvas: Canvas, dstRect: IntRect, tint: Color) {
+        canvas.fillRect(
             offset = dstRect.offset,
             size = dstRect.size,
             color = color * tint,
@@ -100,8 +103,8 @@ data class BackgroundTextureDrawable(
     override val padding: IntPadding
         get() = backgroundTexture.padding
 
-    override fun Canvas.draw(dstRect: IntRect, tint: Color)  = with(backgroundTexture) {
-        draw(dstRect, tint, scale)
+    override fun draw(canvas: Canvas, dstRect: IntRect, tint: Color) {
+        backgroundTexture.draw(canvas, dstRect, tint, scale)
     }
 }
 
@@ -118,14 +121,14 @@ data class GradientDrawable(
         require(colors.size >= 2)
     }
 
-    override fun Canvas.draw(dstRect: IntRect, tint: Color) {
+    override fun draw(canvas: Canvas, dstRect: IntRect, tint: Color) {
         val segments = colors.size - 1
         val segmentWidth = dstRect.size.width.toFloat() / segments
 
         for (index in 0 until segments) {
             val start = colors[index]
             val end = colors[(index + 1) % colors.size]
-            fillGradientRect(
+            canvas.fillGradientRect(
                 offset = dstRect.offset.toOffset() + Offset(x = index * segmentWidth, y = 0f),
                 size = Size(segmentWidth, dstRect.size.height.toFloat()),
                 leftTopColor = start,

@@ -25,22 +25,21 @@ import top.fifthlight.combine.widget.ui.*
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntPadding
 import top.fifthlight.data.IntSize
-import top.fifthlight.touchcontroller.assets.EmptyTexture
 import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.assets.TextureSet
 import top.fifthlight.touchcontroller.assets.Textures
 import top.fifthlight.touchcontroller.common.control.action.ButtonTrigger
 import top.fifthlight.touchcontroller.common.control.action.WidgetTriggerAction
-import top.fifthlight.touchcontroller.common.control.property.ButtonActiveTexture
-import top.fifthlight.touchcontroller.common.control.property.ButtonTexture
-import top.fifthlight.touchcontroller.common.control.property.DPadExtraButton
 import top.fifthlight.touchcontroller.common.control.property.TextureCoordinate
 import top.fifthlight.touchcontroller.common.gal.key.KeyBindingHandler
 import top.fifthlight.touchcontroller.common.gal.key.KeyBindingHandlerFactory
 import top.fifthlight.touchcontroller.common.layout.align.Align
-import top.fifthlight.touchcontroller.common.ui.component.*
+import top.fifthlight.touchcontroller.common.ui.theme.LocalTouchControllerTheme
+import top.fifthlight.touchcontroller.common.ui.widget.*
+import top.fifthlight.touchcontroller.common.ui.widget.navigation.AppBar
+import top.fifthlight.touchcontroller.common.ui.widget.navigation.BackButton
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.paddingProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.paddingProperty(
     getPadding: (Value) -> IntPadding?,
     setPadding: (Value, IntPadding) -> Value,
     name: Text,
@@ -50,7 +49,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     name = name,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.intProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.intProperty(
     getInt: (Value) -> Int?,
     setInt: (Value, Int) -> Value,
     range: IntRange,
@@ -64,7 +63,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     },
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.colorProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.colorProperty(
     getColor: (Value) -> Color?,
     setColor: (Value, Color) -> Value,
     name: Text,
@@ -74,7 +73,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     name = name,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.textureCoordinateProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.textureCoordinateProperty(
     getCoordinate: (Value) -> TextureCoordinate?,
     setCoordinate: (Value, TextureCoordinate) -> Value,
     name: Text,
@@ -84,7 +83,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     name = name,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.scaleProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.scaleProperty(
     getScale: (Value) -> Float?,
     setScale: (Value, Float) -> Value,
     range: ClosedFloatingPointRange<Float> = 0f..1f,
@@ -102,7 +101,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     },
 )
 
-private fun <Config : ControllerWidget, Value, T> ControllerWidget.Property<Config, Value>.enumProperty(
+fun <Config : ControllerWidget, Value, T> ControllerWidget.Property<Config, Value>.enumProperty(
     getEnum: (Value) -> T?,
     setEnum: (Value, T) -> Value,
     defaultValue: T,
@@ -115,7 +114,7 @@ private fun <Config : ControllerWidget, Value, T> ControllerWidget.Property<Conf
     items = items,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.triggerActionProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.triggerActionProperty(
     getAction: (Value) -> WidgetTriggerAction?,
     setAction: (Value, WidgetTriggerAction?) -> Value,
     name: Text,
@@ -125,7 +124,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     name = name,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.keyBindingProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.keyBindingProperty(
     getKeyBinding: (Value) -> String?,
     setKeyBinding: (Value, String?) -> Value,
     name: Text,
@@ -135,7 +134,7 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     name = name,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.doubleClickActionProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.doubleClickActionProperty(
     getAction: (Value) -> ButtonTrigger.DoubleClickTrigger,
     setAction: (Value, ButtonTrigger.DoubleClickTrigger) -> Value,
     name: Text,
@@ -145,38 +144,12 @@ private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config,
     name = name,
 )
 
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.triggerProperty(
+fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.triggerProperty(
     getTrigger: (Value) -> ButtonTrigger?,
     setTrigger: (Value, ButtonTrigger) -> Value,
 ) = ButtonTriggerProperty<Config>(
     getValue = { getTrigger(getValue(it)) ?: ButtonTrigger() },
     setValue = { config, value -> setValue(config, setTrigger(getValue(config), value)) },
-)
-
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.buttonTextureProperty(
-    getTexture: (Value) -> ButtonTexture?,
-    setTexture: (Value, ButtonTexture) -> Value,
-    name: Text,
-) = ButtonTextureProperty<Config>(
-    getValue = { getTexture(getValue(it)) ?: ButtonTexture.Empty() },
-    setValue = { config, value -> setValue(config, setTexture(getValue(config), value)) },
-    name = name,
-)
-
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.dpadActiveTextureProperty(
-    getTexture: (Value) -> DPadExtraButton.ActiveTexture?,
-    setTexture: (Value, DPadExtraButton.ActiveTexture) -> Value,
-) = DPadActiveTextureProperty<Config>(
-    getValue = { getTexture(getValue(it)) ?: DPadExtraButton.ActiveTexture.Same },
-    setValue = { config, value -> setValue(config, setTexture(getValue(config), value)) },
-)
-
-private fun <Config : ControllerWidget, Value> ControllerWidget.Property<Config, Value>.dpadButtonInfoProperty(
-    getInfo: (Value) -> DPadExtraButton.ButtonInfo?,
-    setInfo: (Value, DPadExtraButton.ButtonInfo) -> Value,
-) = DPadButtonInfoProperty<Config>(
-    getValue = { getInfo(getValue(it)) ?: DPadExtraButton.ButtonInfo() },
-    setValue = { config, value -> setValue(config, setInfo(getValue(config), value)) },
 )
 
 @Immutable
@@ -679,7 +652,7 @@ class TextureCoordinateProperty<Config : ControllerWidget>(
                         Column(
                             modifier = Modifier
                                 .padding(4)
-                                .background(Textures.background_brick_background)
+                                .background(LocalTouchControllerTheme.current.background)
                                 .then(modifier),
                             verticalArrangement = Arrangement.spacedBy(4),
                         ) {
@@ -753,280 +726,6 @@ class TextureCoordinateProperty<Config : ControllerWidget>(
                         }
                     }
                 }
-            }
-        }
-    }
-}
-
-@Immutable
-class ButtonTextureProperty<Config : ControllerWidget>(
-    getValue: (Config) -> ButtonTexture,
-    setValue: (Config, ButtonTexture) -> Config,
-    private val name: Text,
-) : ControllerWidget.Property<Config, ButtonTexture>(getValue, setValue) {
-    private val emptyTexturePaddingProperty = paddingProperty(
-        getPadding = { (it as? ButtonTexture.Empty)?.extraPadding },
-        setPadding = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Empty -> texture.copy(extraPadding = value)
-                else -> ButtonTexture.Empty(extraPadding = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_TEXTURE_EXTRA_PADDING),
-    )
-
-    private val fillTextureBorderWidthProperty = intProperty(
-        getInt = { (it as? ButtonTexture.Fill)?.borderWidth },
-        setInt = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Fill -> texture.copy(borderWidth = value)
-                else -> ButtonTexture.Fill(borderWidth = value)
-            }
-        },
-        range = 0..16,
-        name = Text.translatable(Texts.WIDGET_TEXTURE_FILL_BORDER_WIDTH),
-    )
-
-    private val fillTexturePaddingProperty = paddingProperty(
-        getPadding = { (it as? ButtonTexture.Fill)?.extraPadding },
-        setPadding = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Fill -> texture.copy(extraPadding = value)
-                else -> ButtonTexture.Fill(extraPadding = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_TEXTURE_EXTRA_PADDING),
-    )
-
-    private val fillTextureBorderColorProperty = colorProperty(
-        getColor = { (it as? ButtonTexture.Fill)?.borderColor },
-        setColor = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Fill -> texture.copy(borderColor = value)
-                else -> ButtonTexture.Fill(borderColor = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_TEXTURE_FILL_BORDER_COLOR),
-    )
-
-    private val fillTextureBackgroundColorProperty = colorProperty(
-        getColor = { (it as? ButtonTexture.Fill)?.backgroundColor },
-        setColor = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Fill -> texture.copy(backgroundColor = value)
-                else -> ButtonTexture.Fill(backgroundColor = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_TEXTURE_FILL_BACKGROUND_COLOR),
-    )
-
-    private val fixedTextureCoordinateProperty = textureCoordinateProperty(
-        getCoordinate = { (it as? ButtonTexture.Fixed)?.texture },
-        setCoordinate = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Fixed -> texture.copy(texture = value)
-                else -> ButtonTexture.Fixed(texture = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_TEXTURE_FIXED_TEXTURE),
-    )
-
-    private val fixedTextureScaleProperty = scaleProperty(
-        getScale = { (it as? ButtonTexture.Fixed)?.scale },
-        setScale = { texture, value ->
-            when (texture) {
-                is ButtonTexture.Fixed -> texture.copy(scale = value)
-                else -> ButtonTexture.Fixed(scale = value)
-            }
-        },
-        range = .5f..4f,
-        name = Text.translatable(Texts.WIDGET_TEXTURE_FIXED_SCALE),
-    )
-
-    private val ninePatchTextureTextureProperty = enumProperty(
-        getEnum = { (it as? ButtonTexture.NinePatch)?.texture },
-        setEnum = { texture, value ->
-            when (texture) {
-                is ButtonTexture.NinePatch -> texture.copy(texture = value)
-                else -> ButtonTexture.NinePatch(texture = value)
-            }
-        },
-        defaultValue = EmptyTexture.EMPTY_1,
-        name = Text.translatable(Texts.WIDGET_TEXTURE_NINE_PATCH_TEXTURE),
-        items = EmptyTexture.entries.map { Pair(it, Text.translatable(it.nameId)) }.toPersistentList(),
-    )
-
-    private val ninePatchTexturePaddingProperty = paddingProperty(
-        getPadding = { (it as? ButtonTexture.NinePatch)?.extraPadding },
-        setPadding = { texture, value ->
-            when (texture) {
-                is ButtonTexture.NinePatch -> texture.copy(extraPadding = value)
-                else -> ButtonTexture.NinePatch(extraPadding = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_TEXTURE_EXTRA_PADDING),
-    )
-
-    @Composable
-    override fun controller(
-        modifier: Modifier,
-        config: ControllerWidget,
-        context: ConfigContext,
-        onConfigChanged: (ControllerWidget) -> Unit,
-    ) {
-        @Suppress("UNCHECKED_CAST")
-        val widgetConfig = config as Config
-        val value = getValue(widgetConfig)
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(4),
-        ) {
-            Text(name)
-            var expanded by remember { mutableStateOf(false) }
-            Select(
-                modifier = Modifier.fillMaxWidth(),
-                expanded = expanded,
-                onExpandedChanged = { expanded = it },
-                dropDownContent = {
-                    DropdownItemList(
-                        modifier = Modifier.verticalScroll(),
-                        items = ButtonTexture.Type.entries,
-                        textProvider = { Text.translatable(it.nameId) },
-                        selectedIndex = ButtonTexture.Type.entries.indexOf(value.type),
-                        onItemSelected = {
-                            val item = ButtonTexture.Type.entries[it]
-                            if (value.type != item) {
-                                onConfigChanged(
-                                    setValue(
-                                        widgetConfig, when (item) {
-                                            ButtonTexture.Type.EMPTY -> ButtonTexture.Empty()
-                                            ButtonTexture.Type.FILL -> ButtonTexture.Fill()
-                                            ButtonTexture.Type.FIXED -> ButtonTexture.Fixed()
-                                            ButtonTexture.Type.NINE_PATCH -> ButtonTexture.NinePatch()
-                                        }
-                                    )
-                                )
-                            }
-                            expanded = false
-                        }
-                    )
-                }
-            ) {
-                Text(Text.translatable(value.type.nameId))
-                Spacer(modifier = Modifier.weight(1f))
-                SelectIcon(expanded = expanded)
-            }
-
-            @Composable
-            fun <Config : ControllerWidget> ControllerWidget.Property<Config, *>.controller() = controller(
-                modifier = Modifier.fillMaxWidth(),
-                config = config,
-                context = context,
-                onConfigChanged = onConfigChanged,
-            )
-
-            when (value) {
-                is ButtonTexture.Empty -> {
-                    emptyTexturePaddingProperty.controller()
-                }
-
-                is ButtonTexture.Fill -> {
-                    fillTexturePaddingProperty.controller()
-                    fillTextureBorderWidthProperty.controller()
-                    fillTextureBorderColorProperty.controller()
-                    fillTextureBackgroundColorProperty.controller()
-                }
-
-                is ButtonTexture.Fixed -> {
-                    fixedTextureCoordinateProperty.controller()
-                    fixedTextureScaleProperty.controller()
-                }
-
-                is ButtonTexture.NinePatch -> {
-                    ninePatchTextureTextureProperty.controller()
-                    ninePatchTexturePaddingProperty.controller()
-                }
-            }
-        }
-    }
-}
-
-@Immutable
-class ButtonActiveTextureProperty<Config : ControllerWidget>(
-    getValue: (Config) -> ButtonActiveTexture,
-    setValue: (Config, ButtonActiveTexture) -> Config,
-    private val name: Text,
-) : ControllerWidget.Property<Config, ButtonActiveTexture>(getValue, setValue) {
-    private val textureProperty = buttonTextureProperty(
-        getTexture = { (it as? ButtonActiveTexture.Texture)?.texture },
-        setTexture = { texture, value ->
-            when (texture) {
-                is ButtonActiveTexture.Texture -> texture.copy(texture = value)
-                else -> ButtonActiveTexture.Texture(texture = value)
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_ACTIVE_TEXTURE_TYPE),
-    )
-
-    @Composable
-    override fun controller(
-        modifier: Modifier,
-        config: ControllerWidget,
-        context: ConfigContext,
-        onConfigChanged: (ControllerWidget) -> Unit,
-    ) {
-        @Suppress("UNCHECKED_CAST")
-        val widgetConfig = config as Config
-        val value = getValue(widgetConfig)
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(4),
-        ) {
-            Text(name)
-            var expanded by remember { mutableStateOf(false) }
-            Select(
-                modifier = Modifier.fillMaxWidth(),
-                expanded = expanded,
-                onExpandedChanged = { expanded = it },
-                dropDownContent = {
-                    DropdownItemList(
-                        modifier = Modifier.verticalScroll(),
-                        items = ButtonActiveTexture.Type.entries,
-                        textProvider = { Text.translatable(it.nameId) },
-                        selectedIndex = ButtonActiveTexture.Type.entries.indexOf(value.type),
-                        onItemSelected = {
-                            val item = ButtonActiveTexture.Type.entries[it]
-                            if (value.type != item) {
-                                onConfigChanged(
-                                    setValue(
-                                        widgetConfig, when (item) {
-                                            ButtonActiveTexture.Type.SAME -> ButtonActiveTexture.Same
-                                            ButtonActiveTexture.Type.GRAY -> ButtonActiveTexture.Gray
-                                            ButtonActiveTexture.Type.TEXTURE -> ButtonActiveTexture.Texture()
-                                        }
-                                    )
-                                )
-                            }
-                            expanded = false
-                        }
-                    )
-                }
-            ) {
-                Text(Text.translatable(value.type.nameId))
-                Spacer(modifier = Modifier.weight(1f))
-                SelectIcon(expanded = expanded)
-            }
-
-            @Composable
-            fun <Config : ControllerWidget> ControllerWidget.Property<Config, *>.controller() = controller(
-                modifier = Modifier.fillMaxWidth(),
-                config = config,
-                context = context,
-                onConfigChanged = onConfigChanged,
-            )
-
-            if (value is ButtonActiveTexture.Texture) {
-                textureProperty.controller()
             }
         }
     }
@@ -1641,304 +1340,6 @@ class ButtonTriggerProperty<Config : ControllerWidget>(
             pressKeyBindingProperty.controller()
             releaseTriggerActionProperty.controller()
             doubleClickTriggerActionProperty.controller()
-        }
-    }
-}
-
-@Immutable
-class DPadActiveTextureProperty<Config : ControllerWidget>(
-    getValue: (Config) -> DPadExtraButton.ActiveTexture,
-    setValue: (Config, DPadExtraButton.ActiveTexture) -> Config,
-) : ControllerWidget.Property<Config, DPadExtraButton.ActiveTexture>(getValue, setValue) {
-    private val textureProperty = textureCoordinateProperty(
-        getCoordinate = { (it as? DPadExtraButton.ActiveTexture.Texture)?.texture },
-        setCoordinate = { texture, value ->
-            when (texture) {
-                is DPadExtraButton.ActiveTexture.Texture -> texture.copy(texture = value)
-                else -> texture
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_DPAD_PROPERTY_EXTRA_BUTTON_ACTIVE_TEXTURE_TYPE),
-    )
-
-    @Composable
-    override fun controller(
-        modifier: Modifier,
-        config: ControllerWidget,
-        context: ConfigContext,
-        onConfigChanged: (ControllerWidget) -> Unit,
-    ) {
-        @Suppress("UNCHECKED_CAST")
-        val widgetConfig = config as Config
-        val value = getValue(widgetConfig)
-
-        @Composable
-        fun <Config : ControllerWidget> ControllerWidget.Property<Config, *>.controller() = controller(
-            modifier = Modifier.fillMaxWidth(),
-            config = config,
-            context = context,
-            onConfigChanged = onConfigChanged,
-        )
-
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(4),
-        ) {
-            Text(Text.translatable(Texts.WIDGET_DPAD_PROPERTY_EXTRA_BUTTON_ACTIVE_TEXTURE))
-            var expanded by remember { mutableStateOf(false) }
-            Select(
-                modifier = Modifier.fillMaxWidth(),
-                expanded = expanded,
-                onExpandedChanged = { expanded = it },
-                dropDownContent = {
-                    DropdownItemList(
-                        modifier = Modifier.verticalScroll(),
-                        items = DPadExtraButton.ActiveTexture.Type.entries,
-                        textProvider = { Text.translatable(it.nameId) },
-                        selectedIndex = DPadExtraButton.ActiveTexture.Type.entries.indexOf(value.type),
-                        onItemSelected = {
-                            val item = DPadExtraButton.ActiveTexture.Type.entries[it]
-                            if (value.type != item) {
-                                onConfigChanged(
-                                    setValue(
-                                        widgetConfig, when (item) {
-                                            DPadExtraButton.ActiveTexture.Type.SAME -> DPadExtraButton.ActiveTexture.Same
-                                            DPadExtraButton.ActiveTexture.Type.GRAY -> DPadExtraButton.ActiveTexture.Gray
-                                            DPadExtraButton.ActiveTexture.Type.TEXTURE -> DPadExtraButton.ActiveTexture.Texture()
-                                        }
-                                    )
-                                )
-                            }
-                            expanded = false
-                        }
-                    )
-                }
-            ) {
-                Text(Text.translatable(value.type.nameId))
-                Spacer(modifier = Modifier.weight(1f))
-                SelectIcon(expanded = expanded)
-            }
-
-            @Composable
-            fun <Config : ControllerWidget> ControllerWidget.Property<Config, *>.controller() = controller(
-                modifier = Modifier.fillMaxWidth(),
-                config = config,
-                context = context,
-                onConfigChanged = onConfigChanged,
-            )
-
-            if (value is DPadExtraButton.ActiveTexture.Texture) {
-                textureProperty.controller()
-            }
-        }
-    }
-}
-
-@Immutable
-class DPadButtonInfoProperty<Config : ControllerWidget>(
-    getValue: (Config) -> DPadExtraButton.ButtonInfo,
-    setValue: (Config, DPadExtraButton.ButtonInfo) -> Config,
-) : ControllerWidget.Property<Config, DPadExtraButton.ButtonInfo>(getValue, setValue) {
-    private val sizeProperty = intProperty(
-        getInt = { it.size },
-        setInt = { config, value -> config.copy(size = value) },
-        range = 12..22,
-        name = Text.translatable(Texts.WIDGET_DPAD_PROPERTY_EXTRA_BUTTON_SIZE)
-    )
-
-    private val textureProperty = textureCoordinateProperty(
-        getCoordinate = { it.texture },
-        setCoordinate = { config, value -> config.copy(texture = value) },
-        name = Text.translatable(Texts.WIDGET_DPAD_PROPERTY_EXTRA_BUTTON_TEXTURE)
-    )
-
-    private val activeTextureProperty = dpadActiveTextureProperty(
-        getTexture = { it.activeTexture },
-        setTexture = { config, value -> config.copy(activeTexture = value) },
-    )
-
-    @Composable
-    override fun controller(
-        modifier: Modifier,
-        config: ControllerWidget,
-        context: ConfigContext,
-        onConfigChanged: (ControllerWidget) -> Unit,
-    ) {
-        @Composable
-        fun <Config : ControllerWidget> ControllerWidget.Property<Config, *>.controller() = controller(
-            modifier = Modifier.fillMaxWidth(),
-            config = config,
-            context = context,
-            onConfigChanged = onConfigChanged,
-        )
-
-        sizeProperty.controller()
-        textureProperty.controller()
-        activeTextureProperty.controller()
-    }
-}
-
-@Immutable
-class DPadExtraButtonProperty<Config : ControllerWidget>(
-    getValue: (Config) -> DPadExtraButton,
-    setValue: (Config, DPadExtraButton) -> Config,
-) : ControllerWidget.Property<Config, DPadExtraButton>(getValue, setValue) {
-    private val normalTriggerProperty = triggerProperty(
-        getTrigger = { (it as? DPadExtraButton.Normal)?.trigger },
-        setTrigger = { config, value ->
-            when (config) {
-                is DPadExtraButton.Normal -> config.copy(
-                    trigger = value
-                )
-
-                else -> config
-            }
-        }
-    )
-
-    private val normalButtonInfoProperty = dpadButtonInfoProperty(
-        getInfo = { (it as? DPadExtraButton.Normal)?.info },
-        setInfo = { config, value ->
-            when (config) {
-                is DPadExtraButton.Normal -> config.copy(
-                    info = value
-                )
-
-                else -> config
-            }
-        }
-    )
-
-    private val swipeTriggerProperty = triggerProperty(
-        getTrigger = { (it as? DPadExtraButton.Swipe)?.trigger },
-        setTrigger = { config, value ->
-            when (config) {
-                is DPadExtraButton.Swipe -> config.copy(
-                    trigger = value
-                )
-
-                else -> config
-            }
-        }
-    )
-
-    private val swipeButtonInfoProperty = dpadButtonInfoProperty(
-        getInfo = { (it as? DPadExtraButton.Swipe)?.info },
-        setInfo = { config, value ->
-            when (config) {
-                is DPadExtraButton.Swipe -> config.copy(
-                    info = value
-                )
-
-                else -> config
-            }
-        }
-    )
-
-    private val swipeLockingTriggerProperty = keyBindingProperty(
-        getKeyBinding = { (it as? DPadExtraButton.SwipeLocking)?.press },
-        setKeyBinding = { config, value ->
-            when (config) {
-                is DPadExtraButton.SwipeLocking -> config.copy(
-                    press = value
-                )
-
-                else -> config
-            }
-        },
-        name = Text.translatable(Texts.WIDGET_DPAD_PROPERTY_EXTRA_BUTTON_SWIPE_LOCKING_KEY_BINDING),
-    )
-
-    private val swipeLockingButtonInfoProperty = dpadButtonInfoProperty(
-        getInfo = { (it as? DPadExtraButton.SwipeLocking)?.info },
-        setInfo = { config, value ->
-            when (config) {
-                is DPadExtraButton.SwipeLocking -> config.copy(
-                    info = value
-                )
-
-                else -> config
-            }
-        }
-    )
-
-    @Composable
-    override fun controller(
-        modifier: Modifier,
-        config: ControllerWidget,
-        context: ConfigContext,
-        onConfigChanged: (ControllerWidget) -> Unit,
-    ) {
-        @Suppress("UNCHECKED_CAST")
-        val widgetConfig = config as Config
-        val value = getValue(widgetConfig)
-
-        @Composable
-        fun <Config : ControllerWidget> ControllerWidget.Property<Config, *>.controller() = controller(
-            modifier = Modifier.fillMaxWidth(),
-            config = config,
-            context = context,
-            onConfigChanged = onConfigChanged,
-        )
-
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(4),
-        ) {
-            Text(Text.translatable(Texts.WIDGET_DPAD_PROPERTY_EXTRA_BUTTON))
-
-            var expanded by remember { mutableStateOf(false) }
-            Select(
-                modifier = Modifier.fillMaxWidth(),
-                expanded = expanded,
-                onExpandedChanged = { expanded = it },
-                dropDownContent = {
-                    DropdownItemList(
-                        modifier = Modifier.verticalScroll(),
-                        items = DPadExtraButton.Type.entries,
-                        textProvider = { Text.translatable(it.nameId) },
-                        selectedIndex = DPadExtraButton.Type.entries.indexOf(value.type),
-                        onItemSelected = {
-                            val item = DPadExtraButton.Type.entries[it]
-                            if (value.type != item) {
-                                onConfigChanged(
-                                    setValue(
-                                        widgetConfig, when (item) {
-                                            DPadExtraButton.Type.NONE -> DPadExtraButton.None
-                                            DPadExtraButton.Type.NORMAL -> DPadExtraButton.Normal()
-                                            DPadExtraButton.Type.SWIPE -> DPadExtraButton.Swipe()
-                                            DPadExtraButton.Type.SWIPE_LOCKING -> DPadExtraButton.SwipeLocking()
-                                        }
-                                    )
-                                )
-                            }
-                            expanded = false
-                        }
-                    )
-                }
-            ) {
-                Text(Text.translatable(value.type.nameId))
-                Spacer(modifier = Modifier.weight(1f))
-                SelectIcon(expanded = expanded)
-            }
-
-            when (value) {
-                DPadExtraButton.None -> {}
-                is DPadExtraButton.Normal -> {
-                    normalTriggerProperty.controller()
-                    normalButtonInfoProperty.controller()
-                }
-
-                is DPadExtraButton.Swipe -> {
-                    swipeTriggerProperty.controller()
-                    swipeButtonInfoProperty.controller()
-                }
-
-                is DPadExtraButton.SwipeLocking -> {
-                    swipeLockingTriggerProperty.controller()
-                    swipeLockingButtonInfoProperty.controller()
-                }
-            }
         }
     }
 }

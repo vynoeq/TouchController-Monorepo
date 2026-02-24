@@ -1,7 +1,7 @@
 package top.fifthlight.touchcontroller.common.layout.widget.button
 
 import top.fifthlight.data.Offset
-import top.fifthlight.touchcontroller.common.helper.fixAspectRadio
+import top.fifthlight.touchcontroller.common.offset.fixAspectRadio
 import top.fifthlight.touchcontroller.common.layout.Context
 import top.fifthlight.touchcontroller.common.state.PointerState
 import kotlin.uuid.Uuid

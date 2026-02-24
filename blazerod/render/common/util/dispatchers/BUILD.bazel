@@ -1,0 +1,15 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "dispatchers",
+    srcs = [
+        "BlazeRodDispatchers.kt",
+    ],
+    merge_deps = [
+        "//blazerod/render/common",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

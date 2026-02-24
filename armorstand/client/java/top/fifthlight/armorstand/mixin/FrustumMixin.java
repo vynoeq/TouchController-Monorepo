@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.fifthlight.armorstand.PlayerRenderer;
-import top.fifthlight.blazerod.api.resource.CameraTransform;
+import top.fifthlight.blazerod.render.api.resource.CameraTransform;
 
 // TODO: modify Frustum to match real camera
 @Mixin(Frustum.class)

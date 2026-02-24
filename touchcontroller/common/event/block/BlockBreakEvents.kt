@@ -1,6 +1,6 @@
 package top.fifthlight.touchcontroller.common.event.block
 
-import top.fifthlight.touchcontroller.common.config.GlobalConfigHolder
+import top.fifthlight.touchcontroller.common.config.holder.GlobalConfigHolder
 import top.fifthlight.touchcontroller.common.model.ControllerHudModel
 
 object BlockBreakEvents {

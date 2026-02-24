@@ -1,4 +1,4 @@
-package top.fifthlight.blazerod.api.resource
+package top.fifthlight.blazerod.render.api.resource
 
 import top.fifthlight.blazerod.model.Expression.Tag
 

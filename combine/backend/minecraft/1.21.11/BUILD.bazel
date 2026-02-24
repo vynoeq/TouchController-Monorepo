@@ -1,0 +1,35 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "1.21.11",
+    srcs = glob(["*.kt"]),
+    actual = True,
+    merge_deps = [
+        "//combine/backend/minecraft/1.21.11/extension",
+        "//combine/core/data",
+        "//combine/core/input/key",
+        "//combine/core/input/pointer",
+        "//combine/core/input/text",
+        "//combine/core/node",
+        "//combine/core/paint",
+        "//combine/core/screen",
+        "//combine/core/sound",
+        "//combine/core/util/dispatcher",
+        "//combine/data",
+        "//combine/item/data",
+        "//combine/item/paint",
+        "//combine/style",
+        "//combine/theme/vanilla",
+    ],
+    merge_only_deps = [
+        "//combine",
+        "//combine/item",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:compose",
+        "//combine/backend/minecraft/1.21.11/game:remapped_client_access_widened_named",
+        "//game/1.21.11:game_client_libraries",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

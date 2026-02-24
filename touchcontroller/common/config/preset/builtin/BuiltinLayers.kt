@@ -1,22 +1,25 @@
 package top.fifthlight.touchcontroller.common.config.preset.builtin
 
+import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import top.fifthlight.data.IntOffset
 import top.fifthlight.touchcontroller.assets.TextureSet
-import top.fifthlight.touchcontroller.common.config.condition.BuiltinLayerCondition
+import top.fifthlight.touchcontroller.common.config.condition.input.BuiltinLayerCondition
 import top.fifthlight.touchcontroller.common.config.condition.BuiltinLayerConditionKey
 import top.fifthlight.touchcontroller.common.config.condition.LayerConditions
+import top.fifthlight.touchcontroller.common.config.condition.RidingEntityLayerConditionKey
 import top.fifthlight.touchcontroller.common.config.condition.layerConditionsOf
 import top.fifthlight.touchcontroller.common.config.layout.LayoutLayer
 import top.fifthlight.touchcontroller.common.config.preset.builtin.key.BuiltinPresetKey
 import top.fifthlight.touchcontroller.common.control.*
-import top.fifthlight.touchcontroller.common.control.builtin.BuiltInWidgets
+import top.fifthlight.touchcontroller.common.control.builtin.BuiltinWidgets
 import top.fifthlight.touchcontroller.common.control.widget.boat.BoatButton
 import top.fifthlight.touchcontroller.common.control.widget.boat.BoatButtonSide
 import top.fifthlight.touchcontroller.common.control.widget.dpad.DPad
 import top.fifthlight.touchcontroller.common.control.widget.joystick.Joystick
+import top.fifthlight.touchcontroller.common.gal.entity.EntityTypeProvider
 import top.fifthlight.touchcontroller.common.layout.align.Align
 import java.util.concurrent.ConcurrentHashMap
 
@@ -65,7 +68,7 @@ data class BuiltinLayers private constructor(
         )
     }
 
-    private val widgets = BuiltInWidgets[textureSet]
+    private val widgets = BuiltinWidgets[textureSet]
 
     val controlLayer = LayoutLayer(
         name = "Control",
@@ -299,83 +302,101 @@ data class BuiltinLayers private constructor(
         ),
     )
 
-    val onMinecartLayer = Layers(
-        name = "On minecart",
-        conditions = layerConditionsOf(
-            BuiltinLayerConditionKey(BuiltinLayerCondition.ON_MINECART) to LayerConditions.Value.REQUIRE,
-        ),
-        dpadNormal = persistentListOf(
-            widgets.forward.copy(
-                align = Align.LEFT_BOTTOM,
-                offset = IntOffset(59, 111),
+    val onMinecartLayer = EntityTypeProvider.minecart?.let { minecart ->
+        Layers(
+            name = "On minecart",
+            conditions = layerConditionsOf(
+                RidingEntityLayerConditionKey(minecart) to LayerConditions.Value.REQUIRE,
             ),
-            widgets.dismount.copy(
-                align = Align.RIGHT_BOTTOM,
-                offset = IntOffset(42, 68),
+            dpadNormal = persistentListOf(
+                widgets.forward.copy(
+                    align = Align.LEFT_BOTTOM,
+                    offset = IntOffset(59, 111),
+                ),
+                widgets.dismount.copy(
+                    align = Align.RIGHT_BOTTOM,
+                    offset = IntOffset(42, 68),
+                ),
             ),
-        ),
-        dpadSwap = persistentListOf(
-            widgets.forward.copy(
-                align = Align.LEFT_BOTTOM,
-                offset = IntOffset(59, 111)
+            dpadSwap = persistentListOf(
+                widgets.forward.copy(
+                    align = Align.LEFT_BOTTOM,
+                    offset = IntOffset(59, 111)
+                ),
+                widgets.dismount.copy(
+                    align = Align.LEFT_BOTTOM,
+                    offset = IntOffset(59, 63),
+                ),
             ),
-            widgets.dismount.copy(
-                align = Align.LEFT_BOTTOM,
-                offset = IntOffset(59, 63),
+            joystick = persistentListOf(
+                Joystick(
+                    align = Align.LEFT_BOTTOM,
+                    offset = IntOffset(29, 32),
+                ),
+                widgets.dismount.copy(
+                    align = Align.RIGHT_BOTTOM,
+                    offset = IntOffset(22, 165),
+                ),
             ),
-        ),
-        joystick = persistentListOf(
-            Joystick(
-                align = Align.LEFT_BOTTOM,
-                offset = IntOffset(29, 32),
-            ),
-            widgets.dismount.copy(
-                align = Align.RIGHT_BOTTOM,
-                offset = IntOffset(22, 165),
-            ),
-        ),
-    )
+        )
+    }
 
-    val onBoatLayer = Layers(
-        name = "On boat",
-        conditions = layerConditionsOf(
-            BuiltinLayerConditionKey(BuiltinLayerCondition.ON_BOAT) to LayerConditions.Value.REQUIRE,
-        ),
-        dpadNormal = persistentListOf(
-            BoatButton(
-                align = Align.LEFT_BOTTOM,
-                offset = IntOffset(16, 16),
-                side = BoatButtonSide.LEFT,
+    // TODO: use tag to filter
+    val onBoatLayer = EntityTypeProvider.boats.takeIf { it.isNotEmpty() }?.let {
+        Layers(
+            name = "On boat",
+            conditions = LayerConditions(it.map {
+                LayerConditions.Item(
+                    key = RidingEntityLayerConditionKey(it),
+                    value = LayerConditions.Value.WANT,
+                )
+            }.toPersistentList()),
+            dpadNormal = persistentListOf(
+                BoatButton(
+                    align = Align.LEFT_BOTTOM,
+                    offset = IntOffset(16, 16),
+                    side = BoatButtonSide.LEFT,
+                ),
+                BoatButton(
+                    align = Align.RIGHT_BOTTOM,
+                    offset = IntOffset(16, 16),
+                    side = BoatButtonSide.RIGHT,
+                ),
+                widgets.dismount.copy(
+                    align = Align.CENTER_BOTTOM,
+                    offset = IntOffset(0, 24),
+                ),
             ),
-            BoatButton(
-                align = Align.RIGHT_BOTTOM,
-                offset = IntOffset(16, 16),
-                side = BoatButtonSide.RIGHT,
+            joystick = persistentListOf(
+                Joystick(
+                    align = Align.LEFT_BOTTOM,
+                    offset = IntOffset(29, 32),
+                ),
+                widgets.dismount.copy(
+                    align = Align.RIGHT_BOTTOM,
+                    offset = IntOffset(22, 165),
+                ),
             ),
-            widgets.dismount.copy(
-                align = Align.CENTER_BOTTOM,
-                offset = IntOffset(0, 24),
-            ),
-        ),
-        joystick = persistentListOf(
-            Joystick(
-                align = Align.LEFT_BOTTOM,
-                offset = IntOffset(29, 32),
-            ),
-            widgets.dismount.copy(
-                align = Align.RIGHT_BOTTOM,
-                offset = IntOffset(22, 165),
-            ),
-        ),
-    )
+        )
+    }
+
+    private inline fun <reified T> T?.itemToPersistentList() =
+        this?.let { persistentListOf(this) } ?: persistentListOf<T>()
 
     val ridingOnEntityLayer = Layers(
         name = "Riding on entity",
-        conditions = layerConditionsOf(
-            BuiltinLayerConditionKey(BuiltinLayerCondition.RIDING) to LayerConditions.Value.REQUIRE,
-            BuiltinLayerConditionKey(BuiltinLayerCondition.ON_BOAT) to LayerConditions.Value.NEVER,
-            BuiltinLayerConditionKey(BuiltinLayerCondition.ON_MINECART) to LayerConditions.Value.NEVER,
-        ),
+        conditions = LayerConditions(
+            persistentListOf(
+                LayerConditions.Item(
+                    key = BuiltinLayerConditionKey(BuiltinLayerCondition.RIDING),
+                    value = LayerConditions.Value.REQUIRE,
+                )
+            ) + (EntityTypeProvider.boats + EntityTypeProvider.minecart.itemToPersistentList()).map {
+                LayerConditions.Item(
+                    key = RidingEntityLayerConditionKey(it),
+                    value = LayerConditions.Value.NEVER,
+                )
+            }),
         dpadNormal = persistentListOf(
             DPad.create(
                 align = Align.LEFT_BOTTOM,

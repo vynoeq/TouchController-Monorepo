@@ -1,0 +1,9 @@
+"""TouchController/rules_mc"""
+
+module(
+    name = "rules_mc",
+    version = "0.0.1",
+)
+
+bazel_dep(name = "rules_java", version = "9.3.0")
+bazel_dep(name = "platforms", version = "1.0.0")

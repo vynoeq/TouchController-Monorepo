@@ -1,4 +1,6 @@
 {
+  "modmenu.descriptionTranslation.touchcontroller": "给 Java 版的 Minecraft 带来基岩版的操作方式！",
+
   "touchcontroller.warning.proxy_not_connected": "警告：代理未连接。TouchController 将被禁用。",
   "touchcontroller.warning.proxy_not_connected_android": "你正在使用 Android，但是启动器没有启动消息代理。如果你的启动器支持 TouchController，请启用它的相应支持；否则你应该更换支持 TouchController 的启动器。",
   "touchcontroller.warning.proxy_not_connected_linux": "TouchController 加载失败。可能的原因有：TouchController 动态库加载失败；你使用的是 X11，而 TouchController 仅支持 Wayland。请检查游戏日志以确认详情。",
@@ -27,7 +29,7 @@
   "touchcontroller.screen.config": "触摸设置…",
   "touchcontroller.screen.config.title": "触摸设置",
 
-  "touchcontroller.screen.config.precent": "%s：%s%%",
+
   "touchcontroller.screen.config.value": "%s：%s",
 
   "touchcontroller.screen.config.reset": "重置",
@@ -48,7 +50,6 @@
   "touchcontroller.screen.config.about.loading": "加载中",
 
   "touchcontroller.screen.config.layout.title": "布局",
-
   "touchcontroller.screen.config.layout.manage_control_preset": "预设模式",
   "touchcontroller.screen.manage_control_preset.title": "管理预设",
   "touchcontroller.screen.manage_control_preset.switch.message": "是否要使用预设模式？自定义模式中的设置将被冻结！",
@@ -93,7 +94,7 @@
   "touchcontroller.screen.custom_control_layout.no_widget_selected": "选中一个控件以编辑属性",
   "touchcontroller.screen.custom_control_layout.copy": "复制控件",
   "touchcontroller.screen.custom_control_layout.cut": "剪切控件",
-  
+
   "touchcontroller.screen.custom_control_layout.widgets": "控件",
   "touchcontroller.screen.custom_control_layout.widgets.builtin": "内置控件",
   "touchcontroller.screen.custom_control_layout.widgets.preset": "模板控件",
@@ -107,7 +108,7 @@
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.title": "编辑控件预设",
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.save": "保存",
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.cancel": "取消",
-  
+
   "touchcontroller.screen.custom_control_layout.layers": "图层",
   "touchcontroller.screen.custom_control_layout.layers.move_up": "上移",
   "touchcontroller.screen.custom_control_layout.layers.move_down": "下移",
@@ -126,15 +127,13 @@
   "touchcontroller.screen.custom_control_layout.layers.conditions.on_ground": "在地上",
   "touchcontroller.screen.custom_control_layout.layers.conditions.not_on_ground": "不在地上",
   "touchcontroller.screen.custom_control_layout.layers.conditions.using_item": "使用物品中",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_minecart": "在矿车上",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_boat": "在船上",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_pig": "在猪上",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_horse": "在马上",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_camel": "在骆驼上",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_llama": "在羊驼上",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_strider": "在炽足兽上",
   "touchcontroller.screen.custom_control_layout.layers.conditions.riding": "乘坐在实体上",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.entity_selected": "选择实体",
   "touchcontroller.screen.custom_control_layout.layers.conditions.block_selected": "选中方块",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.riding_entity_type": "乘坐实体",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.riding_entity_item": "乘坐在 %s 上",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.selecting_entity_type": "选择实体",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.selecting_entity_item": "选择了 %s",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.1": "你确定要删除这个图层吗？",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.2": "“%s”将会永久消失！（真的很久！）",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.delete": "删除",
@@ -154,7 +153,7 @@
   "touchcontroller.screen.layer_editor.custom_condition.name.placeholder": "自定义图层条件名称",
   "touchcontroller.screen.layer_editor.custom_condition.edit.ok": "确定",
   "touchcontroller.screen.layer_editor.custom_condition.edit.cancel": "取消",
-  
+
   "touchcontroller.screen.custom_control_layout.presets": "预设",
   "touchcontroller.screen.custom_control_layout.presets.move_up": "上移",
   "touchcontroller.screen.custom_control_layout.presets.move_down": "下移",
@@ -235,6 +234,7 @@
   "touchcontroller.screen.config.item.edit.title": "编辑",
 
   "touchcontroller.screen.item_list.title": "物品列表",
+  "touchcontroller.screen.item_list.warning_not_in_game": "请先进入游戏内，才能选择物品",
   "touchcontroller.screen.item_list.content": "物品列表显示内容",
   "touchcontroller.screen.item_list.default": "默认物品表",
   "touchcontroller.screen.item_list.jei_items": "JEI 物品表",
@@ -414,6 +414,5 @@
   "touchcontroller.widget.trigger.layer_condition.condition": "条件",
   "touchcontroller.widget.trigger.layer_condition.condition.empty": "空",
   "touchcontroller.widget.double_trigger.interval": "触发间隔",
-  "touchcontroller.widget.double_trigger.action": "触发行为",
-  "modmenu.descriptionTranslation.touchcontroller": "给 Java 版的 Minecraft 带来基岩版的操作方式！"
+  "touchcontroller.widget.double_trigger.action": "触发行为"
 }

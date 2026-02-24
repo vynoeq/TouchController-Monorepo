@@ -35,9 +35,9 @@ def _remap_jar_impl(ctx):
 
         if ctx.attr.remap_transitive_deps:
             # Generate unique output name per input
-            output_jar = ctx.actions.declare_file("_remapped/%s_%s" % (ctx.label.name, input_jar.basename))
+            output_jar = ctx.actions.declare_file("remapped_%s_%s" % (ctx.label.name, input_jar.basename))
         else:
-            output_jar = ctx.actions.declare_file("_remapped/%s.jar" % ctx.label.name)
+            output_jar = ctx.actions.declare_file("remapped_%s.jar" % ctx.label.name)
         output_jars.append(output_jar)
 
         # Generate arguments for Tiny Remapper
@@ -80,7 +80,8 @@ def _remap_jar_impl(ctx):
             executable = ctx.executable._tiny_remapper_bin,
             execution_requirements = {
                 "supports-workers": "1",
-                "supports-multiplex-workers": '1',
+                "supports-multiplex-workers": "1",
+                "supports-multiplex-sandboxing": "1",
                 "requires-worker-protocol": "proto",
             },
             arguments = [args],
@@ -95,6 +96,7 @@ def _remap_jar_impl(ctx):
 
     # Merge all JavaInfos from individual outputs
     merged_java_info = java_common.merge(java_infos)
+    merged_java_info = java_common.make_non_strict(merged_java_info)
 
     return [
         merged_java_info,

@@ -11,14 +11,14 @@ fun Modifier.rotate(degrees: Float) = then(RotateModifierNode(degrees))
 private data class RotateModifierNode(
     val degrees: Float
 ) : DrawModifierNode, Modifier.Node<RotateModifierNode> {
-    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        pushState()
-        translate(wrapperNode.width / 2, wrapperNode.height / 2)
+    override fun renderBefore(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        canvas.pushState()
+        canvas.translate(wrapperNode.width / 2, wrapperNode.height / 2)
         rotate(degrees)
-        translate(-wrapperNode.width / 2, -wrapperNode.height / 2)
+        canvas.translate(-wrapperNode.width / 2, -wrapperNode.height / 2)
     }
 
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        popState()
+    override fun renderAfter(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        canvas.popState()
     }
 }

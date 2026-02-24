@@ -7,11 +7,10 @@ import top.fifthlight.touchcontroller.proxy.message.InitializeMessage
 
 object WindowEvents {
     private val logger = LoggerFactory.getLogger(WindowEvents::class.java)
-    private lateinit var windowProvider: PlatformWindowProvider
     val windowWidth: Int
-        get() = windowProvider.windowWidth
+        get() = PlatformWindowProvider.windowWidth
     val windowHeight: Int
-        get() = windowProvider.windowHeight
+        get() = PlatformWindowProvider.windowHeight
 
     private val mainThreadDispatcher by lazy {
         try {
@@ -21,10 +20,9 @@ object WindowEvents {
         }
     }
 
-    fun onWindowCreated(windowProvider: PlatformWindowProvider) {
-        this.windowProvider = windowProvider
+    fun onWindowCreated() {
         mainThreadDispatcher.execute {
-            PlatformProvider.load(windowProvider)
+            PlatformProvider.load()
             PlatformProvider.platform?.sendEvent(InitializeMessage)
             logger.info("Loaded platform on thread ${Thread.currentThread().name}")
         }

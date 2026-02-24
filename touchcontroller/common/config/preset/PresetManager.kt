@@ -16,7 +16,6 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
 import kotlin.uuid.Uuid
-import kotlin.uuid.toJavaUuid
 
 object PresetManager {
     private val logger = LoggerFactory.getLogger(PresetManager::class.java)
@@ -35,12 +34,13 @@ object PresetManager {
             }.getOrNull()?.toPersistentList() ?: persistentListOf()
             val presets = buildMap {
                 for (entry in presetDir.listDirectoryEntries("*.json")) {
+                    val uuidStr = entry.fileName.toString().lowercase().removeSuffix(".json")
                     try {
-                        val uuidStr = entry.fileName.toString().lowercase().removeSuffix(".json")
                         val uuid = Uuid.parse(uuidStr)
                         val preset: LayoutPreset = entry.inputStream().use(jsonFormat::decodeFromStream)
                         put(uuid, preset)
-                    } catch (_: Exception) {
+                    } catch (ex: Exception) {
+                        logger.warn("Failed to load preset $uuidStr", ex)
                         continue
                     }
                 }

@@ -3,9 +3,10 @@ load("//game:game.bzl", "game_version")
 game_version(
     name = "game",
     client = "@minecraft//1.8.8:client",
-    client_native_manifest = "@minecraft//1.8.8:client_extract_libraries",
     client_assets = "@minecraft_assets//:assets_1.8.8",
+    client_assets_version = "@minecraft_assets//:version_1.8.8",
     client_libraries = "@minecraft//1.8.8:client_libraries",
+    client_native_manifest = "@minecraft//1.8.8:client_extract_libraries",
     intermediary = "@maven_fabric_1_8_8//:net_legacyfabric_intermediary_v2",
     server = "@minecraft//1.8.8:server",
     server_legacy = True,

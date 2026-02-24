@@ -1,0 +1,15 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "cowbuffer",
+    srcs = [
+        "CowBuffer.kt",
+        "CowBufferList.kt",
+    ],
+    merge_deps = [
+        "//blazerod/render/api/refcount",
+        "//blazerod/render/common/util/refcount",
+        "//blazerod/render/common/util/objectpool",
+    ],
+    visibility = ["//blazerod/render:__subpackages__"],
+)

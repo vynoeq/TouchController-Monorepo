@@ -1,9 +1,10 @@
-load("@rules_rust//rust:defs.bzl", "rust_library")
+load("@rules_rust//rust:defs.bzl", "rust_shared_library")
 
-rust_library(
+rust_shared_library(
     name = "android",
     srcs = glob(["*.rs"]),
     crate_name = "proxy_server_android",
+    crate_root = "lib.rs",
     tags = ["clippy"],
     target_compatible_with = ["@platforms//os:android"],
     visibility = ["//touchcontroller:__subpackages__"],

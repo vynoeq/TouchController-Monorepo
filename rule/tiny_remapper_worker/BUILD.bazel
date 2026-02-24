@@ -11,7 +11,7 @@ java_binary(
         "@maven//:com_fasterxml_jackson_core_jackson_core",
         "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_google_jimfs_jimfs",
-        "@maven//:net_fabricmc_access_widener",
+        "@maven//:net_fabricmc_class_tweaker",
         "@maven//:net_fabricmc_mapping_io",
         "@maven//:net_fabricmc_mapping_io_extras",
         "@maven//:net_fabricmc_tiny_remapper",

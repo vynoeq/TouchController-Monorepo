@@ -1,5 +1,10 @@
 # ArmorStand NEWS - User visible changes.
 
+## 0.0.10
+
+- Added support for MobileGlues
+- Fixed problem loading RGB8 textures
+
 ## 0.0.9
 
 - Fixed the problem that camera is not working

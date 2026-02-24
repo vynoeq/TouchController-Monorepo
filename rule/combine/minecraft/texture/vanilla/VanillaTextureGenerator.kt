@@ -7,6 +7,8 @@ import top.fifthlight.combine.resources.Metadata
 import top.fifthlight.combine.resources.NinePatchMetadata
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.jar.JarEntry
 import java.util.zip.ZipOutputStream
 import javax.imageio.ImageIO
@@ -14,6 +16,8 @@ import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 import kotlin.io.path.readText
 import kotlin.system.exitProcess
+
+private const val DOS_EPOCH = 315532800000L
 
 @Serializable
 data class TextureMetadata(val gui: Gui) {
@@ -61,8 +65,10 @@ fun main(vararg args: String) {
 
     ZipOutputStream(outputJar.outputStream()).use { out ->
         fun entry(name: String) = JarEntry(name).apply {
-            time = 0L
-            lastAccessTime = FileTime.fromMillis(0L)
+            creationTime = FileTime.fromMillis(DOS_EPOCH)
+            lastAccessTime = FileTime.fromMillis(DOS_EPOCH)
+            lastModifiedTime = FileTime.fromMillis(DOS_EPOCH)
+            timeLocal = LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC)
         }
 
         var i = 3
@@ -84,21 +90,8 @@ fun main(vararg args: String) {
                         pngFile.inputStream().use { it.transferTo(out) }
                         out.closeEntry()
                     } else {
-                        out.putNextEntry(entry("assets/$namespace/textures/gui/sprites/$prefix/$identifier.png"))
+                        out.putNextEntry(entry("assets/$namespace/textures/gui/$prefix/$identifier.png"))
                         pngFile.inputStream().use { it.transferTo(out) }
-                        out.closeEntry()
-
-                        val image = ImageIO.read(pngFile.toFile())
-                        val meta = TextureMetadata(
-                            gui = TextureMetadata.Gui(
-                                scaling = TextureMetadata.Gui.Scaling.Tile(
-                                    width = image.width,
-                                    height = image.height,
-                                ),
-                            )
-                        )
-                        out.putNextEntry(entry("assets/$namespace/textures/gui/sprites/$prefix/$identifier.png.mcmeta"))
-                        out.write(Json.encodeToString(TextureMetadata.serializer(), meta).toByteArray())
                         out.closeEntry()
                     }
                     i += 4

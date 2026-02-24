@@ -23,8 +23,6 @@ import kotlin.coroutines.CoroutineContext
 
 val LocalCombineOwner: ProvidableCompositionLocal<CombineOwner> =
     staticCompositionLocalOf { error("No CombineOwner in context") }
-val LocalTextMeasurer: ProvidableCompositionLocal<TextMeasurer> =
-    staticCompositionLocalOf { error("No TextMeasurer in context") }
 val LocalInputHandler: ProvidableCompositionLocal<InputHandler?> =
     staticCompositionLocalOf { null }
 val LocalScreenSize: ProvidableCompositionLocal<IntSize> =
@@ -76,7 +74,6 @@ class CombineOwner(
             composition.setContent {
                 CompositionLocalProvider(
                     LocalCombineOwner provides owner,
-                    LocalTextMeasurer provides owner.textMeasurer,
                     LocalFocusManager provides focusManager,
                     LocalTweenManager provides owner.tweenManager,
                     LocalScreenSize provides owner.screenSize,
@@ -179,9 +176,7 @@ class CombineOwner(
                     maxHeight = size.height
                 )
             )
-            with(canvas) {
-                layer.rootNode.run { render(cursorPos) }
-            }
+            layer.rootNode.render(canvas, cursorPos)
         }
     }
 

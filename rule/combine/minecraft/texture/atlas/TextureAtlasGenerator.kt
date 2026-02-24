@@ -15,6 +15,8 @@ import java.awt.image.BufferedImage
 import java.awt.image.BufferedImage.TYPE_INT_ARGB
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.jar.JarEntry
 import java.util.zip.ZipOutputStream
 import javax.imageio.ImageIO
@@ -23,6 +25,8 @@ import kotlin.io.path.outputStream
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.system.exitProcess
+
+private const val DOS_EPOCH = 315532800000L
 
 private data class Texture(
     val identifier: String,
@@ -60,8 +64,10 @@ fun main(vararg args: String) {
 
     ZipOutputStream(outputJar.outputStream()).use { out ->
         fun entry(name: String) = JarEntry(name).apply {
-            time = 0L
-            lastAccessTime = FileTime.fromMillis(0L)
+            creationTime = FileTime.fromMillis(DOS_EPOCH)
+            lastAccessTime = FileTime.fromMillis(DOS_EPOCH)
+            lastModifiedTime = FileTime.fromMillis(DOS_EPOCH)
+            timeLocal = LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC)
         }
 
         val textures = mutableListOf<Texture>()

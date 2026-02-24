@@ -4,8 +4,8 @@ kt_merge_library(
     name = "item",
     srcs = glob(["*.kt"]),
     merge_deps = [
-        "//touchcontroller/common/serializer",
         "//touchcontroller/common/gal/item",
+        "//touchcontroller/common/serializer",
     ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [

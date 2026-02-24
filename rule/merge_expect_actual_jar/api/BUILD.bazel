@@ -1,0 +1,10 @@
+load("@rules_java//java:defs.bzl", "java_library")
+
+java_library(
+    name = "api",
+    srcs = glob(["*.java"]),
+    visibility = ["//rule/merge_expect_actual_jar:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_annotations",
+    ],
+)

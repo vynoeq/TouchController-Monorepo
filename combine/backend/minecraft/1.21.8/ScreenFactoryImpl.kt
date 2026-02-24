@@ -14,6 +14,8 @@ import top.fifthlight.combine.input.pointer.PointerEventType
 import top.fifthlight.combine.input.pointer.PointerType
 import top.fifthlight.combine.input.text.LocalClipboard
 import top.fifthlight.combine.node.CombineOwner
+import top.fifthlight.combine.screen.CloseHandler
+import top.fifthlight.combine.screen.LocalCloseHandler
 import top.fifthlight.combine.screen.LocalOnDismissRequestDispatcher
 import top.fifthlight.combine.screen.LocalScreenFactory
 import top.fifthlight.combine.screen.OnDismissRequestDispatcher
@@ -29,12 +31,14 @@ class CombineScreen(
     title: Component,
     private val renderBackground: Boolean,
     private val parent: Screen?,
-) : Screen(title) {
+) : Screen(title), CloseHandler {
     private val client: Minecraft = Minecraft.getInstance()
     private var initialized = false
     private val dismissDispatcher = OnDismissRequestDispatcher()
     private val soundManager = SoundManagerImpl(client.soundManager)
     private val owner = CombineOwner(dispatcher = GameDispatcher, textMeasurer = TextMeasurerImpl)
+
+    override fun close() = onClose()
 
     fun setContent(content: @Composable () -> Unit) {
         owner.setContent {
@@ -43,6 +47,7 @@ class CombineScreen(
                 LocalClipboard provides ClipboardHandlerImpl,
                 LocalScreenFactory provides ScreenFactoryImpl,
                 LocalOnDismissRequestDispatcher provides dismissDispatcher,
+                LocalCloseHandler provides this,
             ) {
                 content()
             }
@@ -191,7 +196,7 @@ class CombineScreen(
 
     override fun onClose() {
         owner.close()
-        client?.setScreen(parent)
+        client.setScreen(parent)
     }
 }
 

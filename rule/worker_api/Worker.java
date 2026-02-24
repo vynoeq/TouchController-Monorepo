@@ -32,7 +32,10 @@ public abstract class Worker {
         var argsList = new ArrayList<>(Arrays.asList(args));
         var index = argsList.indexOf("--persistent_worker");
         if (index == -1) {
-            System.exit(handleRequest(new PrintWriter(System.out), Path.of("."), args));
+            var out = new PrintWriter(System.out);
+            var status = handleRequest(out, Path.of("."), args);
+            out.flush();
+            System.exit(status);
         }
         var handlerBuilder = new WorkRequestHandler.WorkRequestHandlerBuilder(new WorkRequestCallbackWrapper(this), System.err, new ProtoWorkerMessageProcessor(System.in, System.out));
         handlerBuilder.setCpuUsageBeforeGc(Duration.ofSeconds(10));

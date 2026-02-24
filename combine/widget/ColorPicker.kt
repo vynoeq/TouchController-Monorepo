@@ -46,13 +46,13 @@ private fun HsvPicker(
                 onValueChanged(value.copy(s = s, v = v))
             }
             .then(modifier),
-    ) { node ->
-        fillGradientRect(
+    ) { canvas, node ->
+        canvas.fillGradientRect(
             size = node.size.toSize(),
             leftTopColor = Colors.WHITE,
             rightTopColor = baseColor,
         )
-        fillGradientRect(
+        canvas.fillGradientRect(
             size = node.size.toSize(),
             leftTopColor = Color(0x00000000u),
             leftBottomColor = Color(0xFF000000u),
@@ -63,15 +63,14 @@ private fun HsvPicker(
             x = value.s * node.width,
             y = (1 - value.v) * node.height,
         )
-        with(handleDrawable) {
-            withTranslate(offset - (handleDrawable.size / 2).toSize()) {
-                draw(
-                    dstRect = IntRect(
-                        offset = IntOffset.ZERO,
-                        size = handleDrawable.size,
-                    ),
-                )
-            }
+        canvas.withTranslate(offset - (handleDrawable.size / 2).toSize()) {
+            handleDrawable.draw(
+                canvas = canvas,
+                dstRect = IntRect(
+                    offset = IntOffset.ZERO,
+                    size = handleDrawable.size,
+                ),
+            )
         }
     }
 }

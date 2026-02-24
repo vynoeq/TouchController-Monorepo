@@ -34,13 +34,15 @@ fun Modifier.verticalScroll(
     scrollState: ScrollState = rememberScrollState(),
     reverse: Boolean = false,
     background: BackgroundTexture? = null,
-    backgroundScale: Float = 1f
-) = then(VerticalScrollNode(
-    scrollState = scrollState,
-    reverse = reverse,
-    background = background,
-    backgroundScale = backgroundScale
-))
+    backgroundScale: Float = 1f,
+) = then(
+    VerticalScrollNode(
+        scrollState = scrollState,
+        reverse = reverse,
+        background = background,
+        backgroundScale = backgroundScale
+    )
+)
 
 private data class VerticalScrollNode(
     val scrollState: ScrollState,
@@ -52,12 +54,15 @@ private data class VerticalScrollNode(
         event: PointerEvent,
         node: Placeable,
         layoutNode: LayoutNode,
-        children: (PointerEvent) -> Boolean
+        children: (PointerEvent) -> Boolean,
     ): Boolean {
         return when (event.type) {
             PointerEventType.Scroll -> {
                 val scrollDelta = if (reverse) -event.scrollDelta.y else event.scrollDelta.y
-                scrollState.updateProgress((scrollState.progress.value - scrollDelta * 12).toInt(), animateOverscroll = true)
+                scrollState.updateProgress(
+                    (scrollState.progress.value - scrollDelta * 12).toInt(),
+                    animateOverscroll = true
+                )
                 true
             }
 
@@ -150,8 +155,13 @@ private data class VerticalScrollNode(
         }
     }
 
-    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        pushClip(
+    override fun renderBefore(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
+        canvas.pushClip(
             IntRect(
                 offset = IntOffset(wrapperNode.absoluteX, wrapperNode.absoluteY),
                 size = IntSize(wrapperNode.width, wrapperNode.height)
@@ -168,45 +178,51 @@ private data class VerticalScrollNode(
             }
             val tileHeight = height * backgroundScale
             val tileOffset = scrollState.progress.value.toFloat() % tileHeight
-            with(background) {
-                draw(
-                    scale = backgroundScale,
-                    dstRect = Rect(
-                        offset = Offset(
-                            x = 0f,
-                            y = -tileHeight - tileOffset,
-                        ),
-                        size = Size(
-                            width = wrapperNode.width.toFloat(),
-                            height = wrapperNode.height.toFloat() + tileHeight * 2,
-                        ),
-                    )
+            background.draw(
+                canvas = canvas,
+                scale = backgroundScale,
+                dstRect = Rect(
+                    offset = Offset(
+                        x = 0f,
+                        y = -tileHeight - tileOffset,
+                    ),
+                    size = Size(
+                        width = wrapperNode.width.toFloat(),
+                        height = wrapperNode.height.toFloat() + tileHeight * 2,
+                    ),
                 )
-            }
+            )
         }
     }
 
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+    override fun renderAfter(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
         if (scrollState.viewportHeight < scrollState.contentHeight) {
             val progress =
                 scrollState.progress.value.toFloat() / (scrollState.contentHeight - scrollState.viewportHeight).toFloat()
-            val barHeight = (wrapperNode.height * scrollState.viewportHeight / scrollState.contentHeight).coerceAtLeast(12)
+            val barHeight =
+                (wrapperNode.height * scrollState.viewportHeight / scrollState.contentHeight).coerceAtLeast(12)
             val barY = ((wrapperNode.height - barHeight) * if (reverse) {
                 1f - progress
             } else {
                 progress
             }).roundToInt()
-            fillRect(
+            canvas.fillRect(
                 offset = IntOffset(wrapperNode.width - 3, barY),
                 size = IntSize(3, barHeight),
                 color = Color(0x66FFFFFFu),
             )
         }
-        popClip()
+        canvas.popClip()
     }
 
     companion object {
-        private val wrapperFactory = LayoutModifierNode.wrapperFactory + DrawModifierNode.wrapperFactory + PointerInputModifierNode.wrapperFactory
+        private val wrapperFactory =
+            LayoutModifierNode.wrapperFactory + DrawModifierNode.wrapperFactory + PointerInputModifierNode.wrapperFactory
     }
 
     override val wrapperFactory

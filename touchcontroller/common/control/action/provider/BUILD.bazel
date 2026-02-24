@@ -1,0 +1,8 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "provider",
+    srcs = glob(["*.kt"]),
+    expect = True,
+    visibility = ["//touchcontroller:__subpackages__"],
+)

@@ -1,4 +1,6 @@
 {
+  "modmenu.descriptionTranslation.touchcontroller": "Bring controlling style of bedrock version to Java version!",
+
   "touchcontroller.warning.proxy_not_connected": "Warning: No proxy connected. TouchController will be disabled.",
   "touchcontroller.warning.proxy_not_connected_android": "You are using Android, but message proxy of the launcher is not enabled. If your launcher supports TouchController, please enable it; otherwise you should switch a launcher supports TouchController.",
   "touchcontroller.warning.proxy_not_connected_linux": "TouchController failed to load. Possible reasons: failed to load TouchController's dynamic library; you are using X11, but TouchController only supports Wayland for now. Check game log for details.",
@@ -74,6 +76,7 @@
   "touchcontroller.screen.manage_control_preset.sprint.right_top": "Right-top edge",
   "touchcontroller.screen.manage_control_preset.sprint.right": "Right side",
   "touchcontroller.screen.manage_control_preset.use_vanilla_chat": "Use vanilla chat screen",
+
   "touchcontroller.screen.config.layout.custom_control_layout": "Custom layout",
   "touchcontroller.screen.custom_control_layout.title": "Custom layout",
   "touchcontroller.screen.custom_control_layout.switch.message": "Do you want to use custom mode? Settings in preset mode will be dropped!",
@@ -86,12 +89,12 @@
   "touchcontroller.screen.custom_control_layout.edit_presets": "Edit presets",
   "touchcontroller.screen.custom_control_layout.delete_widget": "Delete widget",
   "touchcontroller.screen.custom_control_layout.paste_widget": "Paste widget",
-  
+
   "touchcontroller.screen.custom_control_layout.properties": "Properties",
   "touchcontroller.screen.custom_control_layout.no_widget_selected": "Select a widget to edit its properties",
   "touchcontroller.screen.custom_control_layout.copy": "Copy widget",
   "touchcontroller.screen.custom_control_layout.cut": "Cut widget",
-  
+
   "touchcontroller.screen.custom_control_layout.widgets": "Widgets",
   "touchcontroller.screen.custom_control_layout.widgets.builtin": "Builtin",
   "touchcontroller.screen.custom_control_layout.widgets.preset": "Preset",
@@ -105,7 +108,7 @@
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.title": "Edit widget preset",
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.save": "Save",
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.cancel": "Cancel",
-  
+
   "touchcontroller.screen.custom_control_layout.layers": "Layers",
   "touchcontroller.screen.custom_control_layout.layers.move_up": "Move up",
   "touchcontroller.screen.custom_control_layout.layers.move_down": "Move down",
@@ -124,15 +127,13 @@
   "touchcontroller.screen.custom_control_layout.layers.conditions.on_ground": "On ground",
   "touchcontroller.screen.custom_control_layout.layers.conditions.not_on_ground": "Not on ground",
   "touchcontroller.screen.custom_control_layout.layers.conditions.using_item": "Using item",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_minecart": "On minecart",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_boat": "On boat",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_pig": "On pig",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_horse": "On horse",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_camel": "On camel",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_llama": "On llama",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_strider": "On strider",
   "touchcontroller.screen.custom_control_layout.layers.conditions.riding": "Riding entity",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.entity_selected": "Entity selected",
   "touchcontroller.screen.custom_control_layout.layers.conditions.block_selected": "Block selected",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.riding_entity_type": "Ride Entity",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.riding_entity_item": "Riding on %s",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.selecting_entity_type": "Select Entity",
+  "touchcontroller.screen.custom_control_layout.layers.conditions.selecting_entity_item": "Selected %s",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.1": "Are you sure you want to delete this layer?",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.2": " '%s' will be lost forever! (A long time!)",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.delete": "Delete",
@@ -152,7 +153,7 @@
   "touchcontroller.screen.layer_editor.custom_condition.name.placeholder": "Custom layer condition name",
   "touchcontroller.screen.layer_editor.custom_condition.edit.ok": "Ok",
   "touchcontroller.screen.layer_editor.custom_condition.edit.cancel": "Cancel",
-  
+
   "touchcontroller.screen.custom_control_layout.presets": "Presets",
   "touchcontroller.screen.custom_control_layout.presets.move_up": "Move up",
   "touchcontroller.screen.custom_control_layout.presets.move_down": "Move down",
@@ -233,6 +234,7 @@
   "touchcontroller.screen.config.item.edit.title": "Edit",
 
   "touchcontroller.screen.item_list.title": "Item list",
+  "touchcontroller.screen.item_list.warning_not_in_game": "Enter the game first to choose items",
   "touchcontroller.screen.item_list.content": "Item list content",
   "touchcontroller.screen.item_list.default": "Default item list",
   "touchcontroller.screen.item_list.jei_items": "JEI item list",

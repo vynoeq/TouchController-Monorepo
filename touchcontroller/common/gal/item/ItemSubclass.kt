@@ -21,4 +21,6 @@ interface ItemSubclassProvider {
     interface Factory {
         fun of(): ItemSubclassProvider
     }
+
+    companion object : ItemSubclassProvider by ItemSubclassProviderFactory.of()
 }

@@ -54,4 +54,6 @@ interface PlatformWindowProvider {
     interface Factory {
         fun of(): PlatformWindowProvider
     }
+    
+    companion object : PlatformWindowProvider by PlatformWindowProviderFactory.of()
 }

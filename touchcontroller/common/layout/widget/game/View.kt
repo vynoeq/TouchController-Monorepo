@@ -2,12 +2,12 @@ package top.fifthlight.touchcontroller.common.layout.widget.game
 
 import top.fifthlight.data.Offset
 import top.fifthlight.touchcontroller.common.util.uuid.fastRandomUuid
-import top.fifthlight.touchcontroller.common.gal.PlayerHandleFactory
+import top.fifthlight.touchcontroller.common.gal.player.PlayerHandleFactory
 import top.fifthlight.touchcontroller.common.gal.key.DefaultKeyBindingType
 import top.fifthlight.touchcontroller.common.gal.view.CrosshairTarget
 import top.fifthlight.touchcontroller.common.gal.view.ViewActionProvider
 import top.fifthlight.touchcontroller.common.gal.view.ViewActionProviderFactory
-import top.fifthlight.touchcontroller.common.helper.fixAspectRadio
+import top.fifthlight.touchcontroller.common.offset.fixAspectRadio
 import top.fifthlight.touchcontroller.common.layout.Context
 import top.fifthlight.touchcontroller.common.layout.data.CrosshairStatus
 import top.fifthlight.touchcontroller.common.state.PointerState
@@ -22,6 +22,8 @@ fun Context.View() {
 
     attackKeyState.refreshLock(viewUuid, timer.renderTick)
     useKeyState.refreshLock(viewUuid, timer.renderTick)
+
+    val crosshairTarget = viewActionProvider.getCrosshairTarget()
 
     var releasedView = false
     for (key in pointers.keys.toList()) {
@@ -44,14 +46,13 @@ fun Context.View() {
                             val pressTime = timer.clientTick - previousState.pressTime
                             // Pressed less than time threshold and not moving, recognized as short click
                             if (pressTime < config.controlConfig.viewHoldDetectTicks && !previousState.moving) {
-                                val crosshairTarget = viewActionProvider.getCrosshairTarget() ?: break
                                 when (crosshairTarget) {
-                                    CrosshairTarget.BLOCK, CrosshairTarget.MISS -> {
+                                    CrosshairTarget.Block, CrosshairTarget.Miss, null -> {
                                         // Short click on block or air: use item
                                         useKeyState.click()
                                     }
 
-                                    CrosshairTarget.ENTITY -> {
+                                    is CrosshairTarget.Entity -> {
                                         // Short click on entity: attack the entity
                                         attackKeyState.click()
                                     }
@@ -93,7 +94,8 @@ fun Context.View() {
         }
 
         val movement = (pointer.position - state.lastPosition).fixAspectRadio(windowSize)
-        result.lookDirection = (result.lookDirection ?: Offset.ZERO) + movement * config.controlConfig.viewMovementSensitivity
+        result.lookDirection =
+            (result.lookDirection ?: Offset.ZERO) + movement * config.controlConfig.viewMovementSensitivity
 
         val player = PlayerHandleFactory.current()
         // Consume the pointer if player is null or touch gesture is disabled
@@ -125,19 +127,19 @@ fun Context.View() {
                 PointerState.View.ViewPointerState.USING
             } else {
                 when (crosshairTarget) {
-                    CrosshairTarget.BLOCK -> {
+                    CrosshairTarget.Block -> {
                         // Trigger block breaking
                         attackKeyState.addLock(viewUuid, timer.renderTick)
                         PointerState.View.ViewPointerState.BREAKING
                     }
 
-                    CrosshairTarget.ENTITY -> {
+                    is CrosshairTarget.Entity -> {
                         // Trigger item use once and consume
                         useKeyState.click()
                         PointerState.View.ViewPointerState.CONSUMED
                     }
 
-                    CrosshairTarget.MISS, null -> PointerState.View.ViewPointerState.CONSUMED
+                    CrosshairTarget.Miss, null -> PointerState.View.ViewPointerState.CONSUMED
                 }
             }
         }

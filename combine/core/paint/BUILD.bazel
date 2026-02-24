@@ -6,8 +6,8 @@ kt_merge_library(
     expect = True,
     merge_deps = [
         "//combine/core/data",
-        "//combine/data",
         "//combine/core/input/pointer",
+        "//combine/data",
     ],
     visibility = ["//visibility:public"],
     deps = [

@@ -1,11 +1,24 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_shared_library")
 
 genrule(
     name = "text-input-unstable",
     srcs = ["text-input-unstable-v3.xml"],
-    outs = ["wayland-text-input-unstable-v3.h"],
-    cmd = '$(location @wayland//:wayland-scanner) client-header $(location text-input-unstable-v3.xml) \"$@\"',
+    outs = [
+        "wayland-text-input-unstable-v3.h",
+        "wayland-text-input-unstable-v3.c",
+    ],
+    cmd = """
+        $(location @wayland//:wayland-scanner) client-header $< $(location wayland-text-input-unstable-v3.h) && \
+        $(location @wayland//:wayland-scanner) private-code $< $(location wayland-text-input-unstable-v3.c)
+    """,
     tools = ["@wayland//:wayland-scanner"],
+)
+
+cc_shared_library(
+    name = "libwayland-client",
+    shared_lib_name = "libwayland-client.so.0",
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = ["@wayland//:wayland-client"],
 )
 
 cc_library(
@@ -17,6 +30,7 @@ cc_library(
     ],
     includes = ["."],
     target_compatible_with = ["@platforms//os:linux"],
+    visibility = ["//touchcontroller:__subpackages__"],
     deps = [
         "//touchcontroller/proxy/server/common",
         "@rules_jni//jni",

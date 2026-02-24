@@ -1,0 +1,28 @@
+load("//rule:apply_access_widener.bzl", "apply_access_widener")
+load("//rule/neoforge:convert_access_widener.bzl", "convert_access_widener")
+
+apply_access_widener(
+    name = "remapped_client_access_widened_named",
+    srcs = ["combine.accesswidener"],
+    input = "//game/1.21.11:game_client_named",
+    neverlink = True,
+    visibility = ["//combine/backend/minecraft/1.21.11:__subpackages__"],
+)
+
+convert_access_widener(
+    name = "access_transformer_file",
+    src = "combine.accesswidener",
+    output_name = "access_transformer.cfg",
+)
+
+alias(
+    name = "access_transformer",
+    actual = ":access_transformer_file",
+    visibility = ["//combine/backend/minecraft/1.21.11:__subpackages__"],
+)
+
+alias(
+    name = "access_widener",
+    actual = "combine.accesswidener",
+    visibility = ["//combine/backend/minecraft/1.21.11:__subpackages__"],
+)

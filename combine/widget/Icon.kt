@@ -6,6 +6,7 @@ import top.fifthlight.combine.layout.measure.Measurable
 import top.fifthlight.combine.layout.measure.MeasurePolicy
 import top.fifthlight.combine.layout.measure.MeasureResult
 import top.fifthlight.combine.layout.measure.MeasureScope
+import top.fifthlight.combine.layout.measure.fixed
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.paint.Drawable
 import top.fifthlight.combine.widget.Canvas
@@ -29,24 +30,8 @@ fun Icon(
     val contentAspect = size.width.toFloat() / size.height.toFloat()
     Canvas(
         modifier = modifier,
-        measurePolicy = object : MeasurePolicy {
-            override fun MeasureScope.measure(measurables: List<Measurable>, constraints: Constraints): MeasureResult {
-                return layout(
-                    width = size.width.coerceIn(constraints.minWidth, constraints.maxWidth),
-                    height = size.height.coerceIn(constraints.minHeight, constraints.maxHeight),
-                ) {
-                }
-            }
-
-            override fun MeasureScope.minIntrinsicWidth(measurables: List<Measurable>, height: Int): Int = size.width
-
-            override fun MeasureScope.maxIntrinsicWidth(measurables: List<Measurable>, height: Int): Int = size.width
-
-            override fun MeasureScope.minIntrinsicHeight(measurables: List<Measurable>, width: Int): Int = size.height
-
-            override fun MeasureScope.maxIntrinsicHeight(measurables: List<Measurable>, width: Int): Int = size.height
-        },
-    ) { node ->
+        measurePolicy = MeasurePolicy.fixed(size),
+    ) { canvas, node ->
         val nodeWidth = node.width
         val nodeHeight = node.height
         val nodeAspect = nodeWidth.toFloat() / nodeHeight.toFloat()
@@ -101,6 +86,6 @@ fun Icon(
             }
         }
 
-        drawable.run { draw(renderRect) }
+        drawable.draw(canvas, renderRect)
     }
 }

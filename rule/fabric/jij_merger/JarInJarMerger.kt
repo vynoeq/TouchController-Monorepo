@@ -3,14 +3,22 @@ package top.fifthlight.fabazel.jijmerger
 import kotlinx.serialization.json.*
 import java.io.ByteArrayOutputStream
 import java.nio.file.Path
+import java.nio.file.attribute.FileTime
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.jar.JarEntry
 import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 
+private const val DOS_EPOCH = 315532800000L
+
 private fun JarEntry.clearTime() {
-    time = 0L
+    creationTime = FileTime.fromMillis(DOS_EPOCH)
+    lastAccessTime = FileTime.fromMillis(DOS_EPOCH)
+    lastModifiedTime = FileTime.fromMillis(DOS_EPOCH)
+    timeLocal = LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC)
 }
 
 fun main(args: Array<String>) {

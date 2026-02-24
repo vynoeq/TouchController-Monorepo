@@ -4,11 +4,9 @@ kt_merge_library(
     name = "chat",
     srcs = glob(["*.kt"]),
     expect = True,
-    merge_deps = [
-        "//combine/core/data",
-    ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
+        "//combine/core/data",
         "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
     ],
 )

@@ -33,30 +33,35 @@ private data class BorderNode(
     val bottom: Int = 0,
     val color: Color,
 ) : DrawModifierNode, LayoutModifierNode, Modifier.Node<BorderNode> {
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+    override fun renderAfter(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
         if (left > 0) {
-            fillRect(
+            canvas.fillRect(
                 offset = IntOffset(0, 0),
                 size = IntSize(left, wrapperNode.height),
                 color = color
             )
         }
         if (top > 0) {
-            fillRect(
+            canvas.fillRect(
                 offset = IntOffset(0, 0),
                 size = IntSize(wrapperNode.width, top),
                 color = color
             )
         }
         if (right > 0) {
-            fillRect(
+            canvas.fillRect(
                 offset = IntOffset(wrapperNode.width - right, 0),
                 size = IntSize(right, wrapperNode.height),
                 color = color
             )
         }
         if (bottom > 0) {
-            fillRect(
+            canvas.fillRect(
                 offset = IntOffset(0, wrapperNode.height - bottom),
                 size = IntSize(wrapperNode.width, bottom),
                 color = color
@@ -115,8 +120,13 @@ fun Modifier.border(drawable: Drawable): Modifier = then(DrawableBorderNode(draw
 private data class DrawableBorderNode(
     val drawable: Drawable,
 ) : DrawModifierNode, LayoutModifierNode, Modifier.Node<DrawableBorderNode> {
-    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        drawable.run { draw(IntRect(offset = IntOffset.ZERO, size = wrapperNode.size)) }
+    override fun renderBefore(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
+        drawable.draw(canvas, IntRect(offset = IntOffset.ZERO, size = wrapperNode.size))
     }
 
     override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {

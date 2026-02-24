@@ -9,7 +9,7 @@ def parse_pin_file(content):
     Returns:
         A dictionary mapping URLs to their hash values.
     """
-    lines = content.split("\n")
+    lines = content.splitlines()
     hashes = {}
     for line in lines:
         space_index = line.find(" ")

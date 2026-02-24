@@ -6,3 +6,16 @@ java_binary(
     main_class = "top.fifthlight.fabazel.jarcreator.JarCreator",
     visibility = ["//visibility:public"],
 )
+
+java_binary(
+    name = "create_jar_worker",
+    srcs = [
+        "JarCreator.java",
+        "JarCreatorWorker.java",
+    ],
+    main_class = "top.fifthlight.fabazel.jarcreator.JarCreatorWorker",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//rule/worker_api",
+    ],
+)

@@ -4,7 +4,11 @@ load("@rules_java//java:defs.bzl", "JavaInfo", "java_common")
 
 def merge_jar_action(actions, executable, output_jar, jars = depset(), resources = {}):
     args = actions.args()
+
     args.add(output_jar)
+
+    args.add("--manifest-mode")
+    args.add("use-last-by-alphabet")
 
     resource_files = []
     for key, resource in resources.items():
@@ -32,9 +36,11 @@ def merge_jar_action(actions, executable, output_jar, jars = depset(), resources
         execution_requirements = {
             "supports-workers": "1",
             "supports-multiplex-workers": "1",
+            "supports-multiplex-sandboxing": "1",
             "requires-worker-protocol": "proto",
         },
         arguments = [args],
+        mnemonic = "MergeJar",
         toolchain = "@bazel_tools//tools/jdk:toolchain_type",
     )
 
@@ -73,7 +79,7 @@ merge_jar = rule(
             doc = "Resource to be merged, with perfix to strip",
         ),
         "_merge_jar_executable": attr.label(
-            default = Label("@//rule/merge_jar"),
+            default = "@//rule/merge_expect_actual_jar:core",
             executable = True,
             cfg = "exec",
         ),

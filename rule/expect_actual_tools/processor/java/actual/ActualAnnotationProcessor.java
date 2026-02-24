@@ -1,4 +1,4 @@
-package top.fifthlight.mergetools.processor.actual;
+package top.fifthlight.mergetools.processor.java.actual;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.palantir.javapoet.*;
@@ -6,7 +6,7 @@ import top.fifthlight.mergetools.api.ActualConstructor;
 import top.fifthlight.mergetools.api.ActualImpl;
 import top.fifthlight.mergetools.api.ExpectFactory;
 import top.fifthlight.mergetools.processor.ActualData;
-import top.fifthlight.mergetools.processor.Util;
+import top.fifthlight.mergetools.processor.java.util.Util;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
@@ -35,6 +36,35 @@ public class ActualAnnotationProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.elementUtils = processingEnv.getElementUtils();
+    }
+
+    private Optional<TypeElement> findImplementedInterface(TypeElement type, String expectedInterfaceQualifiedName) {
+        for (var interfaceItem : type.getInterfaces()) {
+            if (interfaceItem.getKind() != TypeKind.DECLARED) {
+                continue;
+            }
+            var declaredType = (DeclaredType) interfaceItem;
+            var declaredElement = (TypeElement) declaredType.asElement();
+            if (declaredElement.getKind() != ElementKind.INTERFACE) {
+                continue;
+            }
+            if (declaredElement.getQualifiedName().toString().equals(expectedInterfaceQualifiedName)) {
+                return Optional.of(declaredElement);
+            }
+        }
+
+        var superclass = type.getSuperclass();
+        if (superclass.getKind() == TypeKind.DECLARED) {
+            var superclassElement = (TypeElement) ((DeclaredType) superclass).asElement();
+            if (!superclassElement.getQualifiedName().toString().equals("java.lang.Object")) {
+                var result = findImplementedInterface(superclassElement, expectedInterfaceQualifiedName);
+                if (result.isPresent()) {
+                    return result;
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     private ActualData generateFactoryClass(String expectPackage,
@@ -132,23 +162,7 @@ public class ActualAnnotationProcessor extends AbstractProcessor {
             }
             var expectClassQualifiedName = Objects.requireNonNull(expectClassFullQualifiedName);
 
-            var expectElementOptional = type.getInterfaces().stream().map(interfaceItem -> {
-                if (interfaceItem.getKind() != TypeKind.DECLARED) {
-                    return null;
-                }
-                var declaredType = (DeclaredType) interfaceItem;
-                if (declaredType.getKind() != TypeKind.DECLARED) {
-                    return null;
-                }
-                var declaredElement = (TypeElement) declaredType.asElement();
-                if (declaredElement.getKind() != ElementKind.INTERFACE) {
-                    return null;
-                }
-                if (declaredElement.getQualifiedName().toString().equals(expectClassQualifiedName)) {
-                    return declaredElement;
-                }
-                return null;
-            }).filter(Objects::nonNull).findFirst();
+            var expectElementOptional = findImplementedInterface(type, expectClassQualifiedName);
 
             if (expectElementOptional.isEmpty()) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class " + type.getQualifiedName() + " annotated with @ActualImpl must implement an interface named " + expectClassFullQualifiedName);

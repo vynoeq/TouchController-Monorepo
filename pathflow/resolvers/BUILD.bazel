@@ -6,8 +6,8 @@ kt_merge_library(
     merge_deps = [
         "//pathflow/data",
         "//pathflow/feature",
-        "//pathflow/transformer",
         "//pathflow/resolver",
+        "//pathflow/transformer",
     ],
     visibility = ["//visibility:public"],
 )

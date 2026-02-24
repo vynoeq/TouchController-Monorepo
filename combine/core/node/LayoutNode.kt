@@ -18,7 +18,7 @@ import top.fifthlight.combine.paint.withState
 import top.fifthlight.data.Offset
 
 private fun interface Renderable {
-    fun Canvas.render(cursorPos: Offset)
+    fun render(canvas: Canvas, cursorPos: Offset)
 }
 
 abstract class WrapperLayoutNode(
@@ -66,14 +66,12 @@ abstract class WrapperLayoutNode(
             this.y = y
         }
 
-        override fun Canvas.render(cursorPos: Offset) {
-            withState {
-                translate(x, y)
-                with(node.renderer) {
-                    render(this@Node)
-                }
+        override fun render(canvas: Canvas, cursorPos: Offset) {
+            canvas.withState {
+                canvas.translate(x, y)
+                node.renderer.render(canvas, this)
                 node.children.forEach { child ->
-                    child.run { render(cursorPos) }
+                    child.render(canvas, cursorPos)
                 }
             }
         }
@@ -172,10 +170,10 @@ abstract class WrapperLayoutNode(
         override fun maxIntrinsicWidth(height: Int): Int = children.maxIntrinsicWidth(height)
         override fun maxIntrinsicHeight(width: Int): Int = children.maxIntrinsicHeight(width)
 
-        override fun Canvas.render(cursorPos: Offset) {
-            withState {
-                translate(x, y)
-                children.run { render(cursorPos) }
+        override fun render(canvas: Canvas, cursorPos: Offset) {
+            canvas.withState {
+                canvas.translate(x, y)
+                children.run { render(canvas, cursorPos) }
             }
         }
     }
@@ -239,7 +237,7 @@ class LayoutNode : Measurable, Placeable, Renderable, PointerEventReceiver,
 
     override fun placeAt(x: Int, y: Int) = wrappedNode.placeAt(x, y)
 
-    override fun Canvas.render(cursorPos: Offset) = wrappedNode.run { render(cursorPos) }
+    override fun render(canvas: Canvas, cursorPos: Offset) = wrappedNode.render(canvas, cursorPos)
 
     override fun onPointerEvent(event: PointerEvent) = wrappedNode.onPointerEvent(event)
 

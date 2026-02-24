@@ -1,0 +1,40 @@
+load("//rule:junit_test.bzl", "kt_junit_test")
+
+kt_junit_test(
+    name = "std140_test",
+    srcs = ["Std140Test.kt"],
+    jvm_flags = [
+        # Unsafe cause strange crashes in this test
+        "-Djoml.nounsafe=true",
+    ],
+    test_class = "top.fifthlight.blazerod.render.common.layout.test.Std140Test",
+    deps = [
+        "//blazerod/render/common/layout",
+        "@maven//:it_unimi_dsi_fastutil",
+        "@maven//:org_joml_joml",
+    ],
+)
+
+kt_junit_test(
+    name = "std430_test",
+    srcs = ["Std430Test.kt"],
+    jvm_flags = [
+        # Unsafe cause strange crashes in this test
+        "-Djoml.nounsafe=true",
+    ],
+    test_class = "top.fifthlight.blazerod.render.common.layout.test.Std430Test",
+    deps = [
+        "//blazerod/render/common/layout",
+        "@maven//:it_unimi_dsi_fastutil",
+        "@maven//:org_joml_joml",
+    ],
+)
+
+test_suite(
+    name = "test",
+    tests = [
+        ":std140_test",
+        ":std430_test",
+    ],
+    visibility = ["//blazerod/render/common/layout:__pkg__"],
+)

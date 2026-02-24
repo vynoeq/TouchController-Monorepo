@@ -61,7 +61,7 @@ data class BoatButton(
     override val id: Uuid = fastRandomUuid(),
     override val name: Name = Name.Translatable(Texts.WIDGET_BOAT_BUTTON_NAME),
     override val align: Align = Align.LEFT_BOTTOM,
-    override val offset: IntOffset = IntOffset.Companion.ZERO,
+    override val offset: IntOffset = IntOffset.ZERO,
     override val opacity: Float = 1f,
     override val lockMoving: Boolean = false,
 ) : ControllerWidget() {

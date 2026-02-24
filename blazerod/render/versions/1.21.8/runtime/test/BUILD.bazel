@@ -1,0 +1,20 @@
+load("//rule:junit_test.bzl", "kt_junit_test")
+
+kt_junit_test(
+    name = "transform_map_test",
+    srcs = ["TransformMapTest.kt"],
+    test_class = "top.fifthlight.blazerod.render.version_1_21_8.runtime.test.TransformMapTest",
+    deps = [
+        "//blazerod/model/model-base",
+        "//blazerod/render/versions/1.21.8/runtime",
+        "@maven//:org_joml_joml",
+    ],
+)
+
+test_suite(
+    name = "test",
+    tests = [
+        ":transform_map_test",
+    ],
+    visibility = ["//blazerod/render/versions/1.21.8/layout:__pkg__"],
+)

@@ -4,9 +4,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import net.minecraft.client.Minecraft
+import top.fifthlight.combine.util.dispatcher.GameDispatcherProvider
+import top.fifthlight.mergetools.api.ActualConstructor
+import top.fifthlight.mergetools.api.ActualImpl
 import kotlin.coroutines.CoroutineContext
 
-object GameDispatcher : CoroutineDispatcher() {
+@ActualImpl(GameDispatcherProvider::class)
+object GameDispatcher : CoroutineDispatcher(), GameDispatcherProvider {
+    @JvmStatic
+    @ActualConstructor
+    fun of(): GameDispatcherProvider = this
+
     private val client = Minecraft.getInstance()
 
     override fun isDispatchNeeded(context: CoroutineContext) = !client.isSameThread
@@ -18,4 +26,7 @@ object GameDispatcher : CoroutineDispatcher() {
             client.execute(block)
         }
     }
+
+    override val gameDispatcher: CoroutineDispatcher
+        get() = this
 }

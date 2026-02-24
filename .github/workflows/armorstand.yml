@@ -25,11 +25,9 @@ jobs:
       - name: Build
         run: |
           bazel build \
-            --verbose_failures \
+            --config=opt --verbose_failures \
             //armorstand:mod_fabric \
             //armorstand:mod_neoforge \
-            //blazerod:blazerod_fabric \
-            //blazerod:blazerod_neoforge \
             //blazerod/model/model-base \
             //blazerod/model/model-formats \
             //blazerod/model/model-gltf \
@@ -37,13 +35,18 @@ jobs:
             //blazerod/model/model-pmx \
             //blazerod/model/model-vmd \
             //blazerod/model/model-assimp:model-assimp-merged \
+            //blazerod:blazerod_fabric_1_21_8 \
+            //blazerod:blazerod_neoforge_1_21_8 \
+            //blazerod/render/versions/1.21.8/fabric \
+            //blazerod/render/versions/1.21.8/neoforge \
             //blazerod/example/ball_block
       - name: Test
         run: |
           bazel test \
             --verbose_failures \
             //blazerod/model:test \
-            //blazerod/render:test
+            //blazerod/render/common/layout/test \
+            //blazerod/render/versions/1.21.8/runtime/test
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -51,8 +54,6 @@ jobs:
           path: |
             bazel-bin/armorstand/mod_fabric.jar
             bazel-bin/armorstand/mod_neoforge.jar
-            bazel-bin/blazerod/blazerod_fabric.jar
-            bazel-bin/blazerod/blazerod_neoforge.jar
             bazel-bin/blazerod/model/model-base/model-base.jar
             bazel-bin/blazerod/model/model-formats/model-formats.jar
             bazel-bin/blazerod/model/model-gltf/model-gltf.jar
@@ -61,3 +62,6 @@ jobs:
             bazel-bin/blazerod/model/model-vmd/model-vmd.jar
             bazel-bin/blazerod/model/model-assimp/model-assimp-merged.jar
             bazel-bin/blazerod/example/ball_block/ball_block.jar
+            bazel-bin/blazerod/blazerod_fabric_1_21_8.jar
+            bazel-bin/blazerod/blazerod_neoforge_1_21_8.jar
+            bazel-bin/blazerod/render/versions/1.21.8/fabric/remapped_fabric.jar

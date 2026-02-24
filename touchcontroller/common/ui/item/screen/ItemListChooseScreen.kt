@@ -1,24 +1,25 @@
-package top.fifthlight.touchcontroller.common.ui.screen.itemlist
+package top.fifthlight.touchcontroller.common.ui.item.screen
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import org.koin.compose.koinInject
-import top.fifthlight.combine.data.Item
 import top.fifthlight.combine.data.Text
+import top.fifthlight.combine.item.data.Item
 import top.fifthlight.combine.layout.Alignment
 import top.fifthlight.combine.layout.Arrangement
 import top.fifthlight.combine.modifier.Modifier
+import top.fifthlight.combine.modifier.drawing.border
 import top.fifthlight.combine.modifier.placement.fillMaxSize
 import top.fifthlight.combine.modifier.placement.fillMaxWidth
-import top.fifthlight.combine.widget.base.layout.Box
-import top.fifthlight.combine.widget.base.layout.Column
+import top.fifthlight.combine.widget.layout.Box
+import top.fifthlight.combine.widget.layout.Column
 import top.fifthlight.combine.widget.ui.Button
 import top.fifthlight.combine.widget.ui.Text
 import top.fifthlight.touchcontroller.assets.Texts
-import top.fifthlight.touchcontroller.common.gal.PlayerHandleFactory
-import top.fifthlight.touchcontroller.common.gal.VanillaItemListProvider
+import top.fifthlight.touchcontroller.common.gal.player.PlayerHandleFactory
+import top.fifthlight.touchcontroller.common.gal.creativetab.CreativeTabsProvider
+import top.fifthlight.touchcontroller.common.gal.creativetab.CreativeTabsProviderFactory
+import top.fifthlight.touchcontroller.common.ui.theme.LocalTouchControllerTheme
 
 class ItemListChooseScreen(
     private val onItemSelected: (Item) -> Unit,
@@ -27,7 +28,9 @@ class ItemListChooseScreen(
     override fun Content() {
         val navigator = LocalNavigator.current
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .border(LocalTouchControllerTheme.current.borderBackgroundDark),
             alignment = Alignment.Center,
         ) {
             Column(
@@ -39,22 +42,21 @@ class ItemListChooseScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        navigator?.push(DefaultItemListScreen(onItemSelected))
+                        navigator?.push(DefaultListItemChooseScreen(onItemSelected))
                     }
                 ) {
                     Text(Text.translatable(Texts.SCREEN_ITEM_LIST_DEFAULT))
                 }
 
-                val playerHandleFactory: PlayerHandleFactory = koinInject()
-                val player = remember(playerHandleFactory) { playerHandleFactory.getPlayerHandle() }
+                val player = PlayerHandleFactory.current()
                 if (player != null) {
-                    val vanillaItemListProvider: VanillaItemListProvider = koinInject()
+                    val vanillaItemListProvider: CreativeTabsProvider = CreativeTabsProviderFactory.of()
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             val tabs = vanillaItemListProvider.getCreativeTabs(player)
                             val playerInventory = player.getInventory()
-                            navigator?.push(VanillaItemListScreen(onItemSelected, tabs, playerInventory))
+                            navigator?.push(CreativeTabItemChooseScreen(onItemSelected, tabs, playerInventory))
                         }
                     ) {
                         Text(Text.translatable(Texts.SCREEN_ITEM_LIST_VANILLA_INVENTORY))

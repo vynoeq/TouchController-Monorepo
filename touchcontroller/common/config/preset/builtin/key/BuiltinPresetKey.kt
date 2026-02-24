@@ -65,6 +65,10 @@ data class BuiltinPresetKey(
         ) : MoveMethod()
     }
 
+    val preset by lazy {
+        BuiltinPresetsProvider.generate(this)
+    }
+
     companion object {
         val DEFAULT = BuiltinPresetKey()
     }

@@ -58,7 +58,7 @@ fun main(vararg args: String) {
                         ).addModifiers(KModifier.OVERRIDE).initializer(
                             "BackgroundTextureFactory.create(%S, %S, %L, %L)",
                             namespace,
-                            "$prefix/$identifier",
+                            "textures/gui/$prefix/$identifier.png",
                             metadata.size.width,
                             metadata.size.height,
                         ).build()

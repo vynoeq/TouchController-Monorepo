@@ -1,9 +1,0 @@
-"MODULE.bazel JMH part"
-
-maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
-maven.install(
-    artifacts = [
-        "org.openjdk.jmh:jmh-core:1.37",
-        "org.openjdk.jmh:jmh-generator-annprocess:1.37",
-    ],
-)

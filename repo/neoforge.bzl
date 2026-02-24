@@ -64,12 +64,11 @@ def _neoforge_repo_impl(rctx):
     for token in download_tokens:
         token.wait()
 
-    neoforge_libraries = []
+    neoforge_libraries = {}
     for library in config_data["libraries"]:
         label = '"@%s//jar"' % _convert_maven_coordinate_to_repo(repository_prefix, library)
-        if label not in neoforge_libraries:
-            neoforge_libraries.append(label)
-    neoforge_libraries = ", ".join(neoforge_libraries)
+        if library not in neoforge_libraries:
+            neoforge_libraries[library] = label
 
     access_transformers = config_data["ats"]
     if type(access_transformers) == type([]):
@@ -125,7 +124,7 @@ def _neoforge_repo_impl(rctx):
         "    deps = [",
         '        ":decompile_libraries",',
         '        ":neoforge_universal",',
-        "        %s" % neoforge_libraries,
+        "        %s" % ", \n        ".join(neoforge_libraries.values()),
         "    ],",
         '    javacopts = ["-XepDisableAllChecks", "-nowarn", "-g", "-proc:none", "-implicit:none", "--release", "%s"],' % version_java_target,
         ")",
@@ -157,10 +156,19 @@ def _neoforge_repo_impl(rctx):
         '    name = "neoforge_deps",',
         "    deps = [",
         '        ":decompile_libraries",',
-        "        %s" % neoforge_libraries,
+        "        %s" % ", \n        ".join(neoforge_libraries.values()),
         "    ],",
         ")",
     ]
+
+    for library, label in neoforge_libraries.items():
+        items = library.split(":")
+        build_file_contents += [
+            "alias(",
+            '    name = "%s",' % _convert_maven_coordinate("%s:%s" % (items[0], items[1])),
+            '    actual = %s,' % label,
+            ")",
+        ]
 
     rctx.file("BUILD.bazel", "\n".join(build_file_contents))
 

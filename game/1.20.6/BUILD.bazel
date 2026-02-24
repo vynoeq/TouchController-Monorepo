@@ -4,6 +4,7 @@ game_version(
     name = "game",
     client = "@minecraft//1.20.6:client",
     client_assets = "@minecraft_assets//:assets_1.20.6",
+    client_assets_version = "@minecraft_assets//:version_1.20.6",
     client_libraries = "@minecraft//1.20.6:client_libraries",
     client_mappings = "@minecraft//1.20.6:client_mappings",
     client_parchment = "@parchment_1_20_6//:json",

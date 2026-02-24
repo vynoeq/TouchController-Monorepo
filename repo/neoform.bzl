@@ -4,6 +4,7 @@ load("@//private:maven_coordinate.bzl", _convert_maven_coordinate = "convert_mav
 load("@//private:pin_file.bzl", _parse_pin_file = "parse_pin_file")
 load("@//private:snake_case.bzl", _camel_case_to_snake_case = "camel_case_to_snake_case")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+load("@rules_java//java:defs.bzl", "JavaInfo")
 
 _neoforge_repository_url = "https://maven.neoforged.net/releases"
 _minecraftforge_repository_url = "https://maven.minecraftforge.net/releases"
@@ -144,13 +145,14 @@ def _extract_function_classpaths(rctx, function_name, function_jar):
         rctx.extract(
             archive = entry.path,
             output = extracted,
+            strip_prefix = "META-INF",
         )
-        manifest = rctx.read(extracted + "/META-INF/MANIFEST.MF")
+        manifest = rctx.read(extracted + "/MANIFEST.MF")
         main_class = _extract_main_class_from_manifest(manifest)
         break
     return main_class
 
-def _generate_function_build_file(rctx, version_info, function_name, function, classpath, main_class):
+def _generate_function_build_file(rctx, version_info, java_target, function_name, function, classpath, main_class):
     """Generate BUILD.bazel file for function"""
     jvm_flags = []
     if "jvmargs" in function:
@@ -158,9 +160,9 @@ def _generate_function_build_file(rctx, version_info, function_name, function, c
             jvm_flags.append('"%s"' % flag)
 
     function_build = [
-        'load("@rules_java//java:defs.bzl", "java_binary")',
+        'load("@//repo/neoform:java_version_binary.bzl", "java_%s_binary")' % java_target,
         "",
-        "java_binary(",
+        "java_%s_binary(" % java_target,
         '    name = "%s",' % function_name,
         '    visibility = ["//visibility:public"],',
         '    main_class = "DecompilerWrapper",',
@@ -171,9 +173,9 @@ def _generate_function_build_file(rctx, version_info, function_name, function, c
         "    jvm_flags = [%s]," % ", ".join(jvm_flags),
         ")",
     ] if function_name == "decompile" else [
-        'load("@rules_java//java:defs.bzl", "java_binary")',
+        'load("@//repo/neoform:java_version_binary.bzl", "java_%s_binary")' % java_target,
         "",
-        "java_binary(",
+        "java_%s_binary(" % java_target,
         '    name = "%s",' % function_name,
         '    visibility = ["//visibility:public"],',
         '    main_class = "%s",' % main_class,
@@ -422,7 +424,7 @@ def _generate_function_definition(data_paths, function_name, rule_impl_name, jar
 
     return "\n".join(rule_def)
 
-def _generate_function(rctx, version_info, data_paths, function_name, function, function_jar):
+def _generate_function(rctx, version_info, java_target, data_paths, function_name, function, function_jar):
     classpath = function["classpath"] if "classpath" in function else []
     if "version" in function:
         classpath.append(function["version"])
@@ -430,7 +432,7 @@ def _generate_function(rctx, version_info, data_paths, function_name, function, 
         fail("Neoform function %s has no classpath" % function_name)
 
     main_class = _extract_function_classpaths(rctx, function_name, function_jar)
-    _generate_function_build_file(rctx, version_info, function_name, function, classpath, main_class)
+    _generate_function_build_file(rctx, version_info, java_target, function_name, function, classpath, main_class)
 
     arg_entries, placeholder_types, output_entries = _parse_function_arguments(function.get("args", []))
     rule_impl_name = "_%s_impl" % function_name
@@ -438,9 +440,11 @@ def _generate_function(rctx, version_info, data_paths, function_name, function, 
     rule_impl = _generate_function_impl(function_name, rule_impl_name, jar_output, main_class, arg_entries, placeholder_types, output_entries)
     rule_def = _generate_function_definition(data_paths, function_name, rule_impl_name, jar_output, placeholder_types)
 
+    header = 'load("@rules_java//java:defs.bzl", "JavaInfo")'
+
     rctx.file(
         "functions/%s.bzl" % (function_name),
-        rule_impl + "\n" + "\n" + rule_def,
+        header + "\n" + rule_impl + "\n" + "\n" + rule_def,
     )
 
 def _convert_task_name(side, name):
@@ -554,11 +558,17 @@ def _neoform_repo_impl(rctx):
     function_jars = _download_function_jars(rctx, version_info, config_data, pin_content)
     data_paths = _generate_root_build_file(rctx, config_data, output_prefix, neoform_zip)
 
+    java_target = config_data.get("java_target", "8")
+
     rctx.file("functions/BUILD.bazel", "")
     for function_name, function in config_data["functions"].items():
-        _generate_function(rctx, version_info, data_paths, function_name, function, function_jars[function_name])
+        _generate_function(rctx, version_info, java_target, data_paths, function_name, function, function_jars[function_name])
 
     _generate_steps(rctx, version_info, config_data)
+
+    for jar in function_jars.values():
+        for entry in jar:
+            entry.token.wait()
 
 _neoform_repo = repository_rule(
     implementation = _neoform_repo_impl,

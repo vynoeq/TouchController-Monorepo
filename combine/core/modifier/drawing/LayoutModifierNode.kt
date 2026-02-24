@@ -92,10 +92,10 @@ interface LayoutModifierNode : WrapperModifierNode {
             override fun maxIntrinsicWidth(height: Int): Int = modifierNode.maxIntrinsicWidth(children, height)
             override fun maxIntrinsicHeight(width: Int): Int = modifierNode.maxIntrinsicHeight(children, width)
 
-            override fun Canvas.render(cursorPos: Offset) {
-                withState {
-                    translate(x, y)
-                    children.run { render(cursorPos) }
+            override fun render(canvas: Canvas, cursorPos: Offset) {
+                canvas.withState {
+                    canvas.translate(x, y)
+                    children.render(canvas, cursorPos)
                 }
             }
         }

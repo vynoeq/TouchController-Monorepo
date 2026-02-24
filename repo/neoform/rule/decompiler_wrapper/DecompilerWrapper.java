@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Method;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
 import java.util.*;
@@ -12,30 +13,34 @@ public class DecompilerWrapper {
     }
 
     public static void main(String[] args) throws Exception {
-        var realMainClass = args[0];
-        var outputPathStr = args[1];
-        var originalArgs = Arrays.copyOfRange(args, 2, args.length);
+        String realMainClass = args[0];
+        String outputPathStr = args[1];
+        String[] originalArgs = Arrays.copyOfRange(args, 2, args.length);
 
-        var clazz = Class.forName(realMainClass);
-        var mainMethod = clazz.getMethod("main", String[].class);
+        Class<?> clazz = Class.forName(realMainClass);
+        Method mainMethod = clazz.getMethod("main", String[].class);
         mainMethod.invoke(null, (Object) originalArgs);
 
-        var path = Paths.get(outputPathStr);
-        var tempPath = Paths.get(outputPathStr + ".tmp");
+        Path path = Paths.get(outputPathStr);
+        Path tempPath = Paths.get(outputPathStr + ".tmp");
 
-        try (var jarFile = new JarFile(path.toFile());
-             var jos = new JarOutputStream(new FileOutputStream(tempPath.toFile()))) {
+        try (JarFile jarFile = new JarFile(path.toFile());
+             JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempPath.toFile()))) {
 
             List<JarEntry> entries = Collections.list(jarFile.entries());
             entries.sort(Comparator.comparing(JarEntry::getName));
 
-            for (var entry : entries) {
-                var newEntry = new JarEntry(entry.getName());
+            for (JarEntry entry : entries) {
+                JarEntry newEntry = new JarEntry(entry.getName());
                 setJarEntryTime(newEntry);
 
                 jos.putNextEntry(newEntry);
-                try (var is = jarFile.getInputStream(entry)) {
-                    is.transferTo(jos);
+                try (InputStream is = jarFile.getInputStream(entry)) {
+                    byte[] buffer = new byte[65536];
+                    int read;
+                    while ((read = is.read(buffer)) != -1) {
+                        jos.write(buffer, 0, read);
+                    }
                 }
                 jos.closeEntry();
             }

@@ -9,4 +9,4 @@ interface ItemCanvas : Canvas {
     fun drawItemStack(offset: IntOffset, size: IntSize = IntSize(16), stack: ItemStack)
 }
 
-inline fun Canvas.item(crossinline block: ItemCanvas.() -> Unit) = (this as ItemCanvas).block()
+inline fun Canvas.item(crossinline block: (canvas: ItemCanvas) -> Unit) = block(this as ItemCanvas)

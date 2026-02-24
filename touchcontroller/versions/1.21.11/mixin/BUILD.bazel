@@ -1,0 +1,24 @@
+load("//rule:merge_library.bzl", "java_merge_library")
+
+java_merge_library(
+    name = "mixin",
+    srcs = glob(["*.java"]),
+    merge_deps = [
+        "//touchcontroller/common/config/holder",
+        "//touchcontroller/common/event/render",
+        "//touchcontroller/common/model",
+        "//touchcontroller/common/ui/config/screen",
+        "//touchcontroller/common/util/crosshair",
+        "//touchcontroller/versions/1.21.11/event",
+        "//touchcontroller/versions/1.21.11/extension",
+    ],
+    resource_strip_prefix = "touchcontroller/versions/1.21.11/mixin/resource",
+    resources = glob(["resource/**"]),
+    visibility = ["//touchcontroller/versions/1.21.11:__subpackages__"],
+    deps = [
+        "//combine/backend/minecraft/1.21.11",
+        "//game/1.21.11:game_client_named",
+        "//game/1.21.11:game_client_libraries",
+        "@maven_fabric_1_21_11//:net_fabricmc_sponge_mixin",
+    ],
+)

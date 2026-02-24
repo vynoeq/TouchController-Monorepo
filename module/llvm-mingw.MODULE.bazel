@@ -32,6 +32,54 @@ toolchains = {
             "@platforms//os:macos",
         ],
     },
+    "windows_x86_64": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-x86_64.zip",
+        "sha256": "2d96a4b758f7f8deaec5065833fe025aa53cfc5f704d0524002510984da0ccf4",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-x86_64",
+        "type": "zip",
+        "exec_compatible_with": [
+            "@platforms//os:windows",
+            "@platforms//cpu:x86_64",
+        ],
+        "binary_extension": ".exe",
+        "use_wrapper": False,
+    },
+    "windows_aarch64": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-aarch64.zip",
+        "sha256": "60c06bd255feb2ef1eb6fce7ee6b307d8f78ee6639660f49861c7c10a8a86164",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-aarch64",
+        "type": "zip",
+        "exec_compatible_with": [
+            "@platforms//os:windows",
+            "@platforms//cpu:aarch64",
+        ],
+        "binary_extension": ".exe",
+        "use_wrapper": False,
+    },
+    "windows_x86_32": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-i686.zip",
+        "sha256": "c6b17faa808f412ec8ef2086994b3fc3c16e8c7292bbaf275254d0acfa18f54d",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-i686",
+        "type": "zip",
+        "exec_compatible_with": [
+            "@platforms//os:windows",
+            "@platforms//cpu:x86_32",
+        ],
+        "binary_extension": ".exe",
+        "use_wrapper": False,
+    },
+    "windows_armv7": {
+        "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-armv7.zip",
+        "sha256": "84aba9a04e23af4bbf90a742d7045f9f5ce2a233caa73e9a5e3990334e1e3109",
+        "strip_prefix": "llvm-mingw-20251216-ucrt-armv7",
+        "type": "zip",
+        "exec_compatible_with": [
+            "@platforms//os:windows",
+            "@platforms//cpu:armv7",
+        ],
+        "binary_extension": ".exe",
+        "use_wrapper": False,
+    },
 }
 
 [
@@ -48,6 +96,8 @@ toolchains = {
             strip_prefix = toolchain["strip_prefix"],
             type = toolchain["type"],
             exec_compatible_with = toolchain["exec_compatible_with"],
+            binary_extension = toolchain.get("binary_extension", ""),
+            use_wrapper = toolchain.get("use_wrapper", True),
         ),
         use_repo(llvm_mingw, "llvm_mingw_toolchain_%s" % name),
         register_toolchains("@llvm_mingw_toolchain_%s//:x86_64_toolchain" % name),

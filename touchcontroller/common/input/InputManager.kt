@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import top.fifthlight.combine.input.text.InputHandler
 import top.fifthlight.combine.input.text.TextInputState
+import top.fifthlight.combine.util.dispatcher.GameDispatcherProviderFactory
 import top.fifthlight.data.IntRect
-import top.fifthlight.touchcontroller.common.gal.GameDispatcherProviderFactory
 import top.fifthlight.touchcontroller.common.gal.window.WindowHandle
 import top.fifthlight.touchcontroller.common.gal.window.WindowHandleFactory
+import top.fifthlight.touchcontroller.common.platform.capabilities.PlatformCapabilitiesHolder
 import top.fifthlight.touchcontroller.common.platform.provider.PlatformProvider
 import top.fifthlight.touchcontroller.proxy.client.PlatformCapability
 import top.fifthlight.touchcontroller.proxy.message.*
@@ -42,7 +43,7 @@ object InputManager : InputHandler {
         this.inputState = textInputState
         this.cursorRect = cursorRect
         this.areaRect = areaRect
-        if (PlatformCapability.TEXT_STATUS in RenderEvents.platformCapabilities) {
+        if (PlatformCapability.TEXT_STATUS in PlatformCapabilitiesHolder.platformCapabilities.value) {
             PlatformProvider.platform?.let { platform ->
                 if (inputStateUpdated) {
                     platform.sendEvent(InputStatusMessage(textInputState?.let {
@@ -94,7 +95,7 @@ object InputManager : InputHandler {
 
     override fun tryShowKeyboard() {
         PlatformProvider.platform?.let { platform ->
-            if (PlatformCapability.KEYBOARD_SHOW in RenderEvents.platformCapabilities) {
+            if (PlatformCapability.KEYBOARD_SHOW in PlatformCapabilitiesHolder.platformCapabilities.value) {
                 platform.sendEvent(KeyboardShowMessage(true))
             }
         }
@@ -102,7 +103,7 @@ object InputManager : InputHandler {
 
     override fun tryHideKeyboard() {
         PlatformProvider.platform?.let { platform ->
-            if (PlatformCapability.KEYBOARD_SHOW in RenderEvents.platformCapabilities) {
+            if (PlatformCapability.KEYBOARD_SHOW in PlatformCapabilitiesHolder.platformCapabilities.value) {
                 platform.sendEvent(KeyboardShowMessage(false))
             }
         }

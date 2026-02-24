@@ -5,22 +5,28 @@ module(
     version = "0.3.1-alpha",
 )
 
-bazel_dep(name = "rules_java", version = "9.3.0")
+bazel_dep(name = "rules_java", version = "9.5.0")
 bazel_dep(name = "rules_kotlin", version = "2.2.2")
-bazel_dep(name = "rules_jvm_external", version = "6.9")
+bazel_dep(name = "rules_jvm_external", version = "6.10")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "bazel_lib", version = "3.1.0")
+bazel_dep(name = "bazel_lib", version = "3.2.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "rules_rust", version = "0.68.1")
 bazel_dep(name = "rules_rust_mdbook", version = "0.68.1")
-bazel_dep(name = "rules_android_ndk", version = "0.1.3")
-bazel_dep(name = "rules_python", version = "1.8.0-rc2")
+bazel_dep(name = "rules_python", version = "1.8.4")
 bazel_dep(name = "rules_jni", version = "0.11.1")
 bazel_dep(name = "rules_cc", version = "0.2.16")
 bazel_dep(name = "rules_shell", version = "0.6.1")
-bazel_dep(name = "hermetic_cc_toolchain", version = "4.0.1")
-bazel_dep(name = "bazel_worker_api", version = "0.0.9")
-bazel_dep(name = "bazel_worker_java", version = "0.0.9")
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.1.0")
+bazel_dep(name = "bazel_worker_api", version = "0.0.10")
+bazel_dep(name = "with_cfg.bzl", version = "0.14.1")
+
+# Our own rules
+bazel_dep(name = "rules_mc", version = "0.0.0")
+local_path_override(
+    module_name = "rules_mc",
+    path = "rules_mc",
+)
 
 # Patch rule_android to enable maven pinning
 bazel_dep(name = "rules_android", version = "0.7.1")
@@ -34,14 +40,43 @@ archive_override(
 )
 
 # Patch protobuf to avoid https://github.com/protocolbuffers/protobuf/issues/21755
-bazel_dep(name = "protobuf", version = "33.1")
+bazel_dep(name = "protobuf", version = "33.4")
 archive_override(
     module_name = "protobuf",
-    integrity = "sha256-/aEyywyGQAOBwK8f6YvQ93XLVmyyR83MEF40TgCsww4=",
+    integrity = "sha256-aH6YpHGXO1xf1xF1DEC4uCwK3jP2Sdtl4AspDyk0Wis=",
     patch_strip = 1,
     patches = ["//third_party/protobuf/patches:retain-linker-array.patch"],
-    strip_prefix = "protobuf-33.1",
-    url = "https://github.com/protocolbuffers/protobuf/releases/download/v33.1/protobuf-33.1.tar.gz",
+    strip_prefix = "protobuf-33.4",
+    url = "https://github.com/protocolbuffers/protobuf/releases/download/v33.4/protobuf-33.4.bazel.tar.gz",
+)
+
+# Patch rules_android_ndk to fix https://github.com/bazelbuild/rules_android_ndk/issues/107
+# and https://github.com/bazelbuild/rules_android_ndk/pull/119
+bazel_dep(name = "rules_android_ndk", version = "0.1.3")
+archive_override(
+    module_name = "rules_android_ndk",
+    integrity = "sha256-ib9QElZ6W63kx46sWsVsM2aVw7/SgamwiU/2YFMo0tU=",
+    patch_strip = 1,
+    patches = [
+        "//third_party/rules_android_ndk/patches:fix-windows-path.patch",
+        "//third_party/rules_android_ndk/patches:load-rules-cc.patch",
+    ],
+    strip_prefix = "rules_android_ndk-0.1.3",
+    url = "https://github.com/bazelbuild/rules_android_ndk/releases/download/v0.1.3/rules_android_ndk-v0.1.3.tar.gz",
+)
+
+# Patch bazel_worker_java to add maven pinning
+bazel_dep(name = "bazel_worker_java", version = "0.0.10")
+archive_override(
+    module_name = "bazel_worker_java",
+    integrity = "sha256-BHb+JyUc0yNLaXN/i8Ixz+mRK+zdYg4H4tc8h7zH5Ao=",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel_worker_java/patches:maven_pinning.patch",
+        "//third_party/bazel_worker_java/patches:module_dot_bazel_version.patch",
+    ],
+    strip_prefix = "bazel-worker-api-0.0.10/java",
+    url = "https://github.com/bazelbuild/bazel-worker-api/releases/download/v0.0.10/bazel-worker-api-v0.0.10.tar.gz",
 )
 
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
@@ -52,14 +87,27 @@ git_override(
 )
 
 # libraries
-bazel_dep(name = "libexpat", version = "2.7.1")
 bazel_dep(name = "libffi", version = "3.4.7.bcr.3")
 bazel_dep(name = "bullet", version = "3.26.0-rc0.bcr.1")
 bazel_dep(name = "glfw", version = "3.4.0.bcr.1")
-bazel_dep(name = "glm", version = "1.0.2")
+bazel_dep(name = "glm", version = "1.0.3")
+bazel_dep(name = "assimp", version = "6.0.3")
+
+# Patch libexpat to add windows support
+bazel_dep(name = "libexpat", version = "2.7.1.bcr1")
+archive_override(
+    module_name = "libexpat",
+    build_file = "//third_party/expat:BUILD.expat.bazel",
+    integrity = "sha256-hTcnl/8Gc6j8SmvhZGa7WgyijA3PPG96wWhrSjuiqrs=",
+    patch_strip = 1,
+    patches = ["//third_party/expat/patches:add-module-file.patch"],
+    strip_prefix = "libexpat-R_2_7_1",
+    url = "https://github.com/libexpat/libexpat/archive/refs/tags/R_2_7_1.tar.gz",
+)
 
 # toolchain
 include("//module:zig_cc.MODULE.bazel")
+
 include("//module:llvm-mingw.MODULE.bazel")
 
 # languages
@@ -70,31 +118,50 @@ include("//module:android.MODULE.bazel")
 
 # tools
 include("//module:mdbook.MODULE.bazel")
-include("//module:jmh.MODULE.bazel")
+
+include("//module:copybara.MODULE.bazel")
 
 # rules
 include("//module:rules.MODULE.bazel")
+
 include("//module:minecraft.MODULE.bazel")
+
 include("//module:parchment.MODULE.bazel")
+
 include("//module:modrinth.MODULE.bazel")
 
 # loaders
 include("//module:neoforge.MODULE.bazel")
+
 include("//module:fabric.MODULE.bazel")
 
 # third party
 include("//module/third_party:sodium.MODULE.bazel")
+
 include("//module/third_party:iris.MODULE.bazel")
+
 include("//module/third_party:mocha.MODULE.bazel")
+
 include("//module/third_party:wayland.MODULE.bazel")
+
 include("//module/third_party:saba.MODULE.bazel")
+
 include("//module/third_party:fabric_loom.MODULE.bazel")
+
+# libraries
+
+include("//module:compose.MODULE.bazel")
 
 # projects
 include("//module:blazerod.MODULE.bazel")
+
 include("//module:armorstand.MODULE.bazel")
+
 include("//module:combine.MODULE.bazel")
+
 include("//module:touchcontroller.MODULE.bazel")
+
+include("//module:blazesdl.MODULE.bazel")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(

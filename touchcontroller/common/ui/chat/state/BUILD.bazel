@@ -1,0 +1,11 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "state",
+    srcs = glob(["*.kt"]),
+    merge_deps = [],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//combine/core/paint",
+    ],
+)

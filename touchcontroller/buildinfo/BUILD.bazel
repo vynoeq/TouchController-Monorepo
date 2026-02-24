@@ -6,6 +6,7 @@ load(
     "touchcontroller_contributors",
     "touchcontroller_description",
     "touchcontroller_license",
+    "touchcontroller_state",
     "touchcontroller_version",
 )
 
@@ -20,6 +21,7 @@ expand_template(
         "[modLicense]": touchcontroller_license,
         "[modAuthors]": ", ".join(['"%s"' % author for author in touchcontroller_authors]),
         "[modContributors]": ", ".join(['"%s"' % contributor for contributor in touchcontroller_contributors]),
+        "[modState]": touchcontroller_state,
     },
     template = "BuildInfo.template.kt",
 )

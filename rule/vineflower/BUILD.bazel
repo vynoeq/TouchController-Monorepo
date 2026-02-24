@@ -6,8 +6,8 @@ java_binary(
     main_class = "top.fifthlight.fabazel.decompiler.DecompilerWrapper",
     visibility = ["//visibility:public"],
     deps = [
-        "//rule/worker_api",
         "//:picocli",
+        "//rule/worker_api",
         "@fabric_loom//:vineflower_tiny_javadoc_provider",
         "@maven//:org_vineflower_vineflower",
     ],

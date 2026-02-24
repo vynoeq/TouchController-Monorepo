@@ -5,15 +5,17 @@ kt_merge_library(
     srcs = glob(["**/*.kt"]),
     kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
     merge_deps = [
-        "//touchcontroller/common/serializer",
         "//touchcontroller/common/config/condition/input",
+        "//touchcontroller/common/gal/entity",
+        "//touchcontroller/common/gal/view",
+        "//touchcontroller/common/serializer",
         "//touchcontroller/resources/lang:text_binding",
     ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
         "//:kotlin_serialization",
-        "//combine/item/data",
         "//combine/core/data",
+        "//combine/item/data",
         "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
     ],
 )

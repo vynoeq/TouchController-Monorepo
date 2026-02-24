@@ -1,0 +1,15 @@
+load("@rules_java//java:defs.bzl", "java_library")
+
+java_library(
+    name = "classdeps",
+    srcs = glob(["*.java"]),
+    visibility = ["//fastmerger/scanner:__subpackages__"],
+    deps = [
+        "//fastmerger/scanner/pathmap",
+        "@maven//:at_yawk_lz4_lz4_java",
+        "@maven//:it_unimi_dsi_fastutil",
+        "@maven//:org_apache_commons_commons_compress",
+        "@maven//:org_jetbrains_annotations",
+        "@maven//:org_ow2_asm_asm",
+    ],
+)

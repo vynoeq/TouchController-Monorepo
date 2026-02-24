@@ -1,0 +1,12 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+
+java_binary(
+    name = "reader",
+    srcs = glob(["*.java"]),
+    main_class = "top.fifthlight.fastmerger.reader.Reader",
+    visibility = ["//fastmerger:__subpackages__"],
+    deps = [
+        "//:picocli",
+        "//fastmerger/bindeps",
+    ],
+)

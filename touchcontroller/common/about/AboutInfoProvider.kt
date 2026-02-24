@@ -9,4 +9,6 @@ interface AboutInfoProvider {
     interface Factory {
         fun of(): AboutInfoProvider
     }
+
+    companion object : AboutInfoProvider by AboutInfoProviderFactory.of()
 }

@@ -1,20 +1,17 @@
-package top.fifthlight.touchcontroller.common.ui.component
+package top.fifthlight.touchcontroller.common.ui.control
 
 import androidx.compose.runtime.*
-import org.koin.compose.koinInject
 import top.fifthlight.combine.modifier.Modifier
 import top.fifthlight.combine.modifier.placement.onPlaced
 import top.fifthlight.combine.modifier.placement.size
 import top.fifthlight.combine.paint.*
-import top.fifthlight.combine.widget.base.Canvas
+import top.fifthlight.combine.widget.Canvas
 import top.fifthlight.data.IntOffset
 import top.fifthlight.data.IntSize
-import top.fifthlight.touchcontroller.common.config.GlobalConfig
 import top.fifthlight.touchcontroller.common.control.ControllerWidget
-import top.fifthlight.touchcontroller.common.gal.DefaultItemListProvider
 import top.fifthlight.touchcontroller.common.layout.Context
-import top.fifthlight.touchcontroller.common.layout.ContextResult
-import top.fifthlight.touchcontroller.common.layout.DrawQueue
+import top.fifthlight.touchcontroller.common.layout.data.ContextResult
+import top.fifthlight.touchcontroller.common.layout.queue.DrawQueue
 
 @Composable
 fun ControllerWidget(
@@ -22,10 +19,9 @@ fun ControllerWidget(
     widget: ControllerWidget,
     scale: Float = 1f,
 ) {
-    val itemListProvider: DefaultItemListProvider = koinInject()
     val widgetSize = widget.size()
     val renderSize = (widgetSize.toSize() * scale).toIntSize()
-    val drawQueue = remember(widget, itemListProvider) {
+    val drawQueue = remember(widget) {
         val queue = DrawQueue()
         val context = Context(
             windowSize = IntSize.ZERO,
@@ -35,7 +31,6 @@ fun ControllerWidget(
             screenOffset = IntOffset.ZERO,
             pointers = mutableMapOf(),
             result = ContextResult(),
-            config = GlobalConfig.default(itemListProvider),
             opacity = widget.opacity,
         )
         widget.layout(context)
@@ -45,9 +40,9 @@ fun ControllerWidget(
         modifier = Modifier
             .size(renderSize)
             .then(modifier)
-    ) {
-        withScale(scale) {
-            drawQueue.execute(this)
+    ) { canvas, _ ->
+        canvas.withScale(scale) { canvas ->
+            drawQueue.execute(canvas)
         }
     }
 }
@@ -58,8 +53,7 @@ fun AutoScaleControllerWidget(
     widget: ControllerWidget,
 ) {
     var entrySize by remember { mutableStateOf(IntSize.ZERO) }
-    val itemListProvider: DefaultItemListProvider = koinInject()
-    val (drawQueue, componentScaleFactor, offset) = remember(widget, entrySize, itemListProvider) {
+    val (drawQueue, componentScaleFactor, offset) = remember(widget, entrySize) {
         val queue = DrawQueue()
 
         val widgetSize = widget.size()
@@ -81,7 +75,6 @@ fun AutoScaleControllerWidget(
             screenOffset = IntOffset.ZERO,
             pointers = mutableMapOf(),
             result = ContextResult(),
-            config = GlobalConfig.default(itemListProvider),
             opacity = widget.opacity,
         )
         widget.layout(context)
@@ -91,10 +84,10 @@ fun AutoScaleControllerWidget(
         modifier = Modifier
             .onPlaced { entrySize = it.size }
             .then(modifier),
-    ) {
-        withTranslate(offset) {
-            withScale(componentScaleFactor) {
-                drawQueue.execute(this)
+    ) { canvas, _ ->
+        canvas.withTranslate(offset) { canvas ->
+            canvas.withScale(componentScaleFactor) { canvas ->
+                drawQueue.execute(canvas)
             }
         }
     }

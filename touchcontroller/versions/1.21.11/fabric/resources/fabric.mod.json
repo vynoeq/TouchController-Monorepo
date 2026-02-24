@@ -1,0 +1,42 @@
+{
+    "schemaVersion": 1,
+    "id": "touchcontroller",
+    "version": "${version}",
+    "name": "TouchController",
+    "description": "${description}",
+    "authors": "mod_authors_array",
+    "contributors": "mod_contributors_array",
+    "contact": {
+        "homepage": "${home_page}",
+        "sources": "${sources_page}",
+        "issues": "${issue_tracker}"
+    },
+    "license": "${license}",
+    "icon": "assets/touchcontroller/textures/icon.png",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "top.fifthlight.touchcontroller.version_1_21_11.fabric.TouchController"
+        ],
+        "modmenu": [
+            "top.fifthlight.touchcontroller.version_1_21_11.fabric.TouchControllerModMenuApiImpl"
+        ]
+    },
+    "mixins": [
+        {
+            "config": "touchcontroller.mixins.json",
+            "environment": "client"
+        },
+        {
+            "config": "touchcontroller.mixins.fabric.json",
+            "environment": "client"
+        }
+    ],
+    "depends": {
+        "fabricloader": ">=0.17.3",
+        "minecraft": "1.21.11",
+        "java": ">=21",
+        "fabric-api": ">=0.140.2",
+        "combine": "^${combine_version}"
+    }
+}

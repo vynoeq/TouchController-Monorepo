@@ -1,0 +1,26 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "entitypicker",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/gal/entity",
+        "//touchcontroller/common/gal/gamestate",
+        "//touchcontroller/common/ui/widget",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "//combine/core/layout",
+        "//combine/core/modifier",
+        "//combine/core/modifier/placement",
+        "//combine/core/modifier/scroll",
+        "//combine/core/paint",
+        "//combine/core/widget/layout",
+        "//combine/item/data",
+        "//combine/item/widget",
+        "//combine/widget",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
+)

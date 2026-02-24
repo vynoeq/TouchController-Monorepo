@@ -18,6 +18,8 @@ interface ItemDataComponentType {
 }
 
 interface ItemDataComponentTypeProvider {
+    val supportDataComponents: Boolean
+
     val allComponents: PersistentList<ItemDataComponentType>
 
     @ExpectFactory

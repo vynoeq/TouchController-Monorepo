@@ -40,31 +40,29 @@ fun Context.Texture(
 ) {
     if (opacity == 1f) {
         drawQueue.enqueue { canvas ->
-            with(texture) {
-                canvas.draw(
-                    dstRect = calcDstRect(
-                        srcRect = srcRect,
-                        dstSize = size,
-                        padding = padding,
-                    ),
-                    srcRect = (srcRect + padding).toRect(),
-                )
-            }
+            texture.draw(
+                canvas = canvas,
+                dstRect = calcDstRect(
+                    srcRect = srcRect,
+                    dstSize = size,
+                    padding = padding,
+                ),
+                srcRect = (srcRect + padding).toRect(),
+            )
         }
     } else {
         val color = Color(((0xFF * opacity).toInt() shl 24) or 0xFFFFFF)
         drawQueue.enqueue { canvas ->
-            with(texture) {
-                canvas.draw(
-                    dstRect = calcDstRect(
-                        srcRect = srcRect,
-                        dstSize = size,
-                        padding = padding,
-                    ),
-                    srcRect = (srcRect + padding).toRect(),
-                    tint = color,
-                )
-            }
+            texture.draw(
+                canvas = canvas,
+                dstRect = calcDstRect(
+                    srcRect = srcRect,
+                    dstSize = size,
+                    padding = padding,
+                ),
+                srcRect = (srcRect + padding).toRect(),
+                tint = color,
+            )
         }
     }
 }
@@ -77,33 +75,31 @@ fun Context.Texture(
 ) {
     if (opacity == 1f) {
         drawQueue.enqueue { canvas ->
-            with(texture) {
-                canvas.draw(
-                    dstRect = calcDstRect(
-                        srcRect = srcRect,
-                        dstSize = size,
-                        padding = padding,
-                    ),
-                    srcRect = (srcRect + padding).toRect(),
-                    tint = tint
-                )
-            }
+            texture.draw(
+                canvas = canvas,
+                dstRect = calcDstRect(
+                    srcRect = srcRect,
+                    dstSize = size,
+                    padding = padding,
+                ),
+                srcRect = (srcRect + padding).toRect(),
+                tint = tint
+            )
         }
     } else {
         val colorWithoutAlpha = tint.value and 0xFFFFFF
         val colorWithAlpha = Color(((0xFF * opacity).toInt() shl 24) or colorWithoutAlpha)
         drawQueue.enqueue { canvas ->
-            with(texture) {
-                canvas.draw(
-                    dstRect = calcDstRect(
-                        srcRect = srcRect,
-                        dstSize = size,
-                        padding = padding,
-                    ),
-                    srcRect = (srcRect + padding).toRect(),
-                    tint = colorWithAlpha,
-                )
-            }
+            texture.draw(
+                canvas = canvas,
+                dstRect = calcDstRect(
+                    srcRect = srcRect,
+                    dstSize = size,
+                    padding = padding,
+                ),
+                srcRect = (srcRect + padding).toRect(),
+                tint = colorWithAlpha,
+            )
         }
     }
 }

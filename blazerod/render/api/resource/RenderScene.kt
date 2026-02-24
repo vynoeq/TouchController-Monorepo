@@ -1,6 +1,6 @@
-package top.fifthlight.blazerod.api.resource
+package top.fifthlight.blazerod.render.api.resource
 
-import top.fifthlight.blazerod.api.refcount.RefCount
+import top.fifthlight.blazerod.render.api.refcount.RefCount
 import top.fifthlight.blazerod.model.Camera
 import top.fifthlight.blazerod.model.HumanoidTag
 import top.fifthlight.blazerod.model.NodeId

@@ -25,4 +25,6 @@ interface ScreenFactory {
     interface Factory {
         fun of(): ScreenFactory
     }
+
+    companion object : ScreenFactory by ScreenFactoryFactory.of()
 }

@@ -1,7 +1,7 @@
 package top.fifthlight.touchcontroller.common.layout.widget.game
 
 import top.fifthlight.data.IntSize
-import top.fifthlight.touchcontroller.common.gal.PlayerHandleFactory
+import top.fifthlight.touchcontroller.common.gal.player.PlayerHandleFactory
 import top.fifthlight.touchcontroller.common.gal.feature.GameFeatures
 import top.fifthlight.touchcontroller.common.gal.feature.GameFeaturesProviderFactory
 import top.fifthlight.touchcontroller.common.gal.key.DefaultKeyBindingType

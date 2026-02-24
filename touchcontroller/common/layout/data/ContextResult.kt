@@ -1,7 +1,7 @@
 package top.fifthlight.touchcontroller.common.layout.data
 
 import top.fifthlight.data.Offset
-import top.fifthlight.touchcontroller.common.gal.PlayerHandle
+import top.fifthlight.touchcontroller.common.gal.player.PlayerHandle
 
 data class ContextResult(
     var forward: Float = 0f,

@@ -1,0 +1,22 @@
+# https://patch-diff.githubusercontent.com/raw/bazelbuild/rules_android_ndk/pull/119.diff
+--- a/BUILD.ndk_clang.tpl
++++ b/BUILD.ndk_clang.tpl
+@@ -1,5 +1,7 @@
+ """Declarations for the NDK's Clang directory."""
+
++load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
++load("@rules_cc//cc/toolchains:cc_toolchain_suite.bzl", "cc_toolchain_suite")
+ load("@@{repository_name}//:ndk_cc_toolchain_config.bzl", "ndk_cc_toolchain_config_rule")
+ load("//:target_systems.bzl", "TARGET_SYSTEM_NAMES")
+
+# https://patch-diff.githubusercontent.com/raw/bazelbuild/rules_android_ndk/pull/105.diff
+--- a/ndk_cc_toolchain_config.bzl
++++ b/ndk_cc_toolchain_config.bzl
+@@ -27,6 +27,7 @@ load(
+     "with_feature_set",
+     flag_set_ = "flag_set",
+ )
++load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+
+ def ndk_cc_toolchain_config(
+         api_level,

@@ -1,4 +1,6 @@
 {
+  "modmenu.descriptionTranslation.touchcontroller": "Переносит сенсорное управление из Bedrock Edition в Java Edition!",
+
   "touchcontroller.warning.proxy_not_connected": "Внимание: Прокси не подключён. TouchController не будет работать.",
   "touchcontroller.warning.proxy_not_connected_android": "Вы используете Android, но прокси управления выключен. Если ваш лаунчер поддерживает TouchController, то нужно включить прокси; если не поддержки нет, то смените лаунчер на тот, который поддерживает TouchController.",
   "touchcontroller.warning.proxy_not_connected_linux": "TouchController не запустился. Возможные причины: не загрузились динамические библиотеки TouchController; вы используете X11, но TouchController сейчас поддерживает только Wayland. Посмотрите подробности в логах.",
@@ -48,7 +50,6 @@
   "touchcontroller.screen.config.about.loading": "Загрузка",
 
   "touchcontroller.screen.config.layout.title": "Наложение",
-
   "touchcontroller.screen.config.layout.manage_control_preset": "Редактирование встроенного пресета",
   "touchcontroller.screen.manage_control_preset.title": "Редактирование пресета",
   "touchcontroller.screen.manage_control_preset.switch.message": "Вы хотите перейти на встроенный пресет? Настройки в кастомном наложении будут заморожены!",
@@ -88,12 +89,12 @@
   "touchcontroller.screen.custom_control_layout.edit_presets": "Редактирование пресетов",
   "touchcontroller.screen.custom_control_layout.delete_widget": "Удалить",
   "touchcontroller.screen.custom_control_layout.paste_widget": "Вставить",
-  
+
   "touchcontroller.screen.custom_control_layout.properties": "Параметры",
   "touchcontroller.screen.custom_control_layout.no_widget_selected": "Кнопка не выбрана...",
   "touchcontroller.screen.custom_control_layout.copy": "Скопировать",
   "touchcontroller.screen.custom_control_layout.cut": "Вырезать",
-  
+
   "touchcontroller.screen.custom_control_layout.widgets": "Кнопки",
   "touchcontroller.screen.custom_control_layout.widgets.builtin": "Встроенные",
   "touchcontroller.screen.custom_control_layout.widgets.preset": "Свои пресеты",
@@ -107,7 +108,7 @@
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.title": "Редактирование пресетов кнопок",
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.save": "Сохранить",
   "touchcontroller.screen.custom_control_layout.widgets.edit_widget_preset.cancel": "Отменить",
-  
+
   "touchcontroller.screen.custom_control_layout.layers": "Слои",
   "touchcontroller.screen.custom_control_layout.layers.move_up": "Выше",
   "touchcontroller.screen.custom_control_layout.layers.move_down": "Ниже",
@@ -126,15 +127,13 @@
   "touchcontroller.screen.custom_control_layout.layers.conditions.on_ground": "На поверхности",
   "touchcontroller.screen.custom_control_layout.layers.conditions.not_on_ground": "В воздухе",
   "touchcontroller.screen.custom_control_layout.layers.conditions.using_item": "Используя предмет",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_minecart": "В вагонетке",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_boat": "В лодке",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_pig": "На свинье",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_horse": "На лошади",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_camel": "На верблюде",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_llama": "На ламе",
-  "touchcontroller.screen.custom_control_layout.layers.conditions.on_strider": "На страйдере",
   "touchcontroller.screen.custom_control_layout.layers.conditions.riding": "При езде на мобе",
+
   "touchcontroller.screen.custom_control_layout.layers.conditions.block_selected": "Блок выбран",
+
+
+
+
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.1": "Вы точно хотите удалить этот слой?",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.2": "Слой '%s' будет удалён навсегда! (На очень долгое время!)",
   "touchcontroller.screen.custom_control_layout.layers.delete_layer.delete": "Удалить",
@@ -154,7 +153,7 @@
   "touchcontroller.screen.layer_editor.custom_condition.name.placeholder": "Название условия кастомного слоя",
   "touchcontroller.screen.layer_editor.custom_condition.edit.ok": "Ок",
   "touchcontroller.screen.layer_editor.custom_condition.edit.cancel": "Отменить",
-  
+
   "touchcontroller.screen.custom_control_layout.presets": "Пресеты",
   "touchcontroller.screen.custom_control_layout.presets.move_up": "Выше",
   "touchcontroller.screen.custom_control_layout.presets.move_down": "Ниже",
@@ -235,6 +234,7 @@
   "touchcontroller.screen.config.item.edit.title": "Редактировать",
 
   "touchcontroller.screen.item_list.title": "Список предметов",
+
   "touchcontroller.screen.item_list.content": "Список предметов из контента",
   "touchcontroller.screen.item_list.default": "Стандартный список предметов",
   "touchcontroller.screen.item_list.jei_items": "Список предметов из JEI",
@@ -414,6 +414,5 @@
   "touchcontroller.widget.trigger.layer_condition.condition": "Условие",
   "touchcontroller.widget.trigger.layer_condition.condition.empty": "Пусто",
   "touchcontroller.widget.double_trigger.interval": "Интервал тригера",
-  "touchcontroller.widget.double_trigger.action": "Тригер действия",
-  "modmenu.descriptionTranslation.touchcontroller": "Переносит сенсорное управление из Bedrock Edition в Java Edition!"
+  "touchcontroller.widget.double_trigger.action": "Тригер действия"
 }

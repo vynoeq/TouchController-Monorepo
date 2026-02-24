@@ -10,12 +10,6 @@ import top.fifthlight.combine.widget.layout.BoxScope
 import top.fifthlight.data.IntPadding
 import top.fifthlight.data.IntSize
 
-val IconButtonDrawableSet
-    @Composable get() = LocalTheme.current.drawables.iconButton
-
-val SelectedIconButtonDrawableSet
-    @Composable get() = LocalTheme.current.drawables.selectedIconButton
-
 @NonSkippableComposable
 @Composable
 fun IconButton(
@@ -23,9 +17,9 @@ fun IconButton(
     focusable: Boolean = true,
     selected: Boolean = false,
     drawableSet: DrawableSet = if (selected) {
-        SelectedIconButtonDrawableSet
+        LocalTheme.current.drawables.selectedIconButton
     } else {
-        IconButtonDrawableSet
+        LocalTheme.current.drawables.iconButton
     },
     colorTheme: ColorTheme = LocalTheme.current.colors.button,
     minSize: IntSize = IntSize(0, 0),

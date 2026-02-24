@@ -52,10 +52,10 @@ kt_merge_library(
         "//blazerod/render/api/event",
         "//game/1.21.8:game_client_libraries",
         "//game/1.21.8:game_client_neoforge",
-        "@iris_neoforge_1_21_6//:primary",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
-        "@neoforge_1_21_8//:neoforge_deps",
-        "@sodium_neoforge_1_21_6//:primary",
+        "@neoforge_1_21_8//:net_neoforged_bus",
+        "@neoforge_1_21_8//:net_neoforged_mergetool",
+        "@neoforge_1_21_8//:net_neoforged_fancymodloader_loader",
     ],
 )
 

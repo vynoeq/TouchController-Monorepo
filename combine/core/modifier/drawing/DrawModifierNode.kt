@@ -14,8 +14,8 @@ import top.fifthlight.combine.paint.withState
 import top.fifthlight.data.Offset
 
 interface DrawModifierNode : WrapperModifierNode {
-    fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {}
-    fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {}
+    fun renderBefore(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {}
+    fun renderAfter(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {}
 
     companion object {
         private class DrawWrapperNode(
@@ -28,12 +28,12 @@ interface DrawModifierNode : WrapperModifierNode {
             TextInputReceiver by children,
             KeyEventReceiver by children {
 
-            override fun Canvas.render(cursorPos: Offset) {
-                withState {
-                    translate(x, y)
-                    modifierNode.run { renderBefore(this@DrawWrapperNode, node, cursorPos) }
-                    children.run { render(cursorPos) }
-                    modifierNode.run { renderAfter(this@DrawWrapperNode, node, cursorPos) }
+            override fun render(canvas: Canvas, cursorPos: Offset) {
+                canvas.withState {
+                    canvas.translate(x, y)
+                    modifierNode.renderBefore(canvas, this, node, cursorPos)
+                    children.render(canvas, cursorPos)
+                    modifierNode.renderAfter(canvas, this, node, cursorPos)
                 }
             }
         }

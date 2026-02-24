@@ -1,8 +1,8 @@
 package top.fifthlight.fabazel.accesswidenertransformer;
 
-import net.fabricmc.accesswidener.AccessWidener;
-import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
-import net.fabricmc.accesswidener.AccessWidenerReader;
+import net.fabricmc.classtweaker.api.ClassTweaker;
+import net.fabricmc.classtweaker.api.ClassTweakerReader;
+import net.fabricmc.classtweaker.classvisitor.AccessWidenerClassVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -12,11 +12,22 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
 public class AccessWidenerTransformer extends Worker {
+    private static final long DOS_EPOCH = 315532800000L;
+
+    private static void setJarEntryTime(JarEntry entry) {
+        entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastAccessTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setTimeLocal(LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC));
+    }
+
     public static void main(String[] args) throws Exception {
         new AccessWidenerTransformer().run(args);
     }
@@ -32,12 +43,12 @@ public class AccessWidenerTransformer extends Worker {
             var inputFile = sandboxDir.resolve(Path.of(args[0]));
             var outputFile = sandboxDir.resolve(Path.of(args[1]));
 
-            var accessWidener = new AccessWidener();
-            var accessWidenerReader = new AccessWidenerReader(accessWidener);
+            var accessWidener = ClassTweaker.newInstance();
+            var accessWidenerReader = ClassTweakerReader.create(accessWidener);
             for (var i = 2; i < args.length; i++) {
                 var srcFile = sandboxDir.resolve(Path.of(args[i]));
                 try (var reader = Files.newBufferedReader(srcFile)) {
-                    accessWidenerReader.read(reader);
+                    accessWidenerReader.read(reader, null);
                 }
             }
 
@@ -45,15 +56,13 @@ public class AccessWidenerTransformer extends Worker {
                 JarEntry entry;
                 while ((entry = input.getNextJarEntry()) != null) {
                     var newEntry = new JarEntry(entry.getName());
-                    newEntry.setCreationTime(FileTime.fromMillis(0));
-                    newEntry.setLastAccessTime(FileTime.fromMillis(0));
-                    newEntry.setLastModifiedTime(FileTime.fromMillis(0));
+                    setJarEntryTime(newEntry);
                     output.putNextEntry(newEntry);
 
                     if (entry.getName().endsWith(".class")) {
                         var classReader = new ClassReader(input);
                         var classWriter = new ClassWriter(0);
-                        var classVisitor = AccessWidenerClassVisitor.createClassVisitor(Opcodes.ASM9, classWriter, accessWidener);
+                        var classVisitor = new AccessWidenerClassVisitor(Opcodes.ASM9, classWriter, accessWidener);
                         classReader.accept(classVisitor, 0);
                         output.write(classWriter.toByteArray());
                     } else {

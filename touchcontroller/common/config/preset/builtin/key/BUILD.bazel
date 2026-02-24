@@ -3,7 +3,9 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "key",
     srcs = glob(["**/*.kt"]),
+    expect = True,
     merge_deps = [
+        "//touchcontroller/common/config/preset",
         "//touchcontroller/resources/lang:text_binding",
         "//touchcontroller/resources/texture:texture_set_lib",
     ],

@@ -1,0 +1,14 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+
+java_binary(
+    name = "merger",
+    srcs = glob(["*.java"]),
+    main_class = "top.fifthlight.fastmerger.merger.MergerWorker",
+    visibility = ["//fastmerger:__subpackages__"],
+    deps = [
+        "//:picocli",
+        "//fastmerger/bindeps",
+        "//rule/worker_api",
+        "@maven//:it_unimi_dsi_fastutil",
+    ],
+)

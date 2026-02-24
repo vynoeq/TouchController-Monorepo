@@ -26,8 +26,8 @@ import top.fifthlight.combine.modifier.key.onKeyEvent
 import top.fifthlight.combine.modifier.placement.minHeight
 import top.fifthlight.combine.modifier.pointer.clickable
 import top.fifthlight.combine.node.LocalInputHandler
-import top.fifthlight.combine.node.LocalTextMeasurer
 import top.fifthlight.combine.paint.Colors
+import top.fifthlight.combine.paint.TextMeasurer
 import top.fifthlight.combine.theme.LocalTheme
 import top.fifthlight.combine.ui.style.DrawableSet
 import top.fifthlight.combine.widget.Canvas
@@ -46,7 +46,6 @@ fun EditText(
     placeholder: Text? = null,
 ) {
     val clipboard = LocalClipboard.current
-    val textMeasurer = LocalTextMeasurer.current
     val textFactory: TextFactory = TextFactory.current
     val inputManager = LocalInputHandler.current
     var textInputState by remember { mutableStateOf(TextInputState(value)) }
@@ -197,7 +196,7 @@ fun EditText(
                 constraints: Constraints,
             ): MeasureResult {
                 val textToMeasure = value.ifEmpty { placeholder?.string ?: "A" }
-                val textSize = textMeasurer.measure(textToMeasure)
+                val textSize = TextMeasurer.measure(textToMeasure)
                 return layout(
                     width = textSize.width.coerceIn(constraints.minWidth, constraints.maxWidth),
                     height = textSize.height.coerceIn(constraints.minHeight, constraints.maxHeight),
@@ -209,7 +208,7 @@ fun EditText(
                 height: Int,
             ): Int {
                 val textToMeasure = value.ifEmpty { placeholder?.string ?: "A" }
-                return textMeasurer.measure(textToMeasure).width
+                return TextMeasurer.measure(textToMeasure).width
             }
 
             override fun MeasureScope.minIntrinsicHeight(
@@ -217,7 +216,7 @@ fun EditText(
                 width: Int,
             ): Int {
                 val textToMeasure = value.ifEmpty { placeholder?.string ?: "A" }
-                return textMeasurer.measure(textToMeasure).height
+                return TextMeasurer.measure(textToMeasure).height
             }
 
             override fun MeasureScope.maxIntrinsicWidth(
@@ -225,7 +224,7 @@ fun EditText(
                 height: Int,
             ): Int {
                 val textToMeasure = value.ifEmpty { placeholder?.string ?: "" }
-                return textMeasurer.measure(textToMeasure).width
+                return TextMeasurer.measure(textToMeasure).width
             }
 
             override fun MeasureScope.maxIntrinsicHeight(
@@ -233,16 +232,16 @@ fun EditText(
                 width: Int,
             ): Int {
                 val textToMeasure = value.ifEmpty { placeholder?.string ?: "A" }
-                return textMeasurer.measure(textToMeasure).height
+                return TextMeasurer.measure(textToMeasure).height
             }
         }
-    ) { node ->
+    ) { canvas, node ->
         areaRect = IntRect(offset = node.absolutePosition, size = node.size)
         if (value.isEmpty() && !focused) {
             if (placeholder != null) {
-                val textSize = textMeasurer.measure(placeholder)
+                val textSize = TextMeasurer.measure(placeholder)
                 val offsetY = (node.height - textSize.height) / 2
-                drawText(
+                canvas.drawText(
                     offset = IntOffset(0, offsetY),
                     width = node.width,
                     text = placeholder,
@@ -252,14 +251,14 @@ fun EditText(
             }
         } else {
             val fullText = textInputState.text
-            val textSize = textMeasurer.measure(fullText)
+            val textSize = TextMeasurer.measure(fullText)
             val offsetY = (node.height - textSize.height) / 2
 
-            val selectionStartX = textMeasurer.measure(fullText.substring(0, textInputState.selection.start)).width
-            val selectionWidth = textMeasurer.measure(textInputState.selectionText).width
+            val selectionStartX = TextMeasurer.measure(fullText.substring(0, textInputState.selection.start)).width
+            val selectionWidth = TextMeasurer.measure(textInputState.selectionText).width
 
             if (selectionWidth > 0) {
-                fillRect(
+                canvas.fillRect(
                     offset = IntOffset(selectionStartX, offsetY),
                     size = IntSize(selectionWidth, textSize.height),
                     color = Colors.GRAY,
@@ -294,7 +293,7 @@ fun EditText(
 
             // 绘制光标（如果需要）
             if (cursorShow) {
-                fillRect(
+                canvas.fillRect(
                     offset = IntOffset(cursorX - scrollOffset, offsetY),
                     size = IntSize(1, textSize.height),
                     color = Colors.WHITE,
@@ -316,7 +315,7 @@ fun EditText(
             }
 
             // 绘制整个富文本
-            drawText(
+            canvas.drawText(
                 offset = IntOffset(-scrollOffset, offsetY),
                 text = styledText,
                 color = Colors.WHITE

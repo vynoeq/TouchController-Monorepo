@@ -1,0 +1,38 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "screen",
+    srcs = glob(["*.kt"]),
+    actual = True,
+    merge_deps = [
+        "//touchcontroller/common/control/action/provider",
+        "//touchcontroller/common/gal/chat",
+        "//touchcontroller/common/ui/chat/model",
+        "//touchcontroller/common/ui/chat/state",
+        "//touchcontroller/common/ui/model",
+        "//touchcontroller/common/ui/theme",
+        "//touchcontroller/common/ui/widget",
+        "//touchcontroller/common/ui/widget/navigation",
+        "//touchcontroller/resources/lang:text_binding",
+        "//touchcontroller/resources/texture:texture_lib",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "//combine/core/input/interaction",
+        "//combine/core/layout",
+        "//combine/core/modifier",
+        "//combine/core/modifier/drawing",
+        "//combine/core/modifier/focus",
+        "//combine/core/modifier/placement",
+        "//combine/core/modifier/scroll",
+        "//combine/core/paint",
+        "//combine/core/screen",
+        "//combine/core/widget/layout",
+        "//combine/data",
+        "//combine/widget",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

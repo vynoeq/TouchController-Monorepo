@@ -14,8 +14,11 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -23,6 +26,15 @@ import java.util.jar.JarOutputStream;
 import java.util.regex.Pattern;
 
 public class TinyRemapperWorker extends Worker implements AutoCloseable {
+    private static final long DOS_EPOCH = 315532800000L;
+
+    private static void setJarEntryTime(JarEntry entry) {
+        entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastAccessTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+        entry.setTimeLocal(LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC));
+    }
+
     public static void main(String[] args) throws Exception {
         try (var worker = new TinyRemapperWorker()) {
             worker.run(args);
@@ -186,7 +198,7 @@ public class TinyRemapperWorker extends Worker implements AutoCloseable {
                         .filter(Files::isRegularFile)
                         .forEach(path -> {
                             var jarEntry = new JarEntry(outputTempRoot.relativize(path).toString());
-                            jarEntry.setTime(0L);
+                            setJarEntryTime(jarEntry);
                             try {
                                 outputJarStream.putNextEntry(jarEntry);
                                 Files.copy(path, outputJarStream);

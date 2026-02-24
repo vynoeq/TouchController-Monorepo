@@ -5,7 +5,7 @@ import java.io.InputStream
 import java.nio.file.Path
 
 interface NativeLibraryPathGetter {
-    fun getNativeLibraryPath(path: String, debugPath: Path?): InputStream?
+    fun getNativeLibraryPath(path: String): InputStream?
 
     @ExpectFactory
     interface Factory {

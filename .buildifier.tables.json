@@ -1,0 +1,7 @@
+{
+    "isSortableListArg": {
+        "merge_deps": true,
+        "merge_only_deps": true,
+        "merge_runtime_deps": true
+    }
+}

@@ -62,6 +62,8 @@ data class Theme(
 
     data class Colors(
         val button: ColorTheme = ColorTheme.dark,
+        val guideButton: ColorTheme = button,
+        val warningButton: ColorTheme = button,
     )
 }
 

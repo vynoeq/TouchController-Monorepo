@@ -48,7 +48,7 @@ class LayoutLayerSerializer : KSerializer<LayoutLayer> {
                     0 -> name = decodeStringElement(descriptor, 0)
                     1 -> widgets = decodeSerializableElement(descriptor, 1, widgetListSerializer).toPersistentList()
                     2 -> conditions = decodeSerializableElement(descriptor, 2, serializer())
-                    CompositeDecoder.Companion.DECODE_DONE -> break
+                    CompositeDecoder.DECODE_DONE -> break
                     else -> error("Unexpected index: $index")
                 }
             }

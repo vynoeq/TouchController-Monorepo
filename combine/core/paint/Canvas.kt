@@ -75,37 +75,37 @@ inline fun Canvas.withState(crossinline block: () -> Unit) {
 fun Canvas.translate(offset: IntOffset) = translate(offset.x, offset.y)
 fun Canvas.translate(offset: Offset) = translate(offset.x, offset.y)
 
-inline fun Canvas.withTranslate(x: Int, y: Int, crossinline block: Canvas.() -> Unit) {
+inline fun Canvas.withTranslate(x: Int, y: Int, crossinline block: (canvas: Canvas) -> Unit) {
     translate(x, y)
     try {
-        block()
+        block(this)
     } finally {
         translate(-x, -y)
     }
 }
 
-inline fun Canvas.withTranslate(x: Float, y: Float, crossinline block: Canvas.() -> Unit) {
+inline fun Canvas.withTranslate(x: Float, y: Float, crossinline block: (canvas: Canvas) -> Unit) {
     translate(x, y)
     try {
-        block()
+        block(this)
     } finally {
         translate(-x, -y)
     }
 }
 
-inline fun Canvas.withTranslate(offset: IntOffset, crossinline block: Canvas.() -> Unit) {
+inline fun Canvas.withTranslate(offset: IntOffset, crossinline block: (canvas: Canvas) -> Unit) {
     translate(offset)
     try {
-        block()
+        block(this)
     } finally {
         translate(-offset)
     }
 }
 
-inline fun Canvas.withTranslate(offset: Offset, crossinline block: Canvas.() -> Unit) {
+inline fun Canvas.withTranslate(offset: Offset, crossinline block: (canvas: Canvas) -> Unit) {
     translate(offset)
     try {
-        block()
+        block(this)
     } finally {
         translate(-offset)
     }
@@ -113,21 +113,21 @@ inline fun Canvas.withTranslate(offset: Offset, crossinline block: Canvas.() -> 
 
 fun Canvas.scale(scale: Float) = scale(scale, scale)
 
-inline fun Canvas.withScale(scale: Float, crossinline block: Canvas.() -> Unit) {
+inline fun Canvas.withScale(scale: Float, crossinline block: (canvas: Canvas) -> Unit) {
     pushState()
     scale(scale)
     try {
-        block()
+        block(this)
     } finally {
         popState()
     }
 }
 
-inline fun Canvas.withScale(x: Float, y: Float, crossinline block: Canvas.() -> Unit) {
+inline fun Canvas.withScale(x: Float, y: Float, crossinline block: (canvas: Canvas) -> Unit) {
     pushState()
     scale(x, y)
     try {
-        block()
+        block(this)
     } finally {
         popState()
     }

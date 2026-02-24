@@ -1,0 +1,18 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "model",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/config",
+        "//touchcontroller/common/config/holder",
+        "//touchcontroller/common/ui/config/state",
+        "//touchcontroller/common/ui/model",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "@maven//:androidx_compose_runtime_runtime_desktop",
+        "@maven//:cafe_adriel_voyager_voyager_screenmodel_desktop",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

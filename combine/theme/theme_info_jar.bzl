@@ -1,15 +1,15 @@
 """Rules for generating mod loader metadata JAR for themes."""
 
-load("//combine:properties.bzl", "combine_version", "home_page", "issue_tracker", "license", "sources_page")
+load("//combine:properties.bzl", "combine_version", "combine_home_page", "combine_issue_tracker", "combine_license", "combine_sources_page")
 load("//rule:mod_info_jar.bzl", "mod_info_jar")
 
 def _theme_info_jar_impl(name, visibility, substitutions):
     predefined_substitutions = {
         "${version}": combine_version,
-        "${license}": license,
-        "${home_page}": home_page,
-        "${sources_page}": sources_page,
-        "${issue_tracker}": issue_tracker,
+        "${license}": combine_license,
+        "${home_page}": combine_home_page,
+        "${sources_page}": combine_sources_page,
+        "${issue_tracker}": combine_issue_tracker,
     }
     predefined_substitutions.update(substitutions)
     mod_info_jar(

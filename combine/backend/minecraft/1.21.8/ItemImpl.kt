@@ -9,7 +9,7 @@ import kotlin.jvm.optionals.getOrNull
 import top.fifthlight.combine.item.data.Item as CombineItem
 
 @ActualImpl(CombineItem::class)
-class ItemImpl(
+data class ItemImpl(
     val inner: Item,
 ) : CombineItem {
     override val id: Identifier

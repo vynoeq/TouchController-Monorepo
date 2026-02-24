@@ -12,4 +12,6 @@ interface DefaultItemListProvider {
     interface Factory {
         fun of(): DefaultItemListProvider
     }
+
+    companion object : DefaultItemListProvider by DefaultItemListProviderFactory.of()
 }

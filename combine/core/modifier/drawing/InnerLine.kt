@@ -13,7 +13,7 @@ fun Modifier.innerLine(color: Color) = then(InnerLineNode(color))
 private data class InnerLineNode(
     val color: Color,
 ) : DrawModifierNode, Modifier.Node<InnerLineNode> {
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        drawRect(IntOffset.ZERO, wrapperNode.size, color)
+    override fun renderAfter(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        canvas.drawRect(IntOffset.ZERO, wrapperNode.size, color)
     }
 }

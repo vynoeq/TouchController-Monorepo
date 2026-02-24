@@ -65,7 +65,7 @@ java_library(
 define_kt_toolchain(
     name = "kotlin_toolchain",
     api_version = "2.2",
-#    experimental_report_unused_deps = "error",
+    #experimental_report_unused_deps = "error",
     experimental_strict_kotlin_deps = "error",
     experimental_use_abi_jars = True,
     jvm_target = "21",

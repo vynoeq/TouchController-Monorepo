@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import top.fifthlight.combine.data.Text
 import top.fifthlight.combine.data.TextFactoryFactory
 import top.fifthlight.mergetools.api.ExpectFactory
+import java.awt.event.KeyEvent
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -46,6 +47,17 @@ enum class DefaultKeyBindingType {
     DOWN,
 }
 
+interface KeyBindingEventsHandler {
+    fun onKeyDown(state: KeyBindingState)
+
+    @ExpectFactory
+    interface Factory {
+        fun of(): KeyBindingEventsHandler
+    }
+
+    companion object: KeyBindingEventsHandler by KeyBindingEventsHandlerFactory.of()
+}
+
 abstract class KeyBindingState {
     abstract val id: String
     abstract val name: Text
@@ -54,7 +66,9 @@ abstract class KeyBindingState {
 
     // Click for once. You probably don't want to use this as it only increases press count, without actually pressing
     // the button. If it causes problems, use clicked = true instead.
-    abstract fun click()
+    open fun click() {
+        KeyBindingEventsHandler.onKeyDown(this)
+    }
 
     abstract fun haveClickCount(): Boolean
 
@@ -121,7 +135,6 @@ abstract class KeyBindingState {
         override val categoryName: Text
             get() = textFactory.empty()
 
-        override fun click() {}
         override fun haveClickCount() = false
     }
 }

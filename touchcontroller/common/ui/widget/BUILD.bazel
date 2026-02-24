@@ -1,0 +1,28 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "widget",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/ui/theme",
+        "//touchcontroller/resources/lang:text_binding",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "//combine/core/layout",
+        "//combine/core/modifier",
+        "//combine/core/modifier/drawing",
+        "//combine/core/modifier/placement",
+        "//combine/core/paint",
+        "//combine/core/widget/layout",
+        "//combine/data",
+        "//combine/item/data",
+        "//combine/item/widget",
+        "//combine/style",
+        "//combine/widget",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

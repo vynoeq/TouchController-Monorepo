@@ -1,8 +1,0 @@
-load("@rules_java//java:defs.bzl", "java_plugin")
-
-java_plugin(
-    name = "plugin",
-    deps = ["@maven//:org_openjdk_jmh_jmh_generator_annprocess"],
-    processor_class = "org.openjdk.jmh.generators.BenchmarkProcessor",
-    visibility = ["//visibility:public"],
-)

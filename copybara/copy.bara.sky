@@ -1,0 +1,21 @@
+core.workflow(
+    name = "rules_mc",
+    origin = git.origin(
+        url = "https://github.com/TouchController/TouchController-Monorepo.git",
+        ref = "master",
+    ),
+    destination = git.github_destination(
+        url = "https://github.com/TouchController/rules_mc.git",
+    ),
+    authoring = authoring.pass_thru("Copybara <copybara@copybara>"),
+    origin_files = glob(["rules_mc/**"]),
+    transformations = [
+        core.move(
+            "rules_mc",
+            "",
+            overwrite = True,
+        ),
+    ],
+    mode = "ITERATIVE",
+    set_rev_id = True,
+)

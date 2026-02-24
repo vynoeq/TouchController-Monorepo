@@ -1,0 +1,5 @@
+alias(
+    name = "icon",
+    actual = "icon.png",
+    visibility = ["//combine:__subpackages__"],
+)

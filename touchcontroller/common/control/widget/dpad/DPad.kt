@@ -14,13 +14,11 @@ import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.assets.TextureSet
 import top.fifthlight.touchcontroller.common.control.BooleanProperty
 import top.fifthlight.touchcontroller.common.control.ControllerWidget
-import top.fifthlight.touchcontroller.common.control.DPadExtraButtonProperty
 import top.fifthlight.touchcontroller.common.control.FloatProperty
 import top.fifthlight.touchcontroller.common.control.IntProperty
 import top.fifthlight.touchcontroller.common.control.TextureSetProperty
 import top.fifthlight.touchcontroller.common.control.action.ButtonTrigger
 import top.fifthlight.touchcontroller.common.control.action.WidgetTriggerAction
-import top.fifthlight.touchcontroller.common.control.property.DPadExtraButton
 import top.fifthlight.touchcontroller.common.control.property.TextureCoordinate
 import top.fifthlight.touchcontroller.common.gal.key.DefaultKeyBindingType
 import top.fifthlight.touchcontroller.common.gal.key.KeyBindingHandler
@@ -58,7 +56,7 @@ data class DPad private constructor(
     override val id: Uuid = fastRandomUuid(),
     override val name: Name = Name.Translatable(Texts.WIDGET_DPAD_NAME),
     override val align: Align = Align.LEFT_BOTTOM,
-    override val offset: IntOffset = IntOffset.Companion.ZERO,
+    override val offset: IntOffset = IntOffset.ZERO,
     override val opacity: Float = 1f,
     override val lockMoving: Boolean = false,
 ) : ControllerWidget() {
@@ -70,19 +68,19 @@ data class DPad private constructor(
             TextureSetProperty(
                 getValue = { it.textureSet },
                 setValue = { config, value -> config.copy(textureSet = value) },
-                name = Text.Companion.translatable(Texts.WIDGET_DPAD_PROPERTY_TEXTURE_SET),
+                name = Text.translatable(Texts.WIDGET_DPAD_PROPERTY_TEXTURE_SET),
             ),
             BooleanProperty(
                 getValue = { it.showBackwardButton },
                 setValue = { config, value -> config.copy(showBackwardButton = value) },
-                name = Text.Companion.translatable(Texts.WIDGET_DPAD_PROPERTY_SHOW_BACKWARD_BUTTON),
+                name = Text.translatable(Texts.WIDGET_DPAD_PROPERTY_SHOW_BACKWARD_BUTTON),
             ),
             FloatProperty(
                 getValue = { it.size },
                 setValue = { config, value -> config.copy(size = value) },
                 range = .5f..4f,
                 messageFormatter = {
-                    Text.Companion.format(
+                    Text.format(
                         Texts.WIDGET_DPAD_PROPERTY_SIZE,
                         round(it * 100f).toString()
                     )
@@ -92,7 +90,7 @@ data class DPad private constructor(
                 getValue = { it.padding },
                 setValue = { config, value -> config.copy(padding = value) },
                 range = -1..16,
-                messageFormatter = { Text.Companion.format(Texts.WIDGET_DPAD_PROPERTY_PADDING, it) }
+                messageFormatter = { Text.format(Texts.WIDGET_DPAD_PROPERTY_PADDING, it) }
             ),
             DPadExtraButtonProperty(
                 getValue = { it.extraButton },
@@ -128,7 +126,7 @@ data class DPad private constructor(
             extraButton: DPadExtraButton = DPadExtraButton.None,
             name: Name = Name.Translatable(Texts.WIDGET_DPAD_NAME),
             align: Align = Align.LEFT_BOTTOM,
-            offset: IntOffset = IntOffset.Companion.ZERO,
+            offset: IntOffset = IntOffset.ZERO,
             opacity: Float = 1f,
             lockMoving: Boolean = false,
         ) = default.copy(

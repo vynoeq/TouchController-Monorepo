@@ -22,6 +22,7 @@ def _apply_access_widener_impl(ctx):
         execution_requirements = {
             "supports-workers": "1",
             "supports-multiplex-workers": "1",
+            "supports-multiplex-sandboxing": "1",
             "requires-worker-protocol": "proto",
         },
         arguments = [args],
@@ -46,7 +47,7 @@ apply_access_widener = rule(
             doc = "Input JAR file",
         ),
         "srcs": attr.label_list(
-            allow_files = [".accesswidener"],
+            allow_files = [".accesswidener", ".classtweaker"],
             mandatory = True,
             doc = "List of access widener files",
         ),

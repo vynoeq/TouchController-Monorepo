@@ -20,6 +20,7 @@ def _game_version_impl(
         client_native_manifest,
         client_parchment,
         client_assets,
+        client_assets_version,
         client_libraries,
         server,
         server_legacy,
@@ -112,6 +113,13 @@ def _game_version_impl(
             visibility = visibility,
         )
 
+    if client_assets_version:
+        native.alias(
+            name = name + "_client_assets_version",
+            actual = client_assets_version,
+            visibility = visibility,
+        )
+
     native.alias(
         name = name + "_client_libraries",
         actual = client_libraries,
@@ -143,6 +151,10 @@ def _game_version_impl(
             operations.append("changeSrc(official)")
             if intermediary:
                 operations.append(">intermediary")
+                # Filter out entries that don't have intermediary names
+                # https://github.com/FabricMC/fabric-loom/blob/6b7a0251db4fb9b8b37b81a71bf582aa1d993b3b/src/main/java/net/fabricmc/loom/configuration/providers/mappings/mojmap/MojangMappingLayer.java#L76
+                operations.append("changeSrc(intermediary, true)")
+                operations.append("changeSrc(official)")
                 operations.append("completeNamespace(named -> intermediary)")
         elif yarn:
             operations.append(">intermediary")
@@ -161,9 +173,11 @@ def _game_version_impl(
 
         jar(
             name = mapping_jar,
-            data = {
-                (":" + merged_mapping): "mappings/mappings.tiny",
+            resources = [":" + merged_mapping],
+            resource_rename = {
+                "merged.tiny": "mappings.tiny",
             },
+            resource_prefix = "mappings",
             visibility = visibility,
         )
 
@@ -262,13 +276,13 @@ def _game_version_impl(
             remove_jar_in_jar = True,
         )
 
-    if client_assets and client_libraries:
+    if client_assets and client_assets_version and client_libraries:
         java_binary(
             name = vanilla_client,
             srcs = [],
             data = [
-                "@minecraft_assets//:assets",
                 client_assets,
+                client_assets_version,
             ] + [client_native_manifest] if client_native_manifest else [],
             env = {
                 "LANG": "en_US.UTF8",
@@ -276,7 +290,7 @@ def _game_version_impl(
             jvm_flags = [
                 "-Ddev.launch.version=%s" % version,
                 "-Ddev.launch.type=client",
-                "-Ddev.launch.assetsPath=$(rlocationpath @minecraft_assets//:assets)",
+                "-Ddev.launch.assetsVersion=$(rlocationpath %s)" % client_assets_version,
                 "-Ddev.launch.mainClass=%s" % ("net.minecraft.client.Minecraft" if client_legacy else "net.minecraft.client.main.Main"),
                 "-Ddev.launch.legacyAssets=%s" % ("true" if client_legacy_assets else "false"),
                 "-Ddev.launch.legacyHome=%s" % ("true" if client_legacy else "false"),
@@ -342,6 +356,11 @@ game_version = macro(
         "client_assets": attr.label(
             mandatory = False,
             doc = "Client assets for the game",
+            configurable = False,
+        ),
+        "client_assets_version": attr.label(
+            mandatory = False,
+            doc = "Client assets version file for the game",
             configurable = False,
         ),
         "client_libraries": attr.label(

@@ -74,7 +74,6 @@ object PlatformProvider {
 
     private data class NativeLibraryInfo(
         val modContainerPath: String,
-        val debugPath: Path?,
         val extractPrefix: String,
         val extractSuffix: String,
         val readOnlySetter: (Path) -> Unit = {},
@@ -98,7 +97,7 @@ object PlatformProvider {
         )
     }
 
-    private fun probeNativeLibraryInfo(windowProvider: PlatformWindowProvider): NativeLibraryInfo? {
+    private fun probeNativeLibraryInfo(): NativeLibraryInfo? {
         if ((systemName.startsWith("Linux", ignoreCase = true) && isAndroid) ||
             systemName.contains("Android", ignoreCase = true)
         ) {
@@ -110,21 +109,23 @@ object PlatformProvider {
                 return null
             }
 
-            val targetArch = when (systemArch) {
-                "x86_32", "x86", "i386", "i486", "i586", "i686" -> "i686-linux-android"
-                "amd64", "x86_64" -> "x86_64-linux-android"
-                "armeabi", "armeabi-v7a", "armhf", "arm", "armel" -> "armv7-linux-androideabi"
-                "arm64", "aarch64" -> "aarch64-linux-android"
+            val target = when (systemArch) {
+                "x86_32", "x86", "i386", "i486", "i586", "i686" -> "android_x86_32"
+                "amd64", "x86_64" -> "android_x86_64"
+                "armeabi", "armeabi-v7a", "armhf", "arm", "armel" -> "android_armv7"
+                "arm64", "aarch64" -> "android_aarch64"
                 else -> null
             } ?: run {
                 logger.warn("Unsupported Android arch")
                 return null
             }
+            logger.info("Target: $target")
+
+            val libraryName = "proxy_server_android"
 
             return NativeLibraryInfo(
-                modContainerPath = "$targetArch/libproxy_server_android.so",
-                debugPath = null,
-                extractPrefix = "libproxy_server_android",
+                modContainerPath = "${libraryName}_${target}/lib${libraryName}.so",
+                extractPrefix = "lib$libraryName",
                 extractSuffix = ".so",
                 readOnlySetter = ::posixReadOnlySetter,
                 removeAfterLoaded = true,
@@ -132,13 +133,12 @@ object PlatformProvider {
             )
         }
 
-        val platform = windowProvider.platform
-        when (platform) {
+        when (val platform = PlatformWindowProvider.platform) {
             is GlfwPlatform.Win32 -> {
-                val (targetTriple, target) = when (systemArch) {
-                    "x86_32", "x86", "i386", "i486", "i586", "i686" -> Pair("i686-w64-mingw32", "i686")
-                    "amd64", "x86_64" -> Pair("x86_64-w64-mingw32", "x86_64")
-                    "arm64", "aarch64" -> Pair("aarch64-w64-mingw32", "aarch64")
+                val target = when (systemArch) {
+                    "x86_32", "x86", "i386", "i486", "i586", "i686" -> "windows_x86_32"
+                    "amd64", "x86_64" -> "windows_x86_64"
+                    "arm64", "aarch64" -> "windows_aarch64"
                     else -> null
                 } ?: run {
                     logger.warn("Unsupported Windows arch: $systemArch")
@@ -147,27 +147,16 @@ object PlatformProvider {
                 val systemVersion = System.getProperty("os.version")
                 val majorVersion = systemVersion.substringBefore(".").toIntOrNull()
                 val isLegacy = majorVersion == null || majorVersion < 10
-                logger.info("Target arch: $targetTriple, legacy: $isLegacy")
+                logger.info("Target: $target, legacy: $isLegacy")
                 val libraryName = if (isLegacy) {
-                    "libproxy_windows_legacy"
+                    "proxy_server_windows_legacy"
                 } else {
-                    "libproxy_windows"
+                    "proxy_server_windows"
                 }
 
                 return NativeLibraryInfo(
-                    modContainerPath = "$targetTriple/$libraryName.dll",
-                    debugPath = Paths.get(
-                        "..",
-                        "..",
-                        "..",
-                        "..",
-                        "proxy-windows",
-                        "build",
-                        "cmake",
-                        target,
-                        "$libraryName.dll"
-                    ),
-                    extractPrefix = libraryName,
+                    modContainerPath = "${libraryName}_${target}/lib${libraryName}.dll",
+                    extractPrefix = "lib$libraryName",
                     extractSuffix = ".dll",
                     readOnlySetter = ::windowsReadOnlySetter,
                     removeAfterLoaded = false,
@@ -176,18 +165,16 @@ object PlatformProvider {
             }
 
             is GlfwPlatform.Wayland, GlfwPlatform.X11 -> {
-                val (archPrefix, archSuffix) = when (systemArch) {
-                    "x86_32", "x86", "i386", "i486", "i586", "i686" -> Pair("i386", "")
-                    "amd64", "x86_64" -> Pair("x86_64", "")
-                    "armv8", "arm64", "aarch64" -> Pair("aarch64", "")
-                    "arm", "armhf", "armel", "armv7" -> Pair("arm", "eabihf")
+                val target = when (systemArch) {
+                    "amd64", "x86_64" -> "linux_x86_64"
+                    "armv8", "arm64", "aarch64" -> "linux_aarch64"
                     else -> null
                 } ?: run {
                     logger.warn("Unsupported Linux arch: $systemArch")
                     return null
                 }
-                val platformName = when (platform) {
-                    is GlfwPlatform.Wayland -> "wayland"
+                val libraryName = when (platform) {
+                    is GlfwPlatform.Wayland -> "proxy_server_wayland"
                     is GlfwPlatform.X11 -> {
                         logger.warn("X11 is not supported for now")
                         return null
@@ -196,26 +183,14 @@ object PlatformProvider {
                     else -> throw AssertionError()
                 }
                 // TODO: detect musl, and use musl libraries
-                val targetTriple = "$archPrefix-linux-gnu$archSuffix"
-                logger.info("Target triple: $targetTriple")
+                logger.info("Target: $target")
 
                 return NativeLibraryInfo(
-                    modContainerPath = "$targetTriple/libproxy_linux_$platformName.so",
-                    debugPath = Paths.get(
-                        "..",
-                        "..",
-                        "..",
-                        "..",
-                        "proxy-linux",
-                        "build",
-                        "cmake",
-                        archPrefix,
-                        "libproxy_linux_$platformName.so"
-                    ),
-                    extractPrefix = "libproxy_linux_$platformName",
+                    modContainerPath = "${libraryName}_${target}/lib${libraryName}.so",
+                    extractPrefix = "lib$libraryName",
                     extractSuffix = ".so",
                     readOnlySetter = ::posixReadOnlySetter,
-                    removeAfterLoaded = false,
+                    removeAfterLoaded = true,
                     platformFactory = {
                         when (platform) {
                             is GlfwPlatform.Wayland -> WaylandPlatform(platform.nativeWindow)
@@ -237,7 +212,7 @@ object PlatformProvider {
         }
     }
 
-    private fun loadPlatform(windowProvider: PlatformWindowProvider): Platform? {
+    private fun loadPlatform(): Platform? {
         val socketPort = System.getenv("TOUCH_CONTROLLER_PROXY")?.toIntOrNull()
         if (socketPort != null) {
             logger.warn("TOUCH_CONTROLLER_PROXY set, use legacy UDP transport")
@@ -258,19 +233,15 @@ object PlatformProvider {
             }
 
             val platform = IosPlatform(socketPath)
-            platform.resize(windowProvider.windowWidth, windowProvider.windowHeight)
+            platform.resize(PlatformWindowProvider.windowWidth, PlatformWindowProvider.windowHeight)
             return platform
         }
 
-        val info = probeNativeLibraryInfo(windowProvider) ?: return null
+        val info = probeNativeLibraryInfo() ?: return null
 
         logger.info("Native library info:")
         logger.info("path: ${info.modContainerPath}")
-        logger.info("debugPath: ${info.debugPath}")
-        val nativeLibrary = nativeLibraryPathGetter.getNativeLibraryPath(
-            path = info.modContainerPath,
-            debugPath = info.debugPath
-        ) ?: run {
+        val nativeLibrary = nativeLibraryPathGetter.getNativeLibraryPath(info.modContainerPath) ?: run {
             logger.warn("Failed to get native library path")
             return null
         }
@@ -302,7 +273,7 @@ object PlatformProvider {
         }
 
         val platform = info.platformFactory.invoke()
-        platform.resize(windowProvider.windowWidth, windowProvider.windowHeight)
+        platform.resize(PlatformWindowProvider.windowWidth, PlatformWindowProvider.windowHeight)
         return platform
     }
 
@@ -310,11 +281,11 @@ object PlatformProvider {
     var platform: Platform? = null
         private set
 
-    fun load(windowProvider: PlatformWindowProvider) {
+    fun load() {
         if (platformLoaded) {
             return
         }
-        this@PlatformProvider.platform = loadPlatform(windowProvider)
+        this@PlatformProvider.platform = loadPlatform()
         platformLoaded = true
     }
 }

@@ -1,0 +1,19 @@
+load("@rules_kotlin//kotlin:core.bzl", "kt_ksp_plugin")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "expect_lib",
+    srcs = [
+        "ExpectSymbolProcessor.kt",
+        "ExpectSymbolProcessorProvider.kt",
+    ],
+    deps = [
+        "@rules_kotlin//kotlin/compiler:symbol-processing-api",
+    ],
+)
+
+kt_ksp_plugin(
+    name = "expect",
+    processor_class = "top.fifthlight.mergetools.processor.ksp.expect.ExpectSymbolProcessorProvider",
+    deps = [],
+)

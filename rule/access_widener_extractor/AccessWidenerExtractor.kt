@@ -1,9 +1,10 @@
 package top.fifthlight.fabazel.accesswidenerextractor
 
 import kotlinx.serialization.json.Json
-import net.fabricmc.accesswidener.AccessWidenerReader
-import net.fabricmc.accesswidener.AccessWidenerWriter
-import net.fabricmc.accesswidener.TransitiveOnlyFilter
+import net.fabricmc.classtweaker.api.ClassTweaker
+import net.fabricmc.classtweaker.api.ClassTweakerReader
+import net.fabricmc.classtweaker.api.ClassTweakerWriter
+import net.fabricmc.classtweaker.visitors.TransitiveOnlyFilter
 import top.fifthlight.bazel.worker.api.Worker
 import java.io.PrintWriter
 import java.nio.file.Path
@@ -28,7 +29,7 @@ object AccessWidenerExtractor : Worker() {
             val format = Json {
                 ignoreUnknownKeys = true
             }
-            val writer = AccessWidenerWriter()
+            val writer = ClassTweakerWriter.create(ClassTweaker.CT_LATEST)
             for (index in 1 until args.size) {
                 val arg = args[index]
                 try {
@@ -40,15 +41,15 @@ object AccessWidenerExtractor : Worker() {
                         val accessWidenerPath = json.accessWidener ?: continue
                         val accessWidenerEntry = jarFile.getJarEntry(accessWidenerPath)
                             ?: error("Bad access widener path: $accessWidenerPath")
-                        val reader = AccessWidenerReader(TransitiveOnlyFilter(writer))
-                        jarFile.getInputStream(accessWidenerEntry).use { reader.read(it.bufferedReader()) }
+                        val reader = ClassTweakerReader.create(TransitiveOnlyFilter(writer))
+                        jarFile.getInputStream(accessWidenerEntry).use { reader.read(it.bufferedReader(), null) }
                     }
                 } catch (ex: Exception) {
                     throw RuntimeException("Failed when processing $arg", ex)
                 }
             }
             outputPath.writer().use {
-                it.write(writer.writeString())
+                it.write(writer.outputAsString)
             }
             return 0
         } catch (ex: Exception) {

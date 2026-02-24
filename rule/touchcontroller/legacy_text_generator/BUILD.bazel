@@ -1,13 +1,20 @@
-load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_binary")
+load("@rules_java//java:defs.bzl", "java_binary")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
-kt_jvm_binary(
-    name = "legacy_text_generator",
+kt_jvm_library(
+    name = "legacy_text_generator_lib",
     srcs = ["LegacyTextGenerator.kt"],
-    main_class = "top.fifthlight.touchcontroller.resources.generator.LegacyTextGeneratorKt",
-    visibility = ["//touchcontroller/resources:__subpackages__"],
     deps = [
-        "@maven//:com_squareup_kotlinpoet_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
+)
+
+java_binary(
+    name = "legacy_text_generator",
+    main_class = "top.fifthlight.touchcontroller.resources.generator.LegacyTextGeneratorKt",
+    visibility = ["//touchcontroller/resources:__subpackages__"],
+    runtime_deps = [
+        ":legacy_text_generator_lib",
     ],
 )

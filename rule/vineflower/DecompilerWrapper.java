@@ -18,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -29,6 +31,15 @@ import java.util.jar.Manifest;
 public class DecompilerWrapper extends Worker {
     @Command(name = "decompiler", mixinStandardHelpOptions = true)
     public static class Handler implements Callable<Integer> {
+        private static final long DOS_EPOCH = 315532800000L;
+
+        private static void setJarEntryTime(JarEntry entry) {
+            entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+            entry.setLastAccessTime(FileTime.fromMillis(DOS_EPOCH));
+            entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+            entry.setTimeLocal(LocalDateTime.ofEpochSecond(DOS_EPOCH / 1000, 0, ZoneOffset.UTC));
+        }
+
         private final Path sandboxPath;
         private final PrintWriter out;
 
@@ -81,12 +92,6 @@ public class DecompilerWrapper extends Worker {
             @Override
             public void closeArchive(String path, String archiveName) {
             }
-        }
-
-        private static void setJarEntryTime(JarEntry entry) {
-            entry.setTime(0L);
-            entry.setCreationTime(FileTime.fromMillis(0L));
-            entry.setLastModifiedTime(FileTime.fromMillis(0L));
         }
 
         @Override

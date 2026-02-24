@@ -1,4 +1,4 @@
-package top.fifthlight.touchcontroller.common.helper
+package top.fifthlight.touchcontroller.common.offset
 
 import top.fifthlight.data.IntSize
 import top.fifthlight.data.Offset

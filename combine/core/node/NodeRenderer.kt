@@ -4,9 +4,9 @@ import top.fifthlight.combine.layout.measure.Placeable
 import top.fifthlight.combine.paint.Canvas
 
 fun interface NodeRenderer {
-    fun Canvas.render(node: Placeable)
+    fun render(canvas: Canvas, node: Placeable)
 
     companion object EmptyRenderer : NodeRenderer {
-        override fun Canvas.render(node: Placeable) = Unit
+        override fun render(canvas: Canvas, node: Placeable) = Unit
     }
 }

@@ -62,7 +62,7 @@ fabric_merge_jij(
         "//blazerod/model/model-pmx": "blazerod-model-formats-pmx:=",
         "//blazerod/model/model-vmd": "blazerod-model-formats-vmd:=",
         "//blazerod/model/model-bedrock": "blazerod-model-formats-bedrock:=",
-        "//blazerod/render:render_fabric_merged": "blazerod-render:=",
+        "//blazerod/render/versions/1.21.8/fabric": "blazerod-render:=",
         "//blazerod:blazerod_fabric_without_jij": "blazerod:=",
     },
 )
@@ -84,7 +84,7 @@ neoforge_merge_jij(
         "//blazerod/model/model-pmx": "top.fifthlight.blazerod:blazerod-model-formats-pmx:%s:" % blazerod_version,
         "//blazerod/model/model-vmd": "top.fifthlight.blazerod:blazerod-model-formats-vmd:%s:" % blazerod_version,
         "//blazerod/model/model-bedrock": "top.fifthlight.blazerod:blazerod-model-formats-bedrock:%s:" % blazerod_version,
-        "//blazerod/render:render_neoforge_merged": "top.fifthlight.blazerod:blazerod-render:%s:" % blazerod_version,
+        "//blazerod/render/versions/1.21.8/neoforge": "top.fifthlight.blazerod:blazerod-render:%s:" % blazerod_version,
         "//blazerod:blazerod_neoforge_without_jij": "top.fifthlight.blazerod:blazerod:%s:" % blazerod_version,
     },
 )
@@ -95,8 +95,8 @@ java_binary(
     data = [
         "//blazerod/model/example-models",
         "//game/1.21.8:game_client_assets",
+        "//game/1.21.8:game_client_assets_version",
         "@makeup_ultra_fast//:primary",
-        "@minecraft_assets//:assets",
     ],
     env = {
         "LANG": "en_US.UTF8",
@@ -106,7 +106,7 @@ java_binary(
         "-Dfabric.development=true",
         "-Ddev.launch.version=1.21.8",
         "-Ddev.launch.type=client",
-        "-Ddev.launch.assetsPath=$(rlocationpath @minecraft_assets//:assets)",
+        "-Ddev.launch.assetsVersion=$(rlocationpath //game/1.21.8:game_client_assets_version)",
         "-Ddev.launch.mainClass=net.fabricmc.loader.impl.launch.knot.KnotClient",
         "-Ddev.launch.copyFiles=" +
         "$(rlocationpath @makeup_ultra_fast//:primary):shaderpacks/MakeUp-UltraFast-9.2.zip," +
@@ -126,6 +126,7 @@ java_binary(
         ":mod_fabric_unmapped",
         "//armorstand/fabric_client:remapped_deps",
         "//blazerod:blazerod_fabric_without_jij",
+        "//blazerod/render/versions/1.21.8/fabric:fabric_unmapped_unmerged",
         "//game/1.21.8:game_iris_named",
         "//game/1.21.8:game_mapping_jar",
         "//game/1.21.8:game_sodium_named",

@@ -11,8 +11,7 @@ import kotlin.jvm.optionals.getOrNull
 import top.fifthlight.combine.item.data.ItemStack as CombineItemStack
 
 @ActualImpl(CombineItemStack::class)
-@JvmInline
-value class ItemStackImpl(
+data class ItemStackImpl(
     val inner: ItemStack,
 ) : CombineItemStack {
     override val amount: Int

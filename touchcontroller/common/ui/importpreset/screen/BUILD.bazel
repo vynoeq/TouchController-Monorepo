@@ -1,0 +1,31 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "screen",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/config/preset/builtin/key",
+        "//touchcontroller/common/ui/importpreset/model",
+        "//touchcontroller/common/ui/model",
+        "//touchcontroller/common/ui/preset",
+        "//touchcontroller/common/ui/widget",
+        "//touchcontroller/common/ui/widget/navigation",
+        "//touchcontroller/resources/lang:text_binding",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "//combine/core/modifier",
+        "//combine/core/modifier/placement",
+        "//combine/core/paint",
+        "//combine/core/widget/layout",
+        "//combine/data",
+        "//combine/style",
+        "//combine/widget",
+        "@maven//:cafe_adriel_voyager_voyager_core_desktop",
+        "@maven//:cafe_adriel_voyager_voyager_navigator_desktop",
+        "@maven//:cafe_adriel_voyager_voyager_screenmodel_desktop",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

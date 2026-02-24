@@ -1,0 +1,34 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "custom",
+    srcs = glob(["*.kt"]),
+    kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
+    merge_deps = [
+        "//touchcontroller/common/config/condition",
+        "//touchcontroller/common/config/preset",
+        "//touchcontroller/common/config/preset/info",
+        "//touchcontroller/common/ui/layer/tab",
+        "//touchcontroller/common/ui/layer/tab/custom/model",
+        "//touchcontroller/common/ui/layer/tab/custom/state",
+        "//touchcontroller/common/ui/widget",
+        "//touchcontroller/resources/lang:text_binding",
+        "//touchcontroller/resources/texture:texture_lib",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "//combine/core/layout",
+        "//combine/core/modifier",
+        "//combine/core/modifier/placement",
+        "//combine/core/modifier/scroll",
+        "//combine/core/paint",
+        "//combine/core/widget/layout",
+        "//combine/data",
+        "//combine/style",
+        "//combine/widget",
+        "@maven//:cafe_adriel_voyager_voyager_core_desktop",
+        "@maven//:cafe_adriel_voyager_voyager_screenmodel_desktop",
+    ],
+)

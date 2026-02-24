@@ -7,8 +7,6 @@ kt_jvm_library(
     visibility = ["//visibility:public"],
     deps = [
         "//:kotlin_serialization",
-        "@maven//:com_github_ajalt_clikt_clikt_core_jvm",
-        "@maven//:com_github_ajalt_clikt_clikt_jvm",
         "@maven//:com_squareup_kotlinpoet_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
     ],

@@ -11,7 +11,7 @@ data class ItemConfig(
     val crosshairAimingItems: ItemList,
 ) {
     companion object {
-        fun default(itemListProvider: DefaultItemListProvider) = ItemConfig(
+        fun default(itemListProvider: DefaultItemListProvider = DefaultItemListProvider) = ItemConfig(
             usableItems = itemListProvider.usableItems,
             showCrosshairItems = itemListProvider.showCrosshairItems,
             crosshairAimingItems = itemListProvider.crosshairAimingItems,

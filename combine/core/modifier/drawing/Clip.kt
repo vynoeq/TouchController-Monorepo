@@ -13,8 +13,13 @@ import top.fifthlight.data.Offset
 fun Modifier.clip() = then(ClipNode)
 
 private data object ClipNode : DrawModifierNode, Modifier.Node<ClipNode> {
-    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        pushClip(
+    override fun renderBefore(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
+        canvas.pushClip(
             IntRect(
                 offset = IntOffset(wrapperNode.absoluteX, wrapperNode.absoluteY),
                 size = wrapperNode.size,
@@ -26,8 +31,13 @@ private data object ClipNode : DrawModifierNode, Modifier.Node<ClipNode> {
         )
     }
 
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        popClip()
+    override fun renderAfter(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
+        canvas.popClip()
     }
 }
 
@@ -43,7 +53,8 @@ private data class PercentClipNode(
     val height: Float,
     val anchorOffset: IntOffset? = null,
 ) : DrawModifierNode, Modifier.Node<PercentClipNode> {
-    override fun Canvas.renderBefore(
+    override fun renderBefore(
+        canvas: Canvas,
         wrapperNode: Placeable,
         node: LayoutNode,
         cursorPos: Offset,
@@ -66,7 +77,7 @@ private data class PercentClipNode(
                 }
             )
         } ?: IntOffset.ZERO
-        pushClip(
+        canvas.pushClip(
             IntRect(
                 offset = IntOffset(wrapperNode.absoluteX, wrapperNode.absoluteY),
                 size = size,
@@ -76,10 +87,15 @@ private data class PercentClipNode(
                 size = size,
             ),
         )
-        translate(offset)
+        canvas.translate(offset)
     }
 
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        popClip()
+    override fun renderAfter(
+        canvas: Canvas,
+        wrapperNode: Placeable,
+        node: LayoutNode,
+        cursorPos: Offset,
+    ) {
+        canvas.popClip()
     }
 }

@@ -1,0 +1,12 @@
+# Set all files to LF line ending for reproducibility
+* auto text=eol eol=lf
+*.png binary
+*.bmp binary
+*.vrm binary
+*.glb binary
+*.zip binary
+*.tga binary
+*.pmx binary
+*.pmd binary
+*.vmd binary
+*.fbx binary

@@ -1,0 +1,23 @@
+{
+    "required": true,
+    "package": "top.fifthlight.touchcontroller.version_1_21_11.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "client": [
+        "ChatComponentMixin",
+        "ClientInputAccessor",
+        "ControlsScreenMixin",
+        "MultiPlayerGameModeMixin",
+        "MinecraftMixin",
+        "InputConstantsMixin",
+        "DisableMouseDirectionMixin",
+        "GameRendererInvoker",
+        "OptionsSubScreenAccessor",
+        "InGameHudMixin",
+        "KeyboardInputMixin",
+        "KeyMappingAccessor",
+        "LocalPlayerMixin"
+    ]
+}

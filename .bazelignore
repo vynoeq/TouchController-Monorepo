@@ -1,5 +1,4 @@
 .idea
-bazel-*
 .claude
 CLAUDE.md
 external

@@ -1,0 +1,30 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "navigation",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/ui/theme",
+        "//touchcontroller/resources/lang:text_binding",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    runtime_deps = [
+        "@maven//:androidx_compose_runtime_runtime_saveable_desktop",
+    ],
+    deps = [
+        "//:compose",
+        "//combine/core/data",
+        "//combine/core/layout",
+        "//combine/core/modifier",
+        "//combine/core/modifier/drawing",
+        "//combine/core/modifier/placement",
+        "//combine/core/paint",
+        "//combine/core/screen",
+        "//combine/core/widget/layout",
+        "//combine/data",
+        "//combine/style",
+        "//combine/widget",
+        "@maven//:cafe_adriel_voyager_voyager_core_desktop",
+        "@maven//:cafe_adriel_voyager_voyager_navigator_desktop",
+    ],
+)

@@ -1,24 +1,25 @@
+load("//rule:jar.bzl", "jar")
 load("//rule/combine:library.bzl", "kt_texture_lib")
 load("//rule/combine:minecraft.bzl", "atlas_pack", "kt_vanilla_lib", "vanilla_pack")
 load("//rule/combine:texture.bzl", "texture", "texture_group", "texture_lib")
 load("//rule/touchcontroller:control_texture_set.bzl", "kt_control_texture_set_lib", "kt_empty_texture_lib")
 
 texture(
-    name = "normal_texture",
-    srcs = glob(
-        include = [
-            "icon/*.png",
-            "background/*.png",
-        ],
-        allow_empty = True,
-        exclude = ["**/*.9.png"],
-    ),
+    name = "icon_texture",
+    srcs = glob(["icon/*.png"]),
+)
+
+texture(
+    name = "background_texture",
+    srcs = glob(["background/*.png"]),
+    background = True,
 )
 
 texture_group(
     name = "texture_group",
     deps = [
-        ":normal_texture",
+        ":background_texture",
+        ":icon_texture",
         "//touchcontroller/resources/texture/empty",
     ],
 )
@@ -70,6 +71,7 @@ vanilla_pack(
     name = "vanilla_pack",
     dep = ":texture",
     namespace = "touchcontroller",
+    visibility = ["//touchcontroller:__subpackages__"],
 )
 
 kt_vanilla_lib(
@@ -85,5 +87,19 @@ atlas_pack(
     dep = ":texture",
     height = 512,
     namespace = "touchcontroller",
+    visibility = ["//touchcontroller:__subpackages__"],
     width = 512,
+)
+
+alias(
+    name = "icon",
+    actual = "icon.png",
+    visibility = ["//touchcontroller:__subpackages__"],
+)
+
+jar(
+    name = "icon_jar",
+    resource_prefix = "assets/touchcontroller/textures",
+    resources = [":icon"],
+    visibility = ["//touchcontroller:__subpackages__"],
 )

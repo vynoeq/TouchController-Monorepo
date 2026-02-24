@@ -1,0 +1,7 @@
+[book]
+authors = ["fifth_light"]
+title = "TouchController-Monorepo"
+language = "cmn-hans-cn"
+
+[output.html]
+git-repository-url = "https://github.com/TouchController/TouchController-Monorepo/tree/master/touchcontroller/doc"

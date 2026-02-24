@@ -1,13 +1,21 @@
-load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_binary")
+load("@rules_java//java:defs.bzl", "java_binary")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
-kt_jvm_binary(
-    name = "text_binding_generator",
+kt_jvm_library(
+    name = "text_binding_generator_lib",
     srcs = ["TextsBinding.kt"],
-    main_class = "top.fifthlight.touchcontroller.resources.generator.TextsBindingKt",
-    visibility = ["//visibility:public"],
     deps = [
         "@maven//:com_squareup_kotlinpoet_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
+)
+
+java_binary(
+    name = "text_binding_generator",
+    main_class = "top.fifthlight.touchcontroller.resources.generator.TextsBindingKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = [
+        ":text_binding_generator_lib"
     ],
 )

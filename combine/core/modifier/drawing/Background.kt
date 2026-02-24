@@ -18,7 +18,7 @@ fun Modifier.background(texture: BackgroundTexture, scale: Float = 1f) =
 private data class DrawableBackgroundNode(
     val drawable: Drawable
 ) : DrawModifierNode, Modifier.Node<DrawableBackgroundNode> {
-    override fun Canvas.renderBefore(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
-        drawable.run { draw(IntRect(offset = IntOffset.ZERO, size = wrapperNode.size)) }
+    override fun renderBefore(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+        drawable.draw(canvas, IntRect(offset = IntOffset.ZERO, size = wrapperNode.size))
     }
 }

@@ -20,7 +20,7 @@ import top.fifthlight.touchcontroller.common.util.uuid.fastRandomUuid
 import kotlin.uuid.Uuid
 
 @Immutable
-@Serializable
+@Serializable(ControllerWidgetSerializer::class)
 abstract class ControllerWidget {
     abstract val id: Uuid
     abstract val name: Name
@@ -52,9 +52,9 @@ abstract class ControllerWidget {
         val getValue: (Config) -> Value,
         val setValue: (Config, Value) -> Config,
     ) {
-        interface ConfigContext {
+        data class ConfigContext(
             val presetControlInfo: PresetControlInfo?
-        }
+        )
 
         @Composable
         abstract fun controller(

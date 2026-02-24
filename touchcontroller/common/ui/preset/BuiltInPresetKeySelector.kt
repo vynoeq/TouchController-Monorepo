@@ -1,7 +1,6 @@
 package top.fifthlight.touchcontroller.common.ui.component
 
 import androidx.compose.runtime.*
-import top.fifthlight.combine.data.LocalTextFactory
 import top.fifthlight.combine.data.Text
 import top.fifthlight.combine.layout.Alignment
 import top.fifthlight.combine.layout.Arrangement
@@ -16,18 +15,17 @@ import top.fifthlight.combine.modifier.placement.fillMaxWidth
 import top.fifthlight.combine.modifier.placement.padding
 import top.fifthlight.combine.modifier.scroll.verticalScroll
 import top.fifthlight.combine.node.LocalScreenSize
-import top.fifthlight.combine.widget.base.layout.Column
-import top.fifthlight.combine.widget.base.layout.Row
+import top.fifthlight.combine.widget.layout.Column
+import top.fifthlight.combine.widget.layout.Row
 import top.fifthlight.combine.widget.ui.*
 import top.fifthlight.data.IntSize
-import top.fifthlight.touchcontroller.assets.BackgroundTextures
 import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.assets.TextureSet
-import top.fifthlight.touchcontroller.assets.Textures
-import top.fifthlight.touchcontroller.common.config.ControllerLayout
-import top.fifthlight.touchcontroller.common.config.preset.builtin.BuiltInPresetKey
+import top.fifthlight.touchcontroller.common.config.layout.ControllerLayout
+import top.fifthlight.touchcontroller.common.config.preset.builtin.key.BuiltinPresetKey
 import top.fifthlight.touchcontroller.common.control.ControllerWidget
-import top.fifthlight.touchcontroller.common.layout.ContextInput
+import top.fifthlight.touchcontroller.common.layout.data.ContextInput
+import top.fifthlight.touchcontroller.common.ui.theme.LocalTouchControllerTheme
 import kotlin.math.min
 
 private data class ControllerWidgetModifierNode(
@@ -81,7 +79,7 @@ private fun PresetPreview(
                 continue
             }
             for (widget in layer.widgets) {
-                ControllerWidget(
+                top.fifthlight.touchcontroller.common.ui.control.ControllerWidget(
                     modifier = Modifier.then(ControllerWidgetModifierNode(widget)),
                     widget = widget,
                     scale = currentScale,
@@ -94,8 +92,8 @@ private fun PresetPreview(
 @Composable
 fun BuiltInPresetKeySelector(
     modifier: Modifier = Modifier,
-    value: BuiltInPresetKey,
-    onValueChanged: (BuiltInPresetKey) -> Unit,
+    value: BuiltinPresetKey,
+    onValueChanged: (BuiltinPresetKey) -> Unit,
 ) {
     @Composable
     fun StyleBox(
@@ -165,7 +163,7 @@ fun BuiltInPresetKeySelector(
 
     Row(
         modifier = Modifier
-            .background(BackgroundTextures.BRICK_BACKGROUND)
+            .background(LocalTouchControllerTheme.current.background)
             .then(modifier)
     ) {
         Column(
@@ -183,7 +181,7 @@ fun BuiltInPresetKeySelector(
                 Row(
                     modifier = Modifier
                         .padding(4)
-                        .border(Textures.WIDGET_BACKGROUND_BACKGROUND_DARK)
+                        .border(LocalTouchControllerTheme.current.borderBackgroundDark)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4),
                 ) {
@@ -194,7 +192,7 @@ fun BuiltInPresetKeySelector(
                 OptionBox(
                     modifier = Modifier
                         .padding(4)
-                        .border(Textures.WIDGET_BACKGROUND_BACKGROUND_DARK)
+                        .border(LocalTouchControllerTheme.current.borderBackgroundDark)
                         .fillMaxWidth(),
                 )
             }
@@ -217,10 +215,10 @@ fun BuiltInPresetKeySelector(
             Text(Text.translatable(Texts.SCREEN_MANAGE_CONTROL_PRESET_CONTROL_STYLE))
             RadioColumn(modifier = Modifier.fillMaxWidth()) {
                 RadioBoxItem(
-                    value = value.controlStyle == BuiltInPresetKey.ControlStyle.TouchGesture,
+                    value = value.controlStyle == BuiltinPresetKey.ControlStyle.TouchGesture,
                     onValueChanged = {
-                        if (value.controlStyle != BuiltInPresetKey.ControlStyle.TouchGesture) {
-                            onValueChanged(value.copy(controlStyle = BuiltInPresetKey.ControlStyle.TouchGesture))
+                        if (value.controlStyle != BuiltinPresetKey.ControlStyle.TouchGesture) {
+                            onValueChanged(value.copy(controlStyle = BuiltinPresetKey.ControlStyle.TouchGesture))
                         }
                     }
                 ) {
@@ -228,10 +226,10 @@ fun BuiltInPresetKeySelector(
                 }
 
                 RadioBoxItem(
-                    value = value.controlStyle is BuiltInPresetKey.ControlStyle.SplitControls,
+                    value = value.controlStyle is BuiltinPresetKey.ControlStyle.SplitControls,
                     onValueChanged = {
-                        if (value.controlStyle !is BuiltInPresetKey.ControlStyle.SplitControls) {
-                            onValueChanged(value.copy(controlStyle = BuiltInPresetKey.ControlStyle.SplitControls()))
+                        if (value.controlStyle !is BuiltinPresetKey.ControlStyle.SplitControls) {
+                            onValueChanged(value.copy(controlStyle = BuiltinPresetKey.ControlStyle.SplitControls()))
                         }
                     }
                 ) {
@@ -247,12 +245,14 @@ fun BuiltInPresetKeySelector(
                     modifier = Modifier.weight(1f),
                     text = Text.translatable(Texts.SCREEN_MANAGE_CONTROL_PRESET_ATTACK_AND_INTERACT_BY_BUTTON),
                 )
+
+                val controlStyle = value.controlStyle
                 Switch(
-                    enabled = value.controlStyle is BuiltInPresetKey.ControlStyle.SplitControls,
-                    value = (value.controlStyle as? BuiltInPresetKey.ControlStyle.SplitControls)?.buttonInteraction == true,
+                    enabled = controlStyle is BuiltinPresetKey.ControlStyle.SplitControls,
+                    value = (controlStyle as? BuiltinPresetKey.ControlStyle.SplitControls)?.buttonInteraction == true,
                     onValueChanged = {
-                        if (value.controlStyle is BuiltInPresetKey.ControlStyle.SplitControls) {
-                            onValueChanged(value.copy(controlStyle = value.controlStyle.copy(buttonInteraction = it)))
+                        if (controlStyle is BuiltinPresetKey.ControlStyle.SplitControls) {
+                            onValueChanged(value.copy(controlStyle = controlStyle.copy(buttonInteraction = it)))
                         }
                     },
                 )
@@ -261,10 +261,10 @@ fun BuiltInPresetKeySelector(
             Text(Text.translatable(Texts.SCREEN_MANAGE_CONTROL_PRESET_MOVE_METHOD))
             RadioColumn(modifier = Modifier.fillMaxWidth()) {
                 RadioBoxItem(
-                    value = value.moveMethod is BuiltInPresetKey.MoveMethod.Dpad,
+                    value = value.moveMethod is BuiltinPresetKey.MoveMethod.Dpad,
                     onValueChanged = {
-                        if (value.moveMethod !is BuiltInPresetKey.MoveMethod.Dpad) {
-                            onValueChanged(value.copy(moveMethod = BuiltInPresetKey.MoveMethod.Dpad()))
+                        if (value.moveMethod !is BuiltinPresetKey.MoveMethod.Dpad) {
+                            onValueChanged(value.copy(moveMethod = BuiltinPresetKey.MoveMethod.Dpad()))
                         }
                     }
                 ) {
@@ -272,10 +272,10 @@ fun BuiltInPresetKeySelector(
                 }
 
                 RadioBoxItem(
-                    value = value.moveMethod is BuiltInPresetKey.MoveMethod.Joystick,
+                    value = value.moveMethod is BuiltinPresetKey.MoveMethod.Joystick,
                     onValueChanged = {
-                        if (value.moveMethod !is BuiltInPresetKey.MoveMethod.Joystick) {
-                            onValueChanged(value.copy(moveMethod = BuiltInPresetKey.MoveMethod.Joystick()))
+                        if (value.moveMethod !is BuiltinPresetKey.MoveMethod.Joystick) {
+                            onValueChanged(value.copy(moveMethod = BuiltinPresetKey.MoveMethod.Joystick()))
                         }
                     }
                 ) {
@@ -291,12 +291,14 @@ fun BuiltInPresetKeySelector(
                     modifier = Modifier.weight(1f),
                     text = Text.translatable(Texts.SCREEN_MANAGE_CONTROL_PRESET_SPRINT_USING_JOYSTICK),
                 )
+
+                val moveMethod = value.moveMethod
                 Switch(
-                    enabled = value.moveMethod is BuiltInPresetKey.MoveMethod.Joystick,
-                    value = (value.moveMethod as? BuiltInPresetKey.MoveMethod.Joystick)?.triggerSprint == true,
+                    enabled = moveMethod is BuiltinPresetKey.MoveMethod.Joystick,
+                    value = (moveMethod as? BuiltinPresetKey.MoveMethod.Joystick)?.triggerSprint == true,
                     onValueChanged = {
-                        if (value.moveMethod is BuiltInPresetKey.MoveMethod.Joystick) {
-                            onValueChanged(value.copy(moveMethod = value.moveMethod.copy(triggerSprint = it)))
+                        if (moveMethod is BuiltinPresetKey.MoveMethod.Joystick) {
+                            onValueChanged(value.copy(moveMethod = moveMethod.copy(triggerSprint = it)))
                         }
                     },
                 )
@@ -310,12 +312,14 @@ fun BuiltInPresetKeySelector(
                     modifier = Modifier.weight(1f),
                     text = Text.translatable(Texts.SCREEN_MANAGE_CONTROL_PRESET_SWAP_JUMP_AND_SNEAK),
                 )
+
+                val moveMethod = value.moveMethod
                 Switch(
-                    enabled = value.moveMethod is BuiltInPresetKey.MoveMethod.Dpad && (value.controlStyle as? BuiltInPresetKey.ControlStyle.SplitControls)?.buttonInteraction != true,
-                    value = (value.moveMethod as? BuiltInPresetKey.MoveMethod.Dpad)?.swapJumpAndSneak == true,
+                    enabled = moveMethod is BuiltinPresetKey.MoveMethod.Dpad && (value.controlStyle as? BuiltinPresetKey.ControlStyle.SplitControls)?.buttonInteraction != true,
+                    value = (moveMethod as? BuiltinPresetKey.MoveMethod.Dpad)?.swapJumpAndSneak == true,
                     onValueChanged = {
-                        if (value.moveMethod is BuiltInPresetKey.MoveMethod.Dpad) {
-                            onValueChanged(value.copy(moveMethod = value.moveMethod.copy(swapJumpAndSneak = it)))
+                        if (moveMethod is BuiltinPresetKey.MoveMethod.Dpad) {
+                            onValueChanged(value.copy(moveMethod = moveMethod.copy(swapJumpAndSneak = it)))
                         }
                     },
                 )
@@ -335,16 +339,15 @@ fun BuiltInPresetKeySelector(
                     onExpandedChanged = { expanded = it },
                     dropDownContent = {
                         val selectedIndex =
-                            BuiltInPresetKey.SprintButtonLocation.entries.indexOf(value.sprintButtonLocation)
-                        val textFactory = LocalTextFactory.current
+                            BuiltinPresetKey.SprintButtonLocation.entries.indexOf(value.sprintButtonLocation)
                         DropdownItemList(
                             modifier = Modifier.verticalScroll(),
-                            items = BuiltInPresetKey.SprintButtonLocation.entries,
-                            textProvider = { textFactory.of(it.nameId) },
+                            items = BuiltinPresetKey.SprintButtonLocation.entries,
+                            textProvider = { Text.translatable(it.nameId) },
                             selectedIndex = selectedIndex,
                             onItemSelected = { index ->
                                 expanded = false
-                                onValueChanged(value.copy(sprintButtonLocation = BuiltInPresetKey.SprintButtonLocation.entries[index]))
+                                onValueChanged(value.copy(sprintButtonLocation = BuiltinPresetKey.SprintButtonLocation.entries[index]))
                             }
                         )
                     }

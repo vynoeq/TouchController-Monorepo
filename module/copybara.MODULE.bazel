@@ -1,0 +1,8 @@
+"""Module extension to download Copybara."""
+
+http_jar = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+http_jar(
+    name = "com_github_google_copybara",
+    sha256 = "d1a43707446e1335a9cb015769e55d086a1954ee2abd0f8bf8187b4b5566241f",
+    url = "https://github.com/google/copybara/releases/download/v20260119/copybara_deploy.jar",
+)

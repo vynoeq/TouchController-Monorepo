@@ -1,0 +1,112 @@
+load("//blazerod:properties.bzl", "blazerod_version", "home_page", "issue_tracker", "license", "sources_page")
+load("//rule:maven_publish.bzl", "maven_publish")
+load("//rule:merge_library.bzl", "kt_merge_library", "merge_library_jar")
+load("//rule:remap_jar.bzl", "remap_jar")
+load("//rule/fabric:mod_json_jar.bzl", "fabric_mod_json_jar")
+
+remap_jar(
+    name = "remapped_deps",
+    classpath = ["//game/1.21.8:game_client_intermediary"],
+    from_namespace = "intermediary",
+    inputs = ["@maven_fabric_1_21_8//:net_fabricmc_fabric_api_fabric_api"],
+    mapping = "//game/1.21.8:game_merged_mapping",
+    mixin = True,
+    remap_transitive_deps = True,
+    remove_jar_in_jar = True,
+    to_namespace = "named",
+    visibility = ["//blazerod/render/versions/1.21.8:__subpackages__"],
+)
+
+fabric_mod_json_jar(
+    name = "fabric_mod_json",
+    src = "resources/fabric.mod.json",
+    resource_strip_prefix = "blazerod/render/versions/1.21.8/fabric",
+    substitutions = {
+        "${version}": blazerod_version,
+        "${license}": license,
+        "${home_page}": home_page,
+        "${sources_page}": sources_page,
+        "${issue_tracker}": issue_tracker,
+    },
+)
+
+kt_merge_library(
+    name = "fabric_unmapped_unmerged",
+    srcs = glob(["**/*.kt"]),
+    actual = True,
+    merge_deps = [
+        "//blazerod/render/api/event",
+        "//blazerod/render/common",
+        "//blazerod/render/common/debug",
+        "//blazerod/render/common/layout",
+        "//blazerod/render/common/physics",
+        "//blazerod/render/common/util/objectpool",
+        "//blazerod/render/versions/1.21.8/expect",
+        "//blazerod/render/versions/1.21.8/runtime",
+        "//blazerod/render/versions/1.21.8/runtime/uniform",
+        "//blazerod/render/versions/1.21.8/util/dispatchers",
+    ],
+    merge_runtime_deps = [
+        "//blazerod/render/versions/1.21.8",
+    ],
+    resource_jars = [
+        "//blazerod:icon",
+        ":fabric_mod_json",
+        "//blazerod/render/versions/1.21.8/game:access_widener",
+        "//blazerod/render/versions/1.21.8/resources",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":remapped_deps",
+        "//blazerod/render/versions/1.21.8/game:remapped_client_access_widened_named",
+        "//game/1.21.8:game_client_neoforge",
+        "//game/1.21.8:game_iris_named",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven_fabric_1_21_8//:net_fabricmc_fabric_loader",
+    ],
+)
+
+merge_library_jar(
+    name = "fabric_unmapped",
+    manifest_entries = {
+        "Fabric-Loom-Mixin-Remap-Type": "static",
+    },
+    visibility = ["//blazerod/render:__subpackages__"],
+    deps = [
+        ":fabric_unmapped_unmerged",
+        "//blazerod/render/api",
+        "//blazerod/render/common:common_group",
+        "//blazerod/render/versions/1.21.8",
+    ],
+)
+
+remap_jar(
+    name = "fabric",
+    classpath = ["//game/1.21.8:game_client_named"],
+    from_namespace = "named",
+    inputs = [":fabric_unmapped"],
+    mapping = "//game/1.21.8:game_merged_mapping",
+    mixin = True,
+    to_namespace = "intermediary",
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "fabric_unmapped_sources",
+    srcs = [":fabric_unmapped_sources.jar"],
+)
+
+maven_publish(
+    name = "fabric.publish",
+    src = ":fabric",
+    artifacts = {
+        "sources": ":fabric_unmapped_sources",
+    },
+    coordinates = "top.fifthlight.blazerod:render-fabric-1.21.8:%s" % blazerod_version,
+    deps = [
+        "//blazerod/model/model-base",
+        "@maven//:org_joml_joml",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven_fabric_1_21_8//:net_fabricmc_fabric_language_kotlin",
+    ],
+)

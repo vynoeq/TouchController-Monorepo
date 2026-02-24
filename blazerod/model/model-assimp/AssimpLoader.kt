@@ -117,6 +117,10 @@ class AssimpLoader : ModelFileLoader {
         private val useVanillaMaterial: Boolean =
             param.loaderParams["useVanillaMaterial"] as? Boolean ?: false
 
+        @Suppress("UNCHECKED_CAST")
+        private val diffuseTextureOverride: Map<Int, String> =
+            param.loaderParams["diffuseTextureOverride"] as? Map<Int, String> ?: mapOf()
+
         companion object {
             private val EMPTY_LOAD_RESULT = LoadResult(
                 metadata = null,
@@ -212,7 +216,7 @@ class AssimpLoader : ModelFileLoader {
                 val material = AIMaterial.create(materialPtr)
 
                 val diffuseColor = material.getColor(Assimp.AI_MATKEY_COLOR_DIFFUSE, 0, 0)
-                val diffuseTexture = material.getTexturePath(Assimp.aiTextureType_DIFFUSE, 0)
+                val diffuseTexture = diffuseTextureOverride[index] ?: material.getTexturePath(Assimp.aiTextureType_DIFFUSE, 0)
 
                 if (useVanillaMaterial) {
                     Material.Vanilla(

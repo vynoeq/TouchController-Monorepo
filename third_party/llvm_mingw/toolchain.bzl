@@ -1,29 +1,34 @@
-"""LLVM-MinGW toolchain definitions."""
+"""Filegroups generation macro - only generates filegroups."""
 
-load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
 load(":config.bzl", "config")
+load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
 
-def _llvm_mingw_toolchain_impl(name, visibility, include_files, bin_files, lib_files, triple, target_cpu, target_cpu_name, exec_compatible_with, execroot):
+def _llvm_mingw_toolchain_impl(name, visibility, include_files, bin_files, lib_files, triple, target_cpu_name, execroot, binary_extension, use_wrapper):
+    wrapper_files = ["//:wrapper_files"] if use_wrapper else []
+
     native.filegroup(
         name = "%s_gcc" % name,
+        visibility = visibility,
         srcs = [
-            "bin/%s-c++" % triple,
-            "bin/%s-g++" % triple,
-            "bin/%s-gcc" % triple,
+            "bin/%s-c++%s" % (triple, binary_extension),
+            "bin/%s-g++%s" % (triple, binary_extension),
+            "bin/%s-gcc%s" % (triple, binary_extension),
         ],
     )
 
     native.filegroup(
         name = "%s_clang" % name,
+        visibility = visibility,
         srcs = [
-            "bin/%s-clang" % triple,
-            "bin/%s-clang++" % triple,
-            "bin/clang-cpp",
+            "bin/%s-clang%s" % (triple, binary_extension),
+            "bin/%s-clang++%s" % (triple, binary_extension),
+            "bin/clang%s" % binary_extension,
         ],
     )
 
     native.filegroup(
         name = "%s_ld" % name,
+        visibility = visibility,
         srcs = [
             "bin/%s-ld" % triple,
         ],
@@ -31,109 +36,120 @@ def _llvm_mingw_toolchain_impl(name, visibility, include_files, bin_files, lib_f
 
     native.filegroup(
         name = "%s_include" % name,
+        visibility = visibility,
         srcs = include_files,
     )
 
     native.filegroup(
         name = "%s_bin" % name,
+        visibility = visibility,
         srcs = bin_files,
     )
 
     native.filegroup(
         name = "%s_lib" % name,
+        visibility = visibility,
         srcs = lib_files,
     )
 
     native.filegroup(
         name = "%s_ar" % name,
-        srcs = ["bin/%s-ar" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-ar%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_as" % name,
-        srcs = ["bin/%s-as" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-as%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_nm" % name,
-        srcs = ["bin/%s-nm" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-nm%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_objcopy" % name,
-        srcs = ["bin/%s-objcopy" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-objcopy%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_objdump" % name,
-        srcs = ["bin/%s-objdump" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-objdump%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_ranlib" % name,
-        srcs = ["bin/%s-ranlib" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-ranlib%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_strip" % name,
-        srcs = ["bin/%s-strip" % triple],
+        visibility = visibility,
+        srcs = ["bin/%s-strip%s" % (triple, binary_extension)],
     )
 
     native.filegroup(
         name = "%s_ar_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_ar" % name,
-            "//:wrapper_files",
-        ],
+        ] + wrapper_files,
     )
 
     native.filegroup(
         name = "%s_as_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_as" % name,
-            "//:wrapper_files",
-        ],
+        ] + wrapper_files,
     )
 
     native.filegroup(
         name = "%s_compiler_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_bin" % name,
             ":%s_include" % name,
-            "//:wrapper_files",
-        ],
+        ] + wrapper_files,
     )
 
     native.filegroup(
         name = "%s_linker_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_ar" % name,
             ":%s_clang" % name,
             ":%s_gcc" % name,
             ":%s_ld" % name,
             ":%s_lib" % name,
-            "//:wrapper_files",
-        ],
+        ] + wrapper_files,
     )
 
     native.filegroup(
         name = "%s_objcopy_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_objcopy" % name,
-            "//:wrapper_files",
-        ],
+        ] + wrapper_files,
     )
 
     native.filegroup(
         name = "%s_strip_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_strip" % name,
-            "//:wrapper_files",
-        ],
+        ] + wrapper_files,
     )
 
     native.filegroup(
         name = "%s_all_files" % name,
+        visibility = visibility,
         srcs = [
             ":%s_bin" % name,
             ":%s_compiler_files" % name,
@@ -146,6 +162,8 @@ def _llvm_mingw_toolchain_impl(name, visibility, include_files, bin_files, lib_f
         triple = triple,
         target_cpu = target_cpu_name,
         execroot = execroot,
+        binary_extension = binary_extension,
+        use_wrapper = use_wrapper,
     )
 
     cc_toolchain(
@@ -158,34 +176,22 @@ def _llvm_mingw_toolchain_impl(name, visibility, include_files, bin_files, lib_f
         linker_files = ":%s_linker_files" % name,
         objcopy_files = ":%s_objcopy_files" % name,
         strip_files = ":%s_strip_files" % name,
-        supports_param_files = 1,
+        supports_param_files = True,
+        supports_header_parsing = True,
         toolchain_config = ":%s_config" % name,
         toolchain_identifier = "llvm-mingw-%s" % triple,
-    )
-
-    native.toolchain(
-        name = name,
-        exec_compatible_with = exec_compatible_with,
-        target_compatible_with = [
-            target_cpu,
-            "@platforms//os:windows",
-        ],
-        target_settings = None,
-        toolchain = ":%s_cc_toolchain" % name,
-        toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
-        visibility = visibility,
     )
 
 _llvm_mingw_toolchain_symbol = macro(
     attrs = {
         "triple": attr.string(mandatory = True, configurable = False),
-        "target_cpu": attr.label(mandatory = True, configurable = False),
         "target_cpu_name": attr.string(mandatory = True, configurable = False),
-        "exec_compatible_with": attr.label_list(mandatory = True, configurable = False),
         "execroot": attr.string(mandatory = True, configurable = False),
         "include_files": attr.label_list(mandatory = True),
         "bin_files": attr.label_list(mandatory = True),
         "lib_files": attr.label_list(mandatory = True),
+        "binary_extension": attr.string(mandatory = True, configurable = False),
+        "use_wrapper": attr.bool(default = True, configurable = False),
     },
     implementation = _llvm_mingw_toolchain_impl,
 )

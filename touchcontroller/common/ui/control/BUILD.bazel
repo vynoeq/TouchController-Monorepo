@@ -1,0 +1,24 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "control",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/control",
+        "//touchcontroller/common/layout",
+        "//touchcontroller/common/layout/data",
+        "//touchcontroller/common/layout/queue",
+        "//touchcontroller/common/state",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "//:compose",
+        "//combine/core/layout/measure",
+        "//combine/core/modifier",
+        "//combine/core/modifier/placement",
+        "//combine/core/node",
+        "//combine/core/paint",
+        "//combine/core/widget",
+        "//combine/data",
+    ],
+)

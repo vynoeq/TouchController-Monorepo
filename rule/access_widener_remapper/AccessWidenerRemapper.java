@@ -1,7 +1,9 @@
 package top.fifthlight.armorstand;
 
-import net.fabricmc.accesswidener.AccessWidenerReader;
-import net.fabricmc.accesswidener.AccessWidenerWriter;
+import net.fabricmc.classtweaker.api.ClassTweaker;
+import net.fabricmc.classtweaker.api.ClassTweakerReader;
+import net.fabricmc.classtweaker.api.ClassTweakerWriter;
+import net.fabricmc.classtweaker.visitors.ClassTweakerRemapperVisitor;
 import net.fabricmc.mappingio.extras.MappingTreeRemapper;
 import net.fabricmc.mappingio.format.tiny.Tiny2FileReader;
 import net.fabricmc.mappingio.tree.MemoryMappingTree;
@@ -38,13 +40,17 @@ public class AccessWidenerRemapper extends Worker {
             var remapper = new MappingTreeRemapper(mappingTree, fromNamespace, toNamespace);
 
             try (var writer = Files.newOutputStream(outputFile)) {
-                var accessWidenerWriter = new AccessWidenerWriter();
-                var accessWidenerRemapper = new net.fabricmc.accesswidener.AccessWidenerRemapper(accessWidenerWriter, remapper, fromNamespace, toNamespace);
-                var accessWidenerReader = new AccessWidenerReader(accessWidenerRemapper);
+                int version;
                 try (var reader = Files.newBufferedReader(inputFile)) {
-                    accessWidenerReader.read(reader);
+                    version = ClassTweakerReader.readVersion(reader);
                 }
-                writer.write(accessWidenerWriter.write());
+                var accessWidenerWriter = ClassTweakerWriter.create(version);
+                var accessWidenerRemapper = new ClassTweakerRemapperVisitor(accessWidenerWriter, remapper, fromNamespace, toNamespace);
+                var accessWidenerReader = ClassTweakerReader.create(accessWidenerRemapper);
+                try (var reader = Files.newBufferedReader(inputFile)) {
+                    accessWidenerReader.read(reader, null);
+                }
+                writer.write(accessWidenerWriter.getOutput());
             }
             return 0;
         } catch (Exception e) {

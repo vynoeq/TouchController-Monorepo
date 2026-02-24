@@ -1,8 +1,0 @@
-load("@rules_java//java:defs.bzl", "java_library")
-
-java_library(
-    name = "symbolmap",
-    srcs = glob(["*.java"]),
-    visibility = ["//visibility:public"],
-    deps = ["@maven//:it_unimi_dsi_fastutil"],
-)

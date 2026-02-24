@@ -1,0 +1,11 @@
+load("@rules_java//java:defs.bzl", "java_library")
+
+java_library(
+    name = "pathmap",
+    srcs = glob(["*.java"]),
+    visibility = ["//fastmerger/scanner:__subpackages__"],
+    deps = [
+        "@maven//:at_yawk_lz4_lz4_java",
+        "@maven//:org_jetbrains_annotations",
+    ],
+)

@@ -24,8 +24,8 @@ import kotlin.math.roundToInt
 
 data class SwitchDrawableSet(
     val frame: DrawableSet,
-    val background: TextureSet,
-    val handle: DrawableSet
+    val background: TextureSet? = null,
+    val handle: DrawableSet,
 ) {
     companion object {
         val current
@@ -52,7 +52,7 @@ fun Switch(
     val interactionSource = remember { MutableInteractionSource() }
     val state by widgetState(interactionSource)
     val frameDrawable = drawableSet.frame.getByState(state, enabled = enabled)
-    val backgroundTexture = drawableSet.background.getByState(state, enabled = enabled)
+    val backgroundTexture = drawableSet.background?.getByState(state, enabled = enabled)
     val handleDrawable = drawableSet.handle.getByState(state, enabled = enabled)
 
     val modifier = if (onValueChanged == null || !enabled) {
@@ -82,7 +82,7 @@ fun Switch(
     Canvas(
         modifier = modifier,
         measurePolicy = { _, constraints -> layout(size.coerceIn(constraints)) {} },
-    ) { node ->
+    ) { canvas, node ->
         val frameRect = IntRect(
             offset = IntOffset(
                 x = 0,
@@ -92,9 +92,10 @@ fun Switch(
         )
         val handleMoveWidth = frameDrawable.size.width - handleDrawable.size.width
         val handleMoveOffsetX = (handleMoveWidth * handleValue).roundToInt()
-        backgroundTexture?.apply {
+        backgroundTexture?.let {
             val backgroundInitialOffsetX = (backgroundTexture.size.width - handleDrawable.size.width) / 2
-            draw(
+            backgroundTexture.draw(
+                canvas = canvas,
                 srcRect = IntRect(
                     offset = IntOffset(
                         x = backgroundInitialOffsetX - handleMoveOffsetX,
@@ -108,18 +109,17 @@ fun Switch(
                 dstRect = frameRect.toRect(),
             )
         }
-        frameDrawable.run {
-            draw(dstRect = frameRect)
-        }
-        handleDrawable.run {
-            draw(
-                IntRect(
+        frameDrawable.draw(canvas = canvas, dstRect = frameRect)
+        handleDrawable.let {
+            handleDrawable.draw(
+                canvas = canvas,
+                dstRect = IntRect(
                     offset = IntOffset(
                         x = handleMoveOffsetX,
                         y = (node.size.height - handleDrawable.size.height) / 2,
                     ),
                     size = handleDrawable.size,
-                )
+                ),
             )
         }
     }

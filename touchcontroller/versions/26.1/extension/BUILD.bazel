@@ -1,0 +1,8 @@
+load("//rule:merge_library.bzl", "java_merge_library")
+
+java_merge_library(
+    name = "extension",
+    srcs = glob(["*.java"]),
+    visibility = ["//touchcontroller/versions/26.1:__subpackages__"],
+    deps = ["//game/26.1:game_client"],
+)

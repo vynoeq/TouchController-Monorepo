@@ -50,7 +50,7 @@ data class Joystick(
                 setValue = { config, value -> config.copy(size = value) },
                 range = .5f..4f,
                 messageFormatter = {
-                    Text.Companion.format(
+                    Text.format(
                         Texts.WIDGET_JOYSTICK_PROPERTY_SIZE,
                         round(it * 100f).toString()
                     )
@@ -59,14 +59,14 @@ data class Joystick(
             TextureSetProperty(
                 getValue = { it.textureSet },
                 setValue = { config, value -> config.copy(textureSet = value) },
-                name = Text.Companion.translatable(Texts.WIDGET_JOYSTICK_PROPERTY_TEXTURE_SET),
+                name = Text.translatable(Texts.WIDGET_JOYSTICK_PROPERTY_TEXTURE_SET),
             ),
             FloatProperty(
                 getValue = { it.stickSize },
                 setValue = { config, value -> config.copy(stickSize = value) },
                 range = .5f..4f,
                 messageFormatter = {
-                    Text.Companion.format(
+                    Text.format(
                         Texts.WIDGET_JOYSTICK_PROPERTY_STICK_SIZE,
                         round(it * 100f).toString()
                     )
@@ -75,12 +75,12 @@ data class Joystick(
             BooleanProperty(
                 getValue = { it.triggerSprint },
                 setValue = { config, value -> config.copy(triggerSprint = value) },
-                name = Text.Companion.translatable(Texts.WIDGET_JOYSTICK_PROPERTY_TRIGGER_SPRINT),
+                name = Text.translatable(Texts.WIDGET_JOYSTICK_PROPERTY_TRIGGER_SPRINT),
             ),
             BooleanProperty(
                 getValue = { it.increaseOpacityWhenActive },
                 setValue = { config, value -> config.copy(increaseOpacityWhenActive = value) },
-                name = Text.Companion.translatable(Texts.WIDGET_JOYSTICK_PROPERTY_INCREASE_OPACITY_WHEN_ACTIVE),
+                name = Text.translatable(Texts.WIDGET_JOYSTICK_PROPERTY_INCREASE_OPACITY_WHEN_ACTIVE),
             )
         ) as PersistentList<Property<ControllerWidget, *>>
     }
@@ -98,7 +98,7 @@ data class Joystick(
         align: Align,
         offset: IntOffset,
         opacity: Float,
-        lockMoving: Boolean
+        lockMoving: Boolean,
     ) = copy(
         id = id,
         name = name,
@@ -167,24 +167,23 @@ data class Joystick(
         withOpacity(opacityMultiplier) {
             drawQueue.enqueue { canvas ->
                 val color = Color(((0xFF * opacity).toInt() shl 24) or 0xFFFFFF)
-                with(layout.textureSet.textureSet.pad) {
-                    canvas.draw(
-                        dstRect = IntRect(size = size),
-                        tint = color
-                    )
-                }
-                val drawOffset = normalizedOffset ?: Offset.Companion.ZERO
+                val size = size
+                layout.textureSet.textureSet.pad.draw(
+                    canvas = canvas,
+                    dstRect = IntRect(size = size),
+                    tint = color,
+                )
+                val drawOffset = normalizedOffset ?: Offset.ZERO
                 val stickSize = layout.stickSize()
                 val actualOffset = ((drawOffset + 1f) / 2f * size) - stickSize.toSize() / 2f
-                with(layout.textureSet.textureSet.stick) {
-                    canvas.draw(
-                        dstRect = Rect(
-                            offset = actualOffset,
-                            size = stickSize.toSize()
-                        ),
-                        tint = color
-                    )
-                }
+                layout.textureSet.textureSet.stick.draw(
+                    canvas = canvas,
+                    dstRect = Rect(
+                        offset = actualOffset,
+                        size = stickSize.toSize()
+                    ),
+                    tint = color,
+                )
             }
         }
 

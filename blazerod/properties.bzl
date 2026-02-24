@@ -1,5 +1,5 @@
 "Common properties in BlazeRod"
-blazerod_version = "0.0.9"
+blazerod_version = "0.0.10"
 home_page = "https://github.com/TouchController/TouchController"
 sources_page = "https://github.com/TouchController/TouchController"
 issue_tracker = "https://github.com/TouchController/TouchController/issues"

@@ -1,11 +1,12 @@
 package top.fifthlight.touchcontroller.buildinfo
 
 object BuildInfo {
-    val MOD_ID = "[modId]"
-    val MOD_NAME = "[modName]"
-    val MOD_VERSION = "[modVersion]"
-    val MOD_DESCRIPTION = "[modDescription]"
-    val MOD_LICENSE = "[modLicense]"
+    const val MOD_ID = "[modId]"
+    const val MOD_NAME = "[modName]"
+    const val MOD_VERSION = "[modVersion]"
+    const val MOD_DESCRIPTION = "[modDescription]"
+    const val MOD_LICENSE = "[modLicense]"
+    const val MOD_STATE = "[modState]"
     val MOD_AUTHORS = listOf([modAuthors])
     val MOD_CONTRIBUTORS = listOf([modContributors])
 }

@@ -4,5 +4,11 @@ cc_library(
     name = "common",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
+    linkopts = select({
+        "@platforms//os:windows": [
+            "-lws2_32",
+        ],
+        "//conditions:default": [],
+    }),
     visibility = ["//touchcontroller:__subpackages__"],
 )

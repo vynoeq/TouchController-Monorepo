@@ -34,13 +34,12 @@ fun Texture(
             override fun MeasureScope.maxIntrinsicWidth(measurables: List<Measurable>, height: Int): Int = size.width
             override fun MeasureScope.maxIntrinsicHeight(measurables: List<Measurable>, width: Int): Int = size.height
         },
-        renderer = {
-            with(texture) {
-                draw(
-                    dstRect = IntRect(offset = IntOffset.ZERO, size = size),
-                    srcRect = srcRect,
-                )
-            }
+        renderer = { canvas, _ ->
+            texture.draw(
+                canvas = canvas,
+                dstRect = IntRect(offset = IntOffset.ZERO, size = size),
+                srcRect = srcRect,
+            )
         }
     )
 }

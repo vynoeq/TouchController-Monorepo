@@ -57,6 +57,7 @@ def generate_ninepatch_texture(actions, texture_generator, src):
         execution_requirements = {
             "supports-workers": "1",
             "supports-multiplex-workers": "1",
+            "supports-multiplex-sandboxing": "1",
             "requires-worker-protocol": "proto",
         },
         arguments = [args],
@@ -97,6 +98,7 @@ def generate_texture(actions, texture_generator, src, background = False):
         execution_requirements = {
             "supports-workers": "1",
             "supports-multiplex-workers": "1",
+            "supports-multiplex-sandboxing": "1",
             "requires-worker-protocol": "proto",
         },
         arguments = [args],

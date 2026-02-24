@@ -11,9 +11,9 @@ import top.fifthlight.data.Offset
 fun Modifier.pointerHoverIcon(pointerIcon: PointerIcon) = then(PointerHoverIcon(pointerIcon))
 
 private data class PointerHoverIcon(val icon: PointerIcon) : DrawModifierNode, Modifier.Node<PointerHoverIcon> {
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+    override fun renderAfter(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         if (cursorPos in wrapperNode) {
-            requestPointerIcon(icon)
+            canvas.requestPointerIcon(icon)
         }
     }
 }

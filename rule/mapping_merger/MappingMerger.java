@@ -136,10 +136,18 @@ public class MappingMerger extends Worker {
                         var operationName = arg.substring(0, leftIndex);
                         var operationArg = arg.substring(leftIndex + 1, rightIndex).trim();
                         switch (operationName) {
-                            case "changeSrc":
-                                context.addOperation(new ChangeSourceNamespaceOperation(operationArg));
-                                break;
-                            case "completeNamespace":
+                            case "changeSrc" -> {
+                                var entries = operationArg.split(",");
+                                context.addOperation(switch (entries.length) {
+                                    case 1 -> new ChangeSourceNamespaceOperation(entries[0].trim(), false);
+                                    case 2 -> new ChangeSourceNamespaceOperation(
+                                            entries[0].trim(),
+                                            Boolean.parseBoolean(entries[1].trim())
+                                    );
+                                    default -> throw new IllegalStateException("Bad argument count: " + entries.length);
+                                });
+                            }
+                            case "completeNamespace" -> {
                                 var entries = operationArg.split(",");
                                 var namespaceMappings = new HashMap<String, String>();
                                 for (var entry : entries) {
@@ -152,9 +160,8 @@ public class MappingMerger extends Worker {
                                     namespaceMappings.put(from, to);
                                 }
                                 context.addOperation(new CompleteNamespaceOperation(namespaceMappings));
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Bad operation: " + operationName);
+                            }
+                            default -> throw new IllegalArgumentException("Bad operation: " + operationName);
                         }
                     }
                 } else if (arg.startsWith("--")) {
@@ -193,12 +200,12 @@ public class MappingMerger extends Worker {
                             context.setMappingName(value);
                             break;
                         case "format":
-                            var format = Arrays.stream(MappingFormat.values())
+                            var format = Arrays.<MappingFormat>stream(MappingFormat.values())
                                     .filter(type -> type.getName().equals(value))
                                     .findAny()
-                                    .orElseThrow(() -> {
-                                        var availableMappingTypes = Arrays.stream(MappingFormat.values())
-                                                .map(MappingFormat::getName)
+                                    .<IllegalArgumentException>orElseThrow(() -> {
+                                        var availableMappingTypes = Arrays.<MappingFormat>stream(MappingFormat.values())
+                                                .<String>map(MappingFormat::getName)
                                                 .collect(Collectors.joining("\n"));
                                         return new IllegalArgumentException(
                                                 "Bad mapping type: " + value + "\n" + "Available mappings type:" + "\n" + availableMappingTypes

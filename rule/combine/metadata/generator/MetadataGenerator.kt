@@ -10,7 +10,7 @@ import java.nio.file.Path
 import javax.imageio.ImageIO
 import kotlin.io.path.writeText
 
-object MetadataGeneratorWorker: Worker() {
+object MetadataGeneratorWorker : Worker() {
     @JvmStatic
     fun main(vararg args: String) = run(*args)
 
@@ -41,7 +41,7 @@ object MetadataGeneratorWorker: Worker() {
                 val (compressedNinePatch, compressedImage) = compressNinePatch(ninePatch, croppedImage)
                 val compressedOutputFile = sandboxDir.resolve(Path.of(arguments[3]))
                 val metadata = NinePatchMetadata(
-                    size = imageSize,
+                    size = imageSize - 2,
                     ninePatch = compressedNinePatch,
                 )
                 outputFile.writeText(Json.encodeToString(metadata))

@@ -6,17 +6,18 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Immutable
 @Serializable(with = IdentifierSerializer::class)
 sealed class Identifier {
-    data class Namespaced(val namespace: String, val id: String): Identifier() {
+    data class Namespaced(val namespace: String, val id: String) : Identifier() {
         override fun toString() = "$namespace:$id"
     }
 
-    data class Vanilla(val id: String): Identifier() {
+    data class Vanilla(val id: String) : Identifier() {
         override fun toString() = "minecraft:$id"
     }
 
@@ -37,13 +38,15 @@ fun Identifier(string: String): Identifier {
     }
 }
 
-private class IdentifierSerializer : KSerializer<Identifier> {
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("top.fifthlight.combine.data.Identifier", PrimitiveKind.STRING)
+class IdentifierSerializer : KSerializer<Identifier> {
+    override val descriptor: SerialDescriptor = SerialDescriptor(
+        serialName = "top.fifthlight.combine.data.Identifier",
+        original = serialDescriptor<String>(),
+    )
 
     override fun serialize(
         encoder: Encoder,
-        value: Identifier
+        value: Identifier,
     ) {
         encoder.encodeString(value.toString())
     }
@@ -53,7 +56,13 @@ private class IdentifierSerializer : KSerializer<Identifier> {
         val split = string.split(":")
         return when (split.size) {
             1 -> Identifier.ofVanilla(string)
-            2 -> Identifier.of(split[0], split[1])
+
+            2 -> if (split[0] == "minecraft") {
+                Identifier.ofVanilla(split[1])
+            } else {
+                Identifier.of(split[0], split[1])
+            }
+
             else -> error("Bad identifier: $split")
         }
     }

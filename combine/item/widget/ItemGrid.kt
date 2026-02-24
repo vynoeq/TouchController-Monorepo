@@ -79,24 +79,21 @@ fun ItemGrid(
             }
             layout(size) {}
         },
-    ) { node ->
+    ) { canvas, node ->
         val (columns, rows) = calculateSize(stacks.size, node.width)
-        background?.let {
-            with(it) {
-                draw(
-                    dstRect = IntRect(
-                        offset = IntOffset.ZERO,
-                        size = IntSize(
-                            width = columns * gridSize,
-                            height = rows * gridSize,
-                        ),
-                    )
-                )
-            }
-        }
+        background?.draw(
+            canvas = canvas,
+            dstRect = IntRect(
+                offset = IntOffset.ZERO,
+                size = IntSize(
+                    width = columns * gridSize,
+                    height = rows * gridSize,
+                ),
+            )
+        )
 
         val rowRange = scrollPosition / gridSize until ((scrollPosition + scrollState.viewportHeight) ceilDiv gridSize)
-        item {
+        canvas.item { canvas ->
             for (y in rowRange) {
                 for (x in 0 until columns) {
                     val index = columns * y + x
@@ -104,14 +101,14 @@ fun ItemGrid(
                     val offset = IntOffset(x, y) * gridSize
                     hoverPosition?.let { position ->
                         if (position.x == x && position.y == y) {
-                            fillRect(
+                            canvas.fillRect(
                                 offset = offset + iconOffset,
                                 size = IntSize(iconSize),
                                 color = Colors.TRANSPARENT_WHITE,
                             )
                         }
                     }
-                    drawItemStack(
+                    canvas.drawItemStack(
                         offset = offset + iconOffset,
                         stack = stack,
                     )

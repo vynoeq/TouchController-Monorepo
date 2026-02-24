@@ -1,9 +1,10 @@
-package top.fifthlight.touchcontroller.common.gal
+package top.fifthlight.touchcontroller.common.gal.player
 
 import top.fifthlight.combine.item.data.Item
 import top.fifthlight.combine.item.data.ItemStack
 import top.fifthlight.mergetools.api.ExpectFactory
 import top.fifthlight.touchcontroller.common.config.item.ItemList
+import top.fifthlight.touchcontroller.common.gal.entity.EntityType
 
 interface PlayerHandle {
     fun matchesItemOnHand(item: Item): Boolean
@@ -20,7 +21,7 @@ interface PlayerHandle {
     val isTouchingWater: Boolean
     var isSprinting: Boolean
     val isSneaking: Boolean
-    val ridingEntityType: RidingEntityType?
+    val ridingEntityType: EntityType?
     val canFly: Boolean
 
     @ExpectFactory

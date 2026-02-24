@@ -93,9 +93,9 @@ private data class ClickableModifierNode(
         return true
     }
 
-    override fun Canvas.renderAfter(wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
+    override fun renderAfter(canvas: Canvas, wrapperNode: Placeable, node: LayoutNode, cursorPos: Offset) {
         if (cursorPos in node) {
-            requestPointerIcon(pointerIcon)
+            canvas.requestPointerIcon(pointerIcon)
         }
     }
 

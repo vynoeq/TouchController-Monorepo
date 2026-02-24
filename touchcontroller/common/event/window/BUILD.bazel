@@ -4,9 +4,9 @@ kt_merge_library(
     name = "window",
     srcs = glob(["*.kt"]),
     merge_deps = [
+        "//touchcontroller/common/gal/window",
         "//touchcontroller/common/platform",
         "//touchcontroller/common/platform/provider",
-        "//touchcontroller/common/gal/window",
         "//touchcontroller/proxy/message",
     ],
     visibility = ["//touchcontroller:__subpackages__"],

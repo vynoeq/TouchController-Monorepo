@@ -1,0 +1,13 @@
+load("//rule/antlr:antlr.bzl", "antlr_lib")
+load("//rule/antlr:java.bzl", "java_antlr_library")
+
+antlr_lib(
+    name = "grammar_lib",
+    src = "proguard.g4",
+)
+
+java_antlr_library(
+    name = "grammar",
+    src = ":grammar_lib",
+    package = "top.fifthlight.fastmerger.proguard",
+)

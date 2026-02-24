@@ -13,10 +13,8 @@ import top.fifthlight.combine.data.*
 import top.fifthlight.combine.item.data.Item
 import top.fifthlight.touchcontroller.common.gal.item.ItemDataComponentType
 import top.fifthlight.touchcontroller.common.gal.item.ItemDataComponentTypeFactory
-import top.fifthlight.touchcontroller.common.gal.item.ItemDataComponentTypeProvider
-import top.fifthlight.touchcontroller.common.gal.item.ItemDataComponentTypeProviderFactory
 import top.fifthlight.touchcontroller.common.gal.item.ItemSubclass
-import top.fifthlight.touchcontroller.common.gal.item.ItemSubclassProviderFactory
+import top.fifthlight.touchcontroller.common.gal.item.ItemSubclassProvider
 import top.fifthlight.touchcontroller.common.serializer.ItemSerializer
 
 @Immutable
@@ -79,7 +77,7 @@ data class ItemList private constructor(
 @Serializable(with = ItemsListSerializer::class)
 value class ItemsList(val items: PersistentList<Item> = persistentListOf())
 
-private class ItemsListSerializer : KSerializer<ItemsList> {
+class ItemsListSerializer : KSerializer<ItemsList> {
     companion object {
         private val itemSerializer = ItemSerializer()
     }
@@ -102,7 +100,7 @@ private class ItemsListSerializer : KSerializer<ItemsList> {
 @Serializable(with = ItemDataComponentTypeSerializer::class)
 value class ComponentTypesList(val items: PersistentList<ItemDataComponentType> = persistentListOf())
 
-private class ItemDataComponentTypeSerializer : KSerializer<ComponentTypesList> {
+class ItemDataComponentTypeSerializer : KSerializer<ComponentTypesList> {
     @OptIn(SealedSerializationApi::class)
     private class PersistentListDescriptor : SerialDescriptor by serialDescriptor<PersistentList<Item>>()
 
@@ -126,9 +124,9 @@ private class ItemDataComponentTypeSerializer : KSerializer<ComponentTypesList> 
 @Serializable(with = ItemSubclassSetSerializer::class)
 value class ItemSubclassSet(val items: PersistentSet<ItemSubclass> = persistentSetOf())
 
-private class ItemSubclassSetSerializer : KSerializer<ItemSubclassSet> {
+class ItemSubclassSetSerializer : KSerializer<ItemSubclassSet> {
     companion object {
-        private val allSubclasses = ItemSubclassProviderFactory.of().itemSubclasses
+        private val allSubclasses = ItemSubclassProvider.itemSubclasses
     }
 
     @OptIn(SealedSerializationApi::class)

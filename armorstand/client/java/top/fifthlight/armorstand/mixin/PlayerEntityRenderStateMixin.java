@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import top.fifthlight.armorstand.extension.internal.PlayerRenderStateExtInternal;
-import top.fifthlight.blazerod.api.animation.AnimationItemPendingValues;
+import top.fifthlight.blazerod.render.api.animation.AnimationItemPendingValues;
 
 import java.util.UUID;
 

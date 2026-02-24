@@ -1,0 +1,18 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "all",
+    srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/common/ui/layer/tab",
+        "//touchcontroller/common/ui/layer/tab/builtin",
+        "//touchcontroller/common/ui/layer/tab/custom",
+        "//touchcontroller/common/ui/layer/tab/holdingitem",
+        "//touchcontroller/common/ui/layer/tab/ridingentity",
+        "//touchcontroller/common/ui/layer/tab/selectedentity",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_collections_immutable_jvm",
+    ],
+)

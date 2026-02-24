@@ -1,0 +1,7 @@
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -21,3 +21,4 @@
+     ],
++    lock_file = "@@//third_party/bazel_worker_java:bazel_worker_maven_install.json",
+ )
+ maven.artifact(

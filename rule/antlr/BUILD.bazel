@@ -1,0 +1,15 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+
+java_binary(
+    name = "antlr4",
+    main_class = "org.antlr.v4.Tool",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@maven//:org_antlr_antlr4"],
+)
+
+java_binary(
+    name = "antlr4-parse",
+    main_class = "org.antlr.v4.gui.Interpreter",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@maven//:org_antlr_antlr4"],
+)

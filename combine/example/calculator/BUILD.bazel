@@ -7,9 +7,13 @@ kt_jvm_library(
     srcs = glob(["*.kt"]),
     resource_strip_prefix = "combine/example/calculator/resources",
     resources = glob(["resources/**"]),
+    runtime_deps = [
+        "//combine/backend/minecraft/1.21.8",
+        "//combine/theme/blackstone:vanilla_lib_unmerged",
+        "//combine/theme/oreui:vanilla_lib_unmerged",
+    ],
     deps = [
         "//:compose",
-        "//combine/backend/minecraft/1.21.8",
         "//combine/core/data",
         "//combine/core/layout",
         "//combine/core/modifier",
@@ -23,9 +27,7 @@ kt_jvm_library(
         "//combine/example/versions/1.21.8:remapped_deps",
         "//combine/theme/base",
         "//combine/theme/blackstone",
-        "//combine/theme/blackstone:vanilla_lib_unmerged",
         "//combine/theme/oreui",
-        "//combine/theme/oreui:vanilla_lib_unmerged",
         "//combine/theme/vanilla",
         "//combine/widget",
         "//game/1.21.8:game_client_libraries",
@@ -49,7 +51,7 @@ java_binary(
     srcs = [],
     data = [
         "//game/1.21.8:game_client_assets",
-        "@minecraft_assets//:assets",
+        "//game/1.21.8:game_client_assets_version",
     ],
     env = {
         "LANG": "en_US.UTF8",
@@ -58,7 +60,7 @@ java_binary(
         "-Dfabric.development=true",
         "-Ddev.launch.version=1.21.8",
         "-Ddev.launch.type=client",
-        "-Ddev.launch.assetsPath=$(rlocationpath @minecraft_assets//:assets)",
+        "-Ddev.launch.assetsVersion=$(rlocationpath //game/1.21.8:game_client_assets_version)",
         "-Ddev.launch.mainClass=net.fabricmc.loader.impl.launch.knot.KnotClient",
         "-Xmx4G",
     ],

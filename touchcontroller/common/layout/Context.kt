@@ -29,7 +29,7 @@ data class Context(
     val status: ContextStatus = ContextStatus(),
     val keyBindingHandler: KeyBindingHandler = KeyBindingHandler.Empty,
     val timer: ContextTimer = ContextTimer(),
-    val config: ContextConfig,
+    val config: ContextConfig = ContextConfig.Empty,
     val presetControlInfo: PresetControlInfo = PresetControlInfo(),
 ) {
     inline fun <reified T> transformDrawQueue(

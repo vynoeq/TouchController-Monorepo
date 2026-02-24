@@ -1,0 +1,24 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "provider",
+    srcs = ["CustomTabProvider.kt"],
+    expect = True,
+    merge_deps = [
+        "//touchcontroller/common/ui/config/tab",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+)
+
+kt_merge_library(
+    name = "provider_impl",
+    srcs = ["CustomTabProviderImpl.kt"],
+    actual = True,
+    merge_deps = [
+        ":provider",
+        "//touchcontroller/common/ui/config/tab",
+        "//touchcontroller/common/ui/config/tab/layout/custom",
+        "//touchcontroller/common/ui/config/tab/layout/preset",
+    ],
+    visibility = ["//touchcontroller:__subpackages__"],
+)

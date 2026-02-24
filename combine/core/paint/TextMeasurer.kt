@@ -14,4 +14,6 @@ interface TextMeasurer {
     interface Factory {
         fun of(): TextMeasurer
     }
+
+    companion object: TextMeasurer by TextMeasurerFactory.of()
 }

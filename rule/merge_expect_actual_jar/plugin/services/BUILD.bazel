@@ -1,0 +1,13 @@
+load("@rules_java//java:defs.bzl", "java_library")
+
+java_library(
+    name = "services",
+    srcs = glob(["*.java"]),
+    resource_strip_prefix = "rule/merge_expect_actual_jar/plugin/services/resources",
+    resources = glob(["resources/**"]),
+    visibility = ["//rule/merge_expect_actual_jar:__pkg__"],
+    deps = [
+        "//rule/merge_expect_actual_jar/api",
+        "@maven//:org_jetbrains_annotations",
+    ],
+)

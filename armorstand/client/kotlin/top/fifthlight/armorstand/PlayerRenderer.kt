@@ -12,9 +12,10 @@ import org.joml.Matrix4f
 import top.fifthlight.armorstand.config.ConfigHolder
 import top.fifthlight.armorstand.state.ModelInstanceManager
 import top.fifthlight.armorstand.util.RendererManager
-import top.fifthlight.blazerod.api.render.ScheduledRenderer
-import top.fifthlight.blazerod.api.resource.CameraTransform
 import top.fifthlight.blazerod.model.Camera
+import top.fifthlight.blazerod.render.api.resource.CameraTransform
+import top.fifthlight.blazerod.render.version_1_21_8.api.render.ScheduledRenderer
+import top.fifthlight.blazerod.render.version_1_21_8.api.resource.debugRender
 import java.lang.ref.WeakReference
 import java.util.*
 

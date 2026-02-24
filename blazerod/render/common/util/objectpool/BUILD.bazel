@@ -1,0 +1,8 @@
+load("//rule:merge_library.bzl", "kt_merge_library")
+
+kt_merge_library(
+    name = "objectpool",
+    srcs = ["ObjectPool.kt"],
+    merge_deps = ["//blazerod/render/common/debug"],
+    visibility = ["//blazerod/render:__subpackages__"],
+)

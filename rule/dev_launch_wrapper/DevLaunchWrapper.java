@@ -23,6 +23,7 @@ public class DevLaunchWrapper {
     private static final String version = System.getProperty("dev.launch.version", null);
     private static final String type = System.getProperty("dev.launch.type", "client");
     private static final String assetsPath = System.getProperty("dev.launch.assetsPath", null);
+    private static final String assetsVersion = System.getProperty("dev.launch.assetsVersion", null);
     private static final String accessToken = System.getProperty("dev.launch.accessToken", "");
     private static final String mainClass = System.getProperty("dev.launch.mainClass", null);
     private static final String glfwLibName = System.getenv("GLFW_LIBNAME");
@@ -168,6 +169,12 @@ public class DevLaunchWrapper {
             argsList.add(version);
         }
 
+        String assetsPath = DevLaunchWrapper.assetsPath;
+        if (assetsVersion != null) {
+            Path realAssetsVersion = Paths.get(runfiles.rlocation(Paths.get(assetsVersion).normalize().toString()));
+            Path realAssetsPath = realAssetsVersion.resolve(Paths.get("..", "..")).toAbsolutePath();
+            assetsPath = realAssetsPath.toString();
+        }
         if (assetsPath != null) {
             String realAssetsPath = runfiles.rlocation(Paths.get(assetsPath).normalize().toString());
             Path realAssets = Paths.get(realAssetsPath);
