@@ -11,10 +11,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.client.event.lifecycle.ClientStoppingEvent
 import net.neoforged.neoforge.common.NeoForge
 import org.slf4j.LoggerFactory
+import top.fifthlight.blazerod.physics.PhysicsInterface
 import top.fifthlight.blazerod.render.common.BlazeRod
 import top.fifthlight.blazerod.render.api.event.RenderEvents
 import top.fifthlight.blazerod.render.common.runtime.uniform.UniformBuffer
-import top.fifthlight.blazerod.render.common.physics.PhysicsInterface
 import top.fifthlight.blazerod.render.common.util.objectpool.cleanupObjectPools
 import top.fifthlight.blazerod.render.common.debug.*
 import top.fifthlight.blazerod.render.version_1_21_8.util.dispatchers.BlockableEventLoopDispatcher
