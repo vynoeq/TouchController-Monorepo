@@ -10,8 +10,8 @@ import net.minecraft.world.item.PlaceOnWaterBlockItem
 import net.minecraft.world.item.ProjectileItem
 import net.minecraft.world.item.ProjectileWeaponItem
 import net.minecraft.world.item.SpawnEggItem
-import top.fifthlight.combine.backend.minecraft_1_21_11.TextImpl
-import top.fifthlight.combine.backend.minecraft_1_21_11.toVanilla
+import top.fifthlight.combine.backend.minecraft.text.modern.TextImpl
+import top.fifthlight.combine.backend.minecraft.item.identifier.toVanilla
 import top.fifthlight.combine.data.Text
 import top.fifthlight.combine.item.data.Item
 import top.fifthlight.mergetools.api.ActualConstructor
@@ -26,7 +26,7 @@ class ItemSubclassImpl<Clazz>(
 ) : ItemSubclass {
     override val id: String = clazz.simpleName
 
-    override fun contains(item: Item) = clazz.isInstance(item.toVanilla())
+    override fun contains(item: Item) = clazz.isInstance(item)
 
     override val items: PersistentList<Item> by lazy {
         ItemProviderImpl.allItems.filter { it in this }.toPersistentList()

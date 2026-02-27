@@ -1,8 +1,8 @@
 package top.fifthlight.touchcontroller.version_1_21_11.widget
 
 import androidx.compose.runtime.Composable
-import top.fifthlight.combine.backend.minecraft_1_21_11.CanvasImpl
-import top.fifthlight.combine.backend.minecraft_1_21_11.toMinecraft
+import top.fifthlight.combine.backend.minecraft.render.post1211.CanvasImpl
+import top.fifthlight.combine.backend.minecraft.identifier.identifier.toMinecraft
 import top.fifthlight.combine.data.Identifier
 import top.fifthlight.combine.layout.measure.MeasurePolicy
 import top.fifthlight.combine.layout.measure.fixed

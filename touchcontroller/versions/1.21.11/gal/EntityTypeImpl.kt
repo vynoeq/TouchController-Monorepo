@@ -6,8 +6,8 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.tags.EntityTypeTagsProvider
 import net.minecraft.tags.EntityTypeTags
 import net.minecraft.world.entity.EntityType
-import top.fifthlight.combine.backend.minecraft_1_21_11.TextImpl
-import top.fifthlight.combine.backend.minecraft_1_21_11.toCombine
+import top.fifthlight.combine.backend.minecraft.text.modern.TextImpl
+import top.fifthlight.combine.backend.minecraft.identifier.identifier.toCombine
 import top.fifthlight.combine.data.Text
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl

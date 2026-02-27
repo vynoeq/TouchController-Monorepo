@@ -32,10 +32,7 @@ interface DisposableLayer {
     fun dispose()
 }
 
-class CombineOwner(
-    dispatcher: CoroutineDispatcher,
-    private val textMeasurer: TextMeasurer
-) : CoroutineScope, PointerEventReceiver, TextInputReceiver, KeyEventReceiver {
+class CombineOwner(dispatcher: CoroutineDispatcher) : CoroutineScope, PointerEventReceiver, TextInputReceiver, KeyEventReceiver {
     private val clock = BroadcastFrameClock()
     private val composeScope = CoroutineScope(dispatcher) + clock
     override val coroutineContext: CoroutineContext = composeScope.coroutineContext

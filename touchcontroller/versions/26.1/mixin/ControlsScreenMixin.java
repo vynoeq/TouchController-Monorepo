@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import top.fifthlight.combine.backend.minecraft_26_1.TextImpl;
+import top.fifthlight.combine.backend.minecraft.text.modern.TextImpl;
 import top.fifthlight.touchcontroller.common.ui.config.screen.ConfigScreenKt;
 
 @Mixin(ControlsScreen.class)

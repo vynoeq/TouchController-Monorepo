@@ -1,0 +1,33 @@
+load("//combine/backend/minecraft:versions.bzl", "versions")
+load("//rule:version_group.bzl", "versioned_kt_merge_library")
+
+versioned_kt_merge_library(
+    name = "pre1211",
+    srcs = glob([
+        "**/*.java",
+        "**/*.kt",
+    ]),
+    actual = True,
+    enabled_versions = [
+        "1.21.8",
+    ],
+    merge_deps = [
+        "//combine/core/data",
+        "//combine/core/input/pointer",
+        "//combine/core/paint",
+        "//combine/data",
+        "//combine/item/paint",
+        "//combine/item/data",
+    ],
+    resources = glob(["resource/**"]),
+    resource_strip_prefix = "combine/backend/minecraft/render/pre1211/resource",
+    version_deps = {
+        "1.21.8": ["@maven_fabric_1_21_8//:net_fabricmc_sponge_mixin"],
+    },
+    versioned_merge_deps = [
+        "//combine/backend/minecraft/text/modern",
+        "//combine/backend/minecraft/item/resourcelocation",
+    ],
+    versions = versions,
+    visibility = ["//visibility:public"],
+)

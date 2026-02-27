@@ -6,7 +6,7 @@ apply_access_widener(
     srcs = ["combine.classtweaker"],
     input = "//game/26.1:game_client",
     neverlink = True,
-    visibility = ["//combine/backend/minecraft/26.1:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 convert_access_widener(

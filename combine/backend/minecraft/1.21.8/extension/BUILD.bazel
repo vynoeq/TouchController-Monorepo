@@ -1,8 +1,0 @@
-load("//rule:merge_library.bzl", "java_merge_library")
-
-java_merge_library(
-    name = "extension",
-    srcs = glob(["*.java"]),
-    visibility = ["//combine/backend/minecraft/1.21.8:__subpackages__"],
-    deps = ["//combine/backend/minecraft/1.21.8/game:remapped_client_access_widened_named"],
-)

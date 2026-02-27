@@ -1,0 +1,21 @@
+load("//combine/backend/minecraft:versions.bzl", "versions")
+load("//rule:version_group.bzl", "versioned_kt_merge_library")
+
+versioned_kt_merge_library(
+    name = "blockableeventloop",
+    srcs = ["GameDispatcher.kt"],
+    actual = True,
+    enabled_versions = [
+        "1.21.8",
+        "1.21.11",
+        "26.1",
+    ],
+    merge_deps = [
+        "//combine/core/util/dispatcher",
+    ],
+    versions = versions,
+    visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
+    ],
+)

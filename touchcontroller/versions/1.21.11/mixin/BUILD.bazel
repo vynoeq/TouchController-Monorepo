@@ -16,9 +16,11 @@ java_merge_library(
     resources = glob(["resource/**"]),
     visibility = ["//touchcontroller/versions/1.21.11:__subpackages__"],
     deps = [
-        "//combine/backend/minecraft/1.21.11",
-        "//game/1.21.11:game_client_named",
+        "//combine/backend/minecraft/item/identifier:identifier_1.21.11",
+        "//combine/backend/minecraft/render/post1211:post1211_1.21.11",
+        "//combine/backend/minecraft/text/modern:modern_1.21.11",
         "//game/1.21.11:game_client_libraries",
+        "//game/1.21.11:game_client_named",
         "@maven_fabric_1_21_11//:net_fabricmc_sponge_mixin",
     ],
 )

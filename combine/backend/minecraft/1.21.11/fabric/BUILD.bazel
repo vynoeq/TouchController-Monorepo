@@ -32,7 +32,6 @@ merge_library_jar(
     deps = [
         "//combine",
         "//combine/backend/minecraft/1.21.11",
-        "//combine/backend/minecraft/1.21.11/mixin",
     ],
 )
 

@@ -8,8 +8,8 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.CreativeModeTabs
-import top.fifthlight.combine.backend.minecraft_26_1.TextImpl
-import top.fifthlight.combine.backend.minecraft_26_1.toCombine
+import top.fifthlight.combine.backend.minecraft.text.modern.TextImpl
+import top.fifthlight.combine.backend.minecraft.item.identifier.toCombine
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl
 import top.fifthlight.touchcontroller.common.gal.creativetab.CreativeTabsProvider

@@ -6,7 +6,7 @@ apply_access_widener(
     srcs = ["combine.accesswidener"],
     input = "//game/1.21.11:game_client_named",
     neverlink = True,
-    visibility = ["//combine/backend/minecraft/1.21.11:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 convert_access_widener(

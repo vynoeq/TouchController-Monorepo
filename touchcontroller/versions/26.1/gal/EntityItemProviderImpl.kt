@@ -2,7 +2,7 @@ package top.fifthlight.touchcontroller.version_26_1.gal
 
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Items
-import top.fifthlight.combine.backend.minecraft_26_1.toCombine
+import top.fifthlight.combine.backend.minecraft.item.identifier.toCombine
 import net.minecraft.world.item.SpawnEggItem
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl

@@ -12,8 +12,8 @@ import net.minecraft.client.Minecraft
 import org.slf4j.LoggerFactory
 import top.fifthlight.combine.data.Identifier
 import net.minecraft.client.KeyMapping
-import top.fifthlight.combine.backend.minecraft_26_1.CanvasImpl
-import top.fifthlight.combine.backend.minecraft_26_1.toMinecraft
+import top.fifthlight.combine.backend.minecraft.render.post1211.CanvasImpl
+import top.fifthlight.combine.backend.minecraft.identifier.identifier.toMinecraft
 import top.fifthlight.touchcontroller.buildinfo.BuildInfo
 import top.fifthlight.touchcontroller.common.config.holder.GlobalConfigHolder
 import top.fifthlight.touchcontroller.common.event.block.BlockBreakEvents

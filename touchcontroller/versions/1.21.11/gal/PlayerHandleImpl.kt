@@ -6,8 +6,8 @@ import net.minecraft.client.player.LocalPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.player.Inventory
-import top.fifthlight.combine.backend.minecraft_1_21_11.ItemStackImpl
-import top.fifthlight.combine.backend.minecraft_1_21_11.toCombine
+import top.fifthlight.combine.backend.minecraft.item.identifier.ItemStackImpl
+import top.fifthlight.combine.backend.minecraft.item.identifier.toCombine
 import top.fifthlight.combine.item.data.Item
 import top.fifthlight.combine.item.data.ItemStack
 import top.fifthlight.mergetools.api.ActualConstructor

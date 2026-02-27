@@ -5,7 +5,7 @@ import kotlinx.collections.immutable.toPersistentList
 import net.minecraft.client.Minecraft
 import net.minecraft.util.StringUtil
 import org.apache.commons.lang3.StringUtils
-import top.fifthlight.combine.backend.minecraft_1_21_11.TextImpl
+import top.fifthlight.combine.backend.minecraft.text.modern.TextImpl
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl
 import top.fifthlight.touchcontroller.common.gal.chat.ChatMessage

@@ -1,0 +1,36 @@
+load("//combine/backend/minecraft:versions.bzl", "versions")
+load("//rule:version_group.bzl", "versioned_kt_merge_library")
+
+versioned_kt_merge_library(
+    name = "post1211",
+    srcs = glob(["*.kt"]),
+    actual = True,
+    enabled_versions = [
+        "1.21.11",
+        "26.1",
+    ],
+    merge_deps = [
+        "//combine/core/data",
+        "//combine/core/input/key",
+        "//combine/core/input/pointer",
+        "//combine/core/input/text",
+        "//combine/core/node",
+        "//combine/core/screen",
+        "//combine/core/sound",
+        "//combine/data",
+    ],
+    versioned_merge_deps = [
+        "//combine/backend/minecraft/dispatcher/blockableeventloop",
+        "//combine/backend/minecraft/clipboard/keyboardhandler",
+        "//combine/backend/minecraft/render/post1211",
+        "//combine/backend/minecraft/sound/modern",
+        "//combine/backend/minecraft/keycode/glfw",
+        "//combine/backend/minecraft/identifier/identifier",
+        "//combine/backend/minecraft/text/modern",
+    ],
+    versions = versions,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:compose",
+    ],
+)

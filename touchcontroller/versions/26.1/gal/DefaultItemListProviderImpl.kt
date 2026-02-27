@@ -4,7 +4,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Items
-import top.fifthlight.combine.backend.minecraft_26_1.ItemImpl
+import top.fifthlight.combine.backend.minecraft.item.identifier.ItemImpl
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl
 import top.fifthlight.touchcontroller.common.config.item.ItemList

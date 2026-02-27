@@ -3,7 +3,7 @@ package top.fifthlight.touchcontroller.version_26_1.gal
 import net.minecraft.client.Minecraft
 import net.minecraft.client.Screenshot
 import net.minecraft.client.gui.components.ChatComponent
-import top.fifthlight.combine.backend.minecraft_26_1.toMinecraft
+import top.fifthlight.combine.backend.minecraft.text.modern.toMinecraft
 import top.fifthlight.combine.data.Text
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl

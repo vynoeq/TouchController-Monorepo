@@ -1,11 +1,21 @@
-load("//rule:merge_library.bzl", "kt_merge_library")
+load("//rule:merge_library.bzl", "merge_library_group")
 
-kt_merge_library(
+merge_library_group(
     name = "1.21.8",
-    srcs = glob(["*.kt"]),
-    actual = True,
-    merge_deps = [
-        "//combine/backend/minecraft/1.21.8/extension",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//combine/backend/minecraft/clipboard/keyboardhandler:keyboardhandler_1.21.8",
+        "//combine/backend/minecraft/dispatcher/blockableeventloop:blockableeventloop_1.21.8",
+        "//combine/backend/minecraft/drawable/resourcelocation:resourcelocation_1.21.8",
+        "//combine/backend/minecraft/identifier/resourcelocation:resourcelocation_1.21.8",
+        "//combine/backend/minecraft/item/resourcelocation:resourcelocation_1.21.8",
+        "//combine/backend/minecraft/keycode/glfw:glfw_1.21.8",
+        "//combine/backend/minecraft/render/pre1211:pre1211_1.21.8",
+        "//combine/backend/minecraft/screen/pre1211:pre1211_1.21.8",
+        "//combine/backend/minecraft/sound/modern:modern_1.21.8",
+        "//combine/backend/minecraft/text/modern:modern_1.21.8",
+        "//combine/backend/minecraft/textbuilder/modern:modern_1.21.8",
+        "//combine/backend/minecraft/textmeasurer/plain:plain_1.21.8",
         "//combine/core/data",
         "//combine/core/input/key",
         "//combine/core/input/pointer",
@@ -14,22 +24,10 @@ kt_merge_library(
         "//combine/core/paint",
         "//combine/core/screen",
         "//combine/core/sound",
-        "//combine/core/util/dispatcher",
         "//combine/data",
         "//combine/item/data",
         "//combine/item/paint",
         "//combine/style",
         "//combine/theme/vanilla",
-    ],
-    merge_only_deps = [
-        "//combine",
-        "//combine/item",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//:compose",
-        "//combine/backend/minecraft/1.21.8/game:remapped_client_access_widened_named",
-        "//game/1.21.8:game_client_libraries",
-        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
     ],
 )

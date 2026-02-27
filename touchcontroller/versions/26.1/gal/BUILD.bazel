@@ -26,8 +26,10 @@ kt_merge_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//combine/backend/minecraft/26.1",
-        "//combine/backend/minecraft/26.1/extension",
+        "//combine/backend/minecraft/identifier/identifier:identifier_26.1",
+        "//combine/backend/minecraft/item/identifier:identifier_26.1",
+        "//combine/backend/minecraft/render/post1211:post1211_26.1",
+        "//combine/backend/minecraft/text/modern:modern_26.1",
         "//combine/core/data",
         "//combine/core/paint",
         "//combine/data",

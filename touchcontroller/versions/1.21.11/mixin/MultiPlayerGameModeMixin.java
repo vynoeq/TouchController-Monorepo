@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.fifthlight.combine.backend.minecraft_1_21_11.ItemImpl;
+import top.fifthlight.combine.backend.minecraft.item.identifier.ItemImpl;
 import top.fifthlight.touchcontroller.common.config.holder.GlobalConfigHolder;
 import top.fifthlight.touchcontroller.common.util.crosshair.CrosshairTargetHelper;
 import top.fifthlight.touchcontroller.version_1_21_11.extensions.GameModeWithBreakingProgress;

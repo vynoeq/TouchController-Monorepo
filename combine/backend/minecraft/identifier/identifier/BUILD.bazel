@@ -1,0 +1,16 @@
+load("//combine/backend/minecraft:versions.bzl", "versions")
+load("//rule:version_group.bzl", "versioned_kt_merge_library")
+
+versioned_kt_merge_library(
+    name = "identifier",
+    srcs = ["Identifier.kt"],
+    enabled_versions = [
+        "1.21.11",
+        "26.1",
+    ],
+    merge_deps = [
+        "//combine/core/data",
+    ],
+    versions = versions,
+    visibility = ["//visibility:public"],
+)
