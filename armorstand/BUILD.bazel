@@ -117,7 +117,10 @@ java_binary(
         "-Darmorstand.debug.bone=false",
         "-Darmorstand.debug.gui=false",
         "-Xmx4G",
-    ],
+    ] + select({
+        "@platforms//os:macos": ["-XstartOnFirstThread"],
+        "//conditions:default": [],
+    }),
     main_class = "top.fifthlight.fabazel.devlaunchwrapper.DevLaunchWrapper",
     runtime_deps = [
         "//game/1.21.8:game_client_named",
