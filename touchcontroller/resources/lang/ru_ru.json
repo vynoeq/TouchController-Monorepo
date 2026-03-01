@@ -12,6 +12,12 @@
   "touchcontroller.warning.development_version.message": "Вы используете тестовую версию TouchController, возможно вы столкнётесь с ошибками! Найденные ошибки отправляйте нам на GitHub.",
   "touchcontroller.warning.development_version.ok": "Ок",
 
+
+
+
+
+
+
   "touchcontroller.back": "< %s",
 
   "touchcontroller.screen.chat.title": "Чат и команды",

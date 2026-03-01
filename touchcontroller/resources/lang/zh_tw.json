@@ -12,6 +12,12 @@
   "touchcontroller.warning.development_version.message": "你正在使用 TouchController 的開發版！ \n可能遇到嚴重的 bug 或未完善的功能，如遇問題可前往 GitHub 報告。",
   "touchcontroller.warning.development_version.ok": "我知道了",
 
+
+
+
+
+
+
   "touchcontroller.back": "< %s",
 
   "touchcontroller.screen.chat.title": "聊天與命令",

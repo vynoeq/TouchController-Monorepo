@@ -3,9 +3,12 @@ load("//rule:merge_library.bzl", "kt_merge_library")
 kt_merge_library(
     name = "platform",
     srcs = glob(["*.kt"]),
+    merge_deps = [
+        "//touchcontroller/proxy/message",
+    ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
-        "//touchcontroller/proxy/message",
+        "//combine/core/data",
         "@maven//:org_slf4j_slf4j_api",
     ],
 )

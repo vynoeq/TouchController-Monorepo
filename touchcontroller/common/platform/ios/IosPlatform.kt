@@ -1,6 +1,8 @@
 package top.fifthlight.touchcontroller.common.platform.ios
 
 import org.slf4j.LoggerFactory
+import top.fifthlight.combine.data.Text
+import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.common.platform.LargeMessageWrappedPlatform
 import top.fifthlight.touchcontroller.proxy.message.MessageDecodeException
 import top.fifthlight.touchcontroller.proxy.message.ProxyMessage
@@ -8,6 +10,10 @@ import java.nio.ByteBuffer
 
 class IosPlatform(socketPath: String) : LargeMessageWrappedPlatform() {
     private val logger = LoggerFactory.getLogger(IosPlatform::class.java)
+
+    override val name: Text
+        get() = Text.translatable(Texts.PLATFORM_IOS)
+
     private val handle = Transport.new(socketPath)
     private val readBuffer = ByteArray(128)
 

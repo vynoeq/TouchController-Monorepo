@@ -12,6 +12,12 @@
   "touchcontroller.warning.development_version.message": "你正在使用 TouchController 的开发版！\n可能遇到严重的 bug 或未完善的功能，如遇问题可前往 GitHub 汇报。",
   "touchcontroller.warning.development_version.ok": "我知道了",
 
+  "touchcontroller.platform.proxy": "旧式 UDP",
+  "touchcontroller.platform.android": "Android",
+  "touchcontroller.platform.win32": "Win32",
+  "touchcontroller.platform.wayland": "Wayland",
+  "touchcontroller.platform.ios": "iOS",
+
   "touchcontroller.back": "< %s",
 
   "touchcontroller.screen.chat.title": "聊天与命令",

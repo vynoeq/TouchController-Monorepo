@@ -1,6 +1,8 @@
 package top.fifthlight.touchcontroller.common.platform.win32
 
 import org.slf4j.LoggerFactory
+import top.fifthlight.combine.data.Text
+import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.common.gal.window.NativeWindow
 import top.fifthlight.touchcontroller.common.platform.Platform
 import top.fifthlight.touchcontroller.proxy.message.MessageDecodeException
@@ -13,6 +15,9 @@ class Win32Platform(window: NativeWindow.Win32) : Platform {
     init {
         Interface.init(window.handle)
     }
+
+    override val name: Text
+        get() = Text.translatable(Texts.PLATFORM_WIN32)
 
     private val readBuffer = ByteArray(65536)
     override fun pollEvent(): ProxyMessage? {

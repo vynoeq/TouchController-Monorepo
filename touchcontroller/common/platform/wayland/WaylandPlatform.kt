@@ -1,6 +1,8 @@
 package top.fifthlight.touchcontroller.common.platform.wayland
 
 import org.slf4j.LoggerFactory
+import top.fifthlight.combine.data.Text
+import top.fifthlight.touchcontroller.assets.Texts
 import top.fifthlight.touchcontroller.common.gal.window.NativeWindow
 import top.fifthlight.touchcontroller.common.platform.Platform
 import top.fifthlight.touchcontroller.proxy.message.MessageDecodeException
@@ -13,6 +15,9 @@ class WaylandPlatform(window: NativeWindow.Wayland) : Platform {
     init {
         Interface.init(window.displayPointer, window.surfacePointer)
     }
+
+    override val name: Text
+        get() = Text.translatable(Texts.PLATFORM_WAYLAND)
 
     override fun resize(width: Int, height: Int) = Interface.resize(width, height)
 
