@@ -15,6 +15,7 @@ kt_jvm_library(
 
 java_binary(
     name = "generator",
+    jvm_flags = ["-Djava.awt.headless=true"],
     main_class = "top.fifthlight.combine.resources.generator.MetadataGeneratorWorker",
     visibility = ["//visibility:public"],
     runtime_deps = [":generator_lib"],

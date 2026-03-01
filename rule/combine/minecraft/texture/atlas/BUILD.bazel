@@ -16,6 +16,7 @@ kt_jvm_library(
 
 java_binary(
     name = "atlas",
+    jvm_flags = ["-Djava.awt.headless=true"],
     main_class = "top.fifthlight.combine.resources.altas.TextureAtlasGeneratorKt",
     visibility = ["//visibility:public"],
     runtime_deps = [
