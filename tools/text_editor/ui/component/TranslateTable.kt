@@ -105,12 +105,6 @@ fun TranslateTable(
             ) {
                 itemsIndexed(
                     items = state.entries,
-                    key = { index, item ->
-                        when (item) {
-                            TranslateEntry.Spacing -> index
-                            is TranslateEntry.Text -> item
-                        }
-                    },
                 ) { index, item ->
                     if (index != 0) {
                         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
