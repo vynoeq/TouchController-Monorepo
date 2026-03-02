@@ -48,6 +48,10 @@
   "touchcontroller.screen.config.reset.all_settings": "All settings",
   "touchcontroller.screen.config.reset.cancel": "Cancel",
 
+  "touchcontroller.screen.config.status.title": "Status",
+  "touchcontroller.screen.config.status.platform": "Current platform: %s",
+  "touchcontroller.screen.config.status.platform.unavailable": "Unavailable",
+
   "touchcontroller.screen.config.about.title": "About",
   "touchcontroller.screen.config.about.authors.title": "Authors: ",
   "touchcontroller.screen.config.about.contributors.title": "Contributors: ",

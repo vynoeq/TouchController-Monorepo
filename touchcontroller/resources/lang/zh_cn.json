@@ -48,6 +48,10 @@
   "touchcontroller.screen.config.reset.all_settings": "所有设置",
   "touchcontroller.screen.config.reset.cancel": "取消",
 
+  "touchcontroller.screen.config.status.title": "状态",
+  "touchcontroller.screen.config.status.platform": "平台：%s",
+  "touchcontroller.screen.config.status.platform.unavailable": "不可用",
+
   "touchcontroller.screen.config.about.title": "关于",
   "touchcontroller.screen.config.about.authors.title": "作者：",
   "touchcontroller.screen.config.about.contributors.title": "贡献者：",

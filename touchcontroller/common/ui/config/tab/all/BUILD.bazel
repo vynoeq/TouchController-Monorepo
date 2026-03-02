@@ -11,6 +11,7 @@ kt_merge_library(
         "//touchcontroller/common/ui/config/tab/item",
         "//touchcontroller/common/ui/config/tab/layout/custom",
         "//touchcontroller/common/ui/config/tab/layout/preset",
+        "//touchcontroller/common/ui/config/tab/status",
     ],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [

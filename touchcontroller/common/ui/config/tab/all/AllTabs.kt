@@ -13,10 +13,12 @@ import top.fifthlight.touchcontroller.common.ui.config.tab.general.RegularTab
 import top.fifthlight.touchcontroller.common.ui.config.tab.general.TouchRingTab
 import top.fifthlight.touchcontroller.common.ui.config.tab.layout.custom.CustomControlLayoutTab
 import top.fifthlight.touchcontroller.common.ui.config.tab.layout.preset.ManageControlPresetsTab
+import top.fifthlight.touchcontroller.common.ui.config.tab.status.StatusTab
 
 fun getAllTabs(configScreenModel: ConfigScreenModel): PersistentList<Tab> {
     val itemTabs = ItemTabs(configScreenModel)
     return persistentListOf(
+        StatusTab,
         AboutTab,
         ManageControlPresetsTab,
         CustomControlLayoutTab,
