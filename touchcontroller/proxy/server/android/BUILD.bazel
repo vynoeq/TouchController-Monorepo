@@ -1,18 +1,15 @@
-load("@rules_rust//rust:defs.bzl", "rust_shared_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
-rust_shared_library(
+cc_library(
     name = "android",
-    srcs = glob(["*.rs"]),
-    crate_name = "proxy_server_android",
-    crate_root = "lib.rs",
-    tags = ["clippy"],
+    srcs = glob([
+        "*.c",
+        "*.h",
+    ]),
     target_compatible_with = ["@platforms//os:android"],
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
-        "@crates//:android_logger",
-        "@crates//:bytemuck",
-        "@crates//:jni",
-        "@crates//:log",
-        "@crates//:tokio",
+        "//touchcontroller/proxy/server/util/ringbuffer",
+        "@rules_jni//jni",
     ],
 )

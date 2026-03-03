@@ -17,7 +17,6 @@
             "extensions": [
                 "BazelBuild.vscode-bazel",
                 "llvm-vs-code-extensions.vscode-clangd",
-                "rust-lang.rust-analyzer"
             ],
             "settings": {
                 "bazel.buildifierExecutable": "/usr/local/bin/buildifier"

@@ -1,4 +1,4 @@
-load("//rule:jni_library.bzl", "cc_jni_library", "rust_jni_library")
+load("//rule:jni_library.bzl", "cc_jni_library")
 load("//rule:merge_library.bzl", "kt_merge_library")
 
 kt_merge_library(
@@ -79,9 +79,8 @@ cc_jni_library(
     ],
 )
 
-rust_jni_library(
+cc_jni_library(
     name = "proxy_server_android",
-    lib = "//touchcontroller/proxy/server/android",
     platforms = select({
         "//:config_release": [
             "@//platforms:android_arm32",
@@ -93,4 +92,5 @@ rust_jni_library(
             "@//platforms:android_arm64",
         ],
     }),
+    deps = ["//touchcontroller/proxy/server/android"],
 )

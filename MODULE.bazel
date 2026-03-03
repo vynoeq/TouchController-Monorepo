@@ -82,7 +82,7 @@ archive_override(
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
 git_override(
     module_name = "hedron_compile_commands",
-    commit = "abb61a688167623088f8768cc9264798df6a9d10",
+    commit = "7fe1eab26d2b8eeb5e1c6a2f38bddb001e3f9696",
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
 )
 
@@ -107,7 +107,6 @@ archive_override(
 
 # toolchain
 include("//module:zig_cc.MODULE.bazel")
-
 include("//module:llvm-mingw.MODULE.bazel")
 
 # languages
@@ -118,49 +117,34 @@ include("//module:android.MODULE.bazel")
 
 # tools
 include("//module:mdbook.MODULE.bazel")
-
 include("//module:copybara.MODULE.bazel")
 
 # rules
 include("//module:rules.MODULE.bazel")
-
 include("//module:minecraft.MODULE.bazel")
-
 include("//module:parchment.MODULE.bazel")
-
 include("//module:modrinth.MODULE.bazel")
 
 # loaders
 include("//module:neoforge.MODULE.bazel")
-
 include("//module:fabric.MODULE.bazel")
 
 # third party
 include("//module/third_party:sodium.MODULE.bazel")
-
 include("//module/third_party:iris.MODULE.bazel")
-
 include("//module/third_party:mocha.MODULE.bazel")
-
 include("//module/third_party:wayland.MODULE.bazel")
-
 include("//module/third_party:saba.MODULE.bazel")
-
 include("//module/third_party:fabric_loom.MODULE.bazel")
 
 # libraries
-
 include("//module:compose.MODULE.bazel")
 
 # projects
 include("//module:blazerod.MODULE.bazel")
-
 include("//module:armorstand.MODULE.bazel")
-
 include("//module:combine.MODULE.bazel")
-
 include("//module:touchcontroller.MODULE.bazel")
-
 include("//module:blazesdl.MODULE.bazel")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")

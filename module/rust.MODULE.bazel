@@ -1,34 +1,7 @@
 "MODULE.bazel Rust part"
 
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(
-    edition = "2024",
-    extra_target_triples = [
-        "armv7-linux-androideabi",
-        "aarch64-linux-android",
-        "i686-linux-android",
-        "x86_64-linux-android",
-    ],
-    versions = ["1.90.0"],
-)
-use_repo(
-    rust,
-    **{
-        "rust_x86_64-unknown-linux-gnu": "rust_linux_x86_64__x86_64-unknown-linux-gnu__stable_tools",
-    }
-)
-
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-http_archive(
-    name = "rust_std_windows_x86_64_gnu",
-    build_file = "//third_party/rust:BUILD.rust_std_windows_x86_64_gnu.bazel",
-    sha256 = "ea6a14c08499be72d95bc908da58be921f35d68f193ea8ccbc116746c162e3ab",
-    strip_prefix = "rust-std-1.90.0-x86_64-pc-windows-gnullvm/rust-std-x86_64-pc-windows-gnullvm",
-    url = "https://static.rust-lang.org/dist/2025-09-18/rust-std-1.90.0-x86_64-pc-windows-gnullvm.tar.gz",
-)
-
-register_toolchains("//toolchain:rust_windows_x86_64")
+rust.toolchain(edition = "2024", versions = ["1.93.1"])
 
 rust_host_tools = use_extension("@rules_rust//rust:extensions.bzl", "rust_host_tools")
 rust_host_tools.host_tools(
@@ -36,46 +9,3 @@ rust_host_tools.host_tools(
     version = "nightly",
 )
 use_repo(rust_host_tools, "rust_host_tools_nightly")
-
-crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
-crate.spec(
-    package = "jni",
-    version = "0.21.1",
-)
-crate.spec(
-    package = "bytemuck",
-    version = "1.21.0",
-)
-crate.spec(
-    features = [
-        "macros",
-        "sync",
-        "rt-multi-thread",
-        "net",
-        "io-util",
-    ],
-    package = "tokio",
-    version = "1.48.0",
-)
-crate.spec(
-    package = "log",
-    version = "0.4.29",
-)
-crate.spec(
-    package = "android_logger",
-    version = "0.15.1",
-)
-crate.spec(
-    package = "binrw",
-    version = "0.15.0",
-)
-crate.from_specs(supported_platform_triples = [
-    "x86_64-unknown-linux-gnu",
-    "aarch64-apple-darwin",
-    "aarch64-unknown-linux-gnu",
-    "armv7-linux-androideabi",
-    "aarch64-linux-android",
-    "i686-linux-android",
-    "x86_64-linux-android",
-])
-use_repo(crate, "crates")

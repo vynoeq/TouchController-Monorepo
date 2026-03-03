@@ -1,6 +1,17 @@
+load("@hedron_compile_commands//:refresh_compile_commands.bzl", "refresh_compile_commands")
 load("@rules_java//java:defs.bzl", "java_library", "java_plugin")
 load("@rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_compiler_plugin")
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+refresh_compile_commands(
+    name = "refresh_compile_commands",
+    targets = {
+        "//touchcontroller/proxy/server/android": "--platforms=//platforms:android_arm64",
+        "//touchcontroller/proxy/server/linux:wayland": "--platforms=//platforms:linux_x86_64",
+        "//touchcontroller/proxy/server/windows:lib": "--platforms=//platforms:windows_x86_64",
+        "//touchcontroller/proxy/server/windows:lib-legacy": "--platforms=//platforms:windows_x86_64",
+    },
+)
 
 config_setting(
     name = "config_release",

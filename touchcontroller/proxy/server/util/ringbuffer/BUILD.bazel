@@ -1,0 +1,8 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "ringbuffer",
+    srcs = ["ring_buffer.c"],
+    hdrs = ["ring_buffer.h"],
+    visibility = ["//touchcontroller/proxy/server:__subpackages__"],
+)
