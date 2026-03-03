@@ -531,7 +531,7 @@ class VmdLoader : ModelFileLoader {
                         ),
                         transformId = TransformId.IK,
                     ),
-                    components = emptyList<AnimationChannelComponent>(),
+                    components = emptyList<AnimationChannelComponent<*, *>>(),
                     indexer = indexer,
                     keyframeData = data,
                     interpolation = AnimationInterpolation.step,
