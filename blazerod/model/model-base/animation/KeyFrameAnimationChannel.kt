@@ -131,7 +131,7 @@ fun <D> KeyFrameAnimationChannel(
 fun <D> KeyFrameAnimationChannel(
     type: AnimationChannel.Type<top.fifthlight.blazerod.model.util.MutableBoolean, D>,
     typeData: D,
-    components: List<AnimationChannelComponent<*, *>> = listOf(),
+    components: List<top.fifthlight.blazerod.model.animation.AnimationChannelComponent<*, *>> = emptyList(),
     indexer: AnimationKeyFrameIndexer,
     keyframeData: AnimationKeyFrameData<top.fifthlight.blazerod.model.util.MutableBoolean>,
     interpolation: AnimationInterpolation,

@@ -16,6 +16,7 @@ import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.loader.util.MMD_SCALE
 import top.fifthlight.blazerod.model.loader.util.readAll
 import top.fifthlight.blazerod.model.loader.util.toRadian
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
