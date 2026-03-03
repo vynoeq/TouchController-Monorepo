@@ -43,6 +43,7 @@ interface AnimationChannel<T : Any, D> : AnimationChannelComponentContainer {
         data object Translation : Type<Vector3f, TransformData>()
         data object Scale : Type<Vector3f, TransformData>()
         data object Rotation : Type<Quaternionf, TransformData>()
+        data object IkEnabled : Type<top.fifthlight.blazerod.model.util.MutableBoolean, NodeData>()
 
         data object BedrockTranslation : Type<Vector3f, TransformData>()
         data object BedrockScale : Type<Vector3f, TransformData>()

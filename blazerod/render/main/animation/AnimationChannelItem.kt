@@ -293,4 +293,21 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
             camera.rotationEulerAngles.set(pendingValue)
         }
     }
+
+    class IkEnabledItem(
+        val ikIndex: Int,
+        channel: AnimationChannel<top.fifthlight.blazerod.model.util.MutableBoolean, AnimationChannel.Type.NodeData>,
+    ) : AnimationChannelItem<top.fifthlight.blazerod.model.util.MutableBoolean, AnimationChannel.Type.NodeData, top.fifthlight.blazerod.model.util.MutableBoolean>(channel) {
+        override val targetNodeIndex: Int? = null
+
+        override fun createPendingValue() = top.fifthlight.blazerod.model.util.MutableBoolean(true)
+
+        override fun update(context: AnimationContext, state: AnimationState, pendingValue: top.fifthlight.blazerod.model.util.MutableBoolean) {
+            channel.getData(context, state, pendingValue)
+        }
+
+        override fun apply(instance: ModelInstanceImpl, pendingValue: top.fifthlight.blazerod.model.util.MutableBoolean) {
+            instance.setIkEnabled(ikIndex, pendingValue.value)
+        }
+    }
 }

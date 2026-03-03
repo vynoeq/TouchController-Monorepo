@@ -141,6 +141,20 @@ object AnimationLoader {
                         channel = channel as AnimationChannel<Vector3f, AnimationChannel.Type.CameraData>,
                     )
                 }
+
+                AnimationChannel.Type.IkEnabled -> {
+                    val data = channel.typeData as AnimationChannel.Type.TransformData
+                    val targetNodeName = data.node.targetNodeName ?: return null
+
+                    val ikTarget = scene.nodeNameMap[targetNodeName]?.let { node ->
+                        scene.ikTargetData.find { it.ikIndex == node.nodeIndex }
+                    } ?: return null
+
+                    IkEnabledItem(
+                        ikIndex = ikTarget.ikIndex,
+                        channel = channel as AnimationChannel<top.fifthlight.blazerod.model.util.MutableBoolean, AnimationChannel.Type.NodeData>,
+                    )
+                }
             }
         }
 
