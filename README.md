@@ -17,14 +17,7 @@
 
 ## 目前状态
 
-整体项目正在从各自的仓库逐步迁移到本仓库中。进度大致如下：
-
-- Combine：迁移完毕
-- TouchController：迁移中
-- TouchControllerWiki：迁移完毕
-- BlazeRod：迁移完毕
-- ArmorStand：迁移完毕
-- AuthProxy：迁移完毕
+TouchController 的 Forge / NeoForge 支持还没搞定。游戏版本支持还没彻底迁移完。
 
 待所有代码迁移后，这个仓库会和 TouchController 仓库合并作为一个分支，然后这个仓库会进入归档状态。
 
@@ -49,13 +42,6 @@ Also, following Bazel rules are in this repo:
 
 ## Current Status
 
-Projects are gradually being migrated from their respective repositories to here. The progress is roughly as follows:
-
-- Combine: Migrated
-- TouchController: Migrating
-- TouchControllerWiki：Migrated
-- BlazeRod: Migrated
-- ArmorStand: Migrated
-- AuthProxy: Migrated
+TouchController's Forge and NeoForge support is not finished. Support for various game versions is not migrated yet. 
 
 After all code is migrated, this repository will be merged with the TouchController repository as a branch, and this repository will be archived.
