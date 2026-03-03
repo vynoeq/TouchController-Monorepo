@@ -5,8 +5,10 @@ import org.joml.Vector3f
 import top.fifthlight.blazerod.animation.AnimationChannelItem.*
 import top.fifthlight.blazerod.model.animation.Animation
 import top.fifthlight.blazerod.model.animation.AnimationChannel
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
 import top.fifthlight.blazerod.runtime.RenderSceneImpl
+import top.fifthlight.blazerod.runtime.node.component.RenderNodeComponent
 
 object AnimationLoader {
     fun load(
@@ -143,16 +145,18 @@ object AnimationLoader {
                 }
 
                 AnimationChannel.Type.IkEnabled -> {
-                    val data = channel.typeData as AnimationChannel.Type.TransformData
-                    val targetNodeName = data.node.targetNodeName ?: return null
+                    val data = channel.typeData as AnimationChannel.Type.NodeData
+                    val node = data.targetNode?.let { scene.nodeIdMap[it.id] }
+                        ?: data.targetNodeName?.let { scene.nodeNameMap[it] }
+                        ?: data.targetHumanoidTag?.let { scene.humanoidTagMap[it] }
+                        ?: return null
 
-                    val ikTarget = scene.nodeNameMap[targetNodeName]?.let { node ->
-                        scene.ikTargetData.find { it.ikIndex == node.nodeIndex }
-                    } ?: return null
+                    val ikComponent = node.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull() ?: return null
 
+                    @Suppress("UNCHECKED_CAST")
                     IkEnabledItem(
-                        ikIndex = ikTarget.ikIndex,
-                        channel = channel as AnimationChannel<top.fifthlight.blazerod.model.util.MutableBoolean, AnimationChannel.Type.NodeData>,
+                        ikIndex = ikComponent.ikIndex,
+                        channel = channel as AnimationChannel<MutableBoolean, AnimationChannel.Type.NodeData>,
                     )
                 }
             }

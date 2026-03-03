@@ -8,6 +8,7 @@ import top.fifthlight.blazerod.model.TransformId
 import top.fifthlight.blazerod.model.animation.AnimationChannel
 import top.fifthlight.blazerod.model.animation.AnimationContext
 import top.fifthlight.blazerod.model.animation.AnimationState
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
 import top.fifthlight.blazerod.runtime.ModelInstanceImpl
 import top.fifthlight.blazerod.runtime.resource.CameraTransformImpl
@@ -296,17 +297,17 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
 
     class IkEnabledItem(
         val ikIndex: Int,
-        channel: AnimationChannel<top.fifthlight.blazerod.model.util.MutableBoolean, AnimationChannel.Type.NodeData>,
-    ) : AnimationChannelItem<top.fifthlight.blazerod.model.util.MutableBoolean, AnimationChannel.Type.NodeData, top.fifthlight.blazerod.model.util.MutableBoolean>(channel) {
+        channel: AnimationChannel<MutableBoolean, AnimationChannel.Type.NodeData>,
+    ) : AnimationChannelItem<MutableBoolean, AnimationChannel.Type.NodeData, MutableBoolean>(channel) {
         override val targetNodeIndex: Int? = null
 
-        override fun createPendingValue() = top.fifthlight.blazerod.model.util.MutableBoolean(true)
+        override fun createPendingValue() = MutableBoolean(true)
 
-        override fun update(context: AnimationContext, state: AnimationState, pendingValue: top.fifthlight.blazerod.model.util.MutableBoolean) {
+        override fun update(context: AnimationContext, state: AnimationState, pendingValue: MutableBoolean) {
             channel.getData(context, state, pendingValue)
         }
 
-        override fun apply(instance: ModelInstanceImpl, pendingValue: top.fifthlight.blazerod.model.util.MutableBoolean) {
+        override fun apply(instance: ModelInstanceImpl, pendingValue: MutableBoolean) {
             instance.setIkEnabled(ikIndex, pendingValue.value)
         }
     }
