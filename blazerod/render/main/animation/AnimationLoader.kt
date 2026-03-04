@@ -149,17 +149,9 @@ object AnimationLoader {
                     val node = data.targetNode?.let { scene.nodeIdMap[it.id] }
                         ?: data.targetNodeName?.let { scene.nodeNameMap[it] }
                         ?: data.targetHumanoidTag?.let { scene.humanoidTagMap[it] }
-                        ?: run {
-                            println("[IK DEBUG] Failed to bind IkEnabled: bone not found! targetNodeName=${data.targetNodeName} targetHumanoidTag=${data.targetHumanoidTag}")
-                            return null
-                        }
+                        ?: return null
 
-                    val ikComponent = node.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull() ?: run {
-                        println("[IK DEBUG] Failed to bind IkEnabled to node ${node.nodeName}: missing IkTarget component!")
-                        return null
-                    }
-                    
-                    println("[IK DEBUG] SUCCEEDED finding IkTarget index ${ikComponent.ikIndex} on node ${node.nodeName} for VMD target ${data.targetNodeName}")
+                    val ikComponent = node.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull() ?: return null
 
                     @Suppress("UNCHECKED_CAST")
                     IkEnabledItem(
