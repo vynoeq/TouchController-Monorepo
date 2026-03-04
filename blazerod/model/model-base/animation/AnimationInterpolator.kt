@@ -86,6 +86,7 @@ abstract class AnimationInterpolation(val elements: Int) {
             }
         }
 
+        val step = object : AnimationInterpolation(1) {
             override fun interpolateVector3f(
                 context: AnimationContext,
                 state: AnimationState,
