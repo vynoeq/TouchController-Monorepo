@@ -27,10 +27,15 @@ enum class HumanoidTag(
     LEFT_LOWER_LEG(vrmName = "leftLowerLeg", pmxEnglish = "LeftKnee", pmxJapanese = "左ひざ"),
     LEFT_FOOT(vrmName = "leftFoot", pmxEnglish = "LeftAnkle", pmxJapanese = "左足首"),
     LEFT_TOES(vrmName = "leftToes", pmxEnglish = "LeftToe", pmxJapanese = "左つま先"),
+    LEFT_LEG_IK(pmxEnglish = "Left Leg IK", pmxJapanese = "左足ＩＫ"),
+    LEFT_TOE_IK(pmxEnglish = "Left Toe IK", pmxJapanese = "左つま先ＩＫ"),
+    
     RIGHT_UPPER_LEG(vrmName = "rightUpperLeg", pmxEnglish = "RightLeg", pmxJapanese = "右足"),
     RIGHT_LOWER_LEG(vrmName = "rightLowerLeg", pmxEnglish = "RightKnee", pmxJapanese = "右ひざ"),
     RIGHT_FOOT(vrmName = "rightFoot", pmxEnglish = "RightAnkle", pmxJapanese = "右足首"),
     RIGHT_TOES(vrmName = "rightToes", pmxEnglish = "RightToe", pmxJapanese = "右つま先"),
+    RIGHT_LEG_IK(pmxEnglish = "Right Leg IK", pmxJapanese = "右足ＩＫ"),
+    RIGHT_TOE_IK(pmxEnglish = "Right Toe IK", pmxJapanese = "右つま先ＩＫ"),
 
     // Arm
     LEFT_SHOULDER(vrmName = "leftShoulder", pmxEnglish = "LeftShoulder", pmxJapanese = "左肩"),

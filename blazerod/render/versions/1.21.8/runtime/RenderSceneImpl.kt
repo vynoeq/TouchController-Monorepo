@@ -229,7 +229,6 @@ class RenderSceneImpl(
 
                 val avgSpeed = data.averageRecentSpeed()
                 if (distSq > 4.0f || (avgSpeed > ModelInstanceImpl.PhysicsData.SPRINT_SPEED_THRESHOLD && distSq < ModelInstanceImpl.PhysicsData.STOP_SPEED_THRESHOLD)) {
-                    // Teleport OR deceleration from sprint: reset all rigid bodies to their bone rest pose
                     val initPos = Vector3f()
                     val initRot = Quaternionf()
                     for ((nodeIndex, component) in rigidBodyComponents) {
