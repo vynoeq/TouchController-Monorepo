@@ -2,6 +2,7 @@ package top.fifthlight.blazerod.model.animation
 
 import org.joml.Quaternionf
 import org.joml.Vector3f
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
 
 data class KeyFrameAnimationChannel<T : Any, D>(
@@ -126,3 +127,41 @@ fun <D> KeyFrameAnimationChannel(
     valueSetter = { values, result -> result.value = values[0].value },
     defaultValue = ::MutableFloat,
 )
+
+@JvmName("BooleanKeyFrameAnimationChannel")
+fun <D> KeyFrameAnimationChannel(
+    type: AnimationChannel.Type<MutableBoolean, D>,
+    typeData: D,
+    components: List<AnimationChannelComponent<*, *>> = listOf(),
+    indexer: AnimationKeyFrameIndexer,
+    keyframeData: AnimationKeyFrameData<MutableBoolean>,
+    interpolation: AnimationInterpolation,
+): KeyFrameAnimationChannel<MutableBoolean, D> = KeyFrameAnimationChannel(
+    type = type,
+    typeData = typeData,
+    components = components,
+    indexer = indexer,
+    interpolator = object : AnimationInterpolator<MutableBoolean> {
+        override fun interpolate(
+            context: AnimationContext,
+            state: AnimationState,
+            delta: Float,
+            startFrame: Int,
+            endFrame: Int,
+            startValue: List<MutableBoolean>,
+            endValue: List<MutableBoolean>,
+            result: MutableBoolean
+        ) {
+            if (delta >= 0.5f) {
+                result.value = endValue[0].value
+            } else {
+                result.value = startValue[0].value
+            }
+        }
+    },
+    keyframeData = keyframeData,
+    interpolation = interpolation,
+    valueSetter = { values, result -> result.value = values[0].value },
+    defaultValue = { MutableBoolean(true) },
+)
+

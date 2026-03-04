@@ -25,6 +25,7 @@ import top.fifthlight.blazerod.render.version_1_21_8.api.resource.DebugRenderabl
 import top.fifthlight.blazerod.render.version_1_21_8.runtime.node.RenderNodeImpl
 import top.fifthlight.blazerod.render.version_1_21_8.runtime.node.TransformMap
 import top.fifthlight.blazerod.render.version_1_21_8.runtime.node.UpdatePhase
+import top.fifthlight.blazerod.render.version_1_21_8.runtime.node.component.RenderNodeComponent
 import top.fifthlight.blazerod.render.version_1_21_8.runtime.node.markNodeTransformDirty
 import top.fifthlight.mergetools.api.ActualConstructor
 import top.fifthlight.mergetools.api.ActualImpl
@@ -299,12 +300,14 @@ class ModelInstanceImpl(
     override fun getIkEnabled(index: Int) = modelData.ikEnabled[index]
 
     override fun setIkEnabled(index: Int, enabled: Boolean) {
-        val prevEnabled = modelData.ikEnabled[index]
+        val old = modelData.ikEnabled[index]
         modelData.ikEnabled[index] = enabled
-        if (prevEnabled && !enabled) {
-            val component = scene.ikTargetComponents[index]
+        if (old && !enabled) {
+            val component = scene.nodes.mapNotNull {
+                it.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull { it.ikIndex == index }
+            }.firstOrNull() ?: return
+            
             for (chain in component.chains) {
-                markNodeTransformDirty(scene.nodes[chain.nodeIndex])
                 val transform = modelData.transformMaps[chain.nodeIndex]
                 transform.clearFrom(component.transformId)
             }

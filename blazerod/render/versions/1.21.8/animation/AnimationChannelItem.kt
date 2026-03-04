@@ -9,6 +9,7 @@ import top.fifthlight.blazerod.model.TransformId
 import top.fifthlight.blazerod.model.animation.AnimationChannel
 import top.fifthlight.blazerod.model.animation.AnimationContext
 import top.fifthlight.blazerod.model.animation.AnimationState
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
 import top.fifthlight.blazerod.render.version_1_21_8.runtime.ModelInstanceImpl
 
@@ -291,6 +292,23 @@ sealed class AnimationChannelItem<T : Any, D, P : Any>(
         override fun apply(instance: ModelInstanceImpl, pendingValue: Vector3f) {
             val camera = instance.modelData.cameraTransforms[cameraIndex] as? CameraTransformImpl.MMD ?: return
             camera.rotationEulerAngles.set(pendingValue)
+        }
+    }
+
+    class IkEnabledItem(
+        val ikIndex: Int,
+        channel: AnimationChannel<MutableBoolean, AnimationChannel.Type.NodeData>,
+    ) : AnimationChannelItem<MutableBoolean, AnimationChannel.Type.NodeData, MutableBoolean>(channel) {
+        override val targetNodeIndex: Int? = null
+
+        override fun createPendingValue() = MutableBoolean(true)
+
+        override fun update(context: AnimationContext, state: AnimationState, pendingValue: MutableBoolean) {
+            channel.getData(context, state, pendingValue)
+        }
+
+        override fun apply(instance: ModelInstanceImpl, pendingValue: MutableBoolean) {
+            instance.setIkEnabled(ikIndex, pendingValue.value)
         }
     }
 }

@@ -5,7 +5,9 @@ import org.joml.Vector3f
 import top.fifthlight.blazerod.render.version_1_21_8.animation.AnimationChannelItem.*
 import top.fifthlight.blazerod.model.animation.Animation
 import top.fifthlight.blazerod.model.animation.AnimationChannel
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
+import top.fifthlight.blazerod.render.version_1_21_8.runtime.node.component.RenderNodeComponent
 import top.fifthlight.blazerod.render.version_1_21_8.runtime.RenderSceneImpl
 
 object AnimationLoader {
@@ -139,6 +141,22 @@ object AnimationLoader {
                     MMDCameraTargetItem(
                         cameraIndex = cameraIndex,
                         channel = channel as AnimationChannel<Vector3f, AnimationChannel.Type.CameraData>,
+                    )
+                }
+
+                AnimationChannel.Type.IkEnabled -> {
+                    val data = channel.typeData as AnimationChannel.Type.NodeData
+                    val node = data.targetNode?.let { scene.nodeIdMap[it.id] }
+                        ?: data.targetNodeName?.let { scene.nodeNameMap[it] }
+                        ?: data.targetHumanoidTag?.let { scene.humanoidTagMap[it] }
+                        ?: return null
+
+                    val ikComponent = node.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull() ?: return null
+
+                    @Suppress("UNCHECKED_CAST")
+                    IkEnabledItem(
+                        ikIndex = ikComponent.ikIndex,
+                        channel = channel as AnimationChannel<MutableBoolean, AnimationChannel.Type.NodeData>,
                     )
                 }
             }

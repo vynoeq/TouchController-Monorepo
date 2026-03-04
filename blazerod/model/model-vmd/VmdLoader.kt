@@ -16,6 +16,7 @@ import top.fifthlight.blazerod.model.loader.ModelFileLoader
 import top.fifthlight.blazerod.model.loader.util.MMD_SCALE
 import top.fifthlight.blazerod.model.loader.util.readAll
 import top.fifthlight.blazerod.model.loader.util.toRadian
+import top.fifthlight.blazerod.model.util.MutableBoolean
 import top.fifthlight.blazerod.model.util.MutableFloat
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -449,6 +450,93 @@ class VmdLoader : ModelFileLoader {
         )
     }
 
+    private class IkChannel {
+        val frameList = IntArrayList()
+        val enableList = ByteArrayList()
+
+        fun toData(): Pair<AnimationKeyFrameIndexer, AnimationKeyFrameData<top.fifthlight.blazerod.model.util.MutableBoolean>> {
+            val indices = IntArrayList(frameList.size)
+            repeat(frameList.size) { indices.add(it) }
+            indices.sort { a, b -> frameList.getInt(a) - frameList.getInt(b) }
+
+            val sortedTimeList = FloatArrayList(frameList.size)
+            val sortedEnableList = ByteArrayList(enableList.size)
+
+            indices.forEachInt { i ->
+                sortedTimeList.add(frameList.getInt(i) * FRAME_TIME_SEC)
+                sortedEnableList.add(enableList.getByte(i))
+            }
+
+            val frameData = object : AnimationKeyFrameData<top.fifthlight.blazerod.model.util.MutableBoolean> {
+                override val frames: Int get() = sortedEnableList.size
+                override val elements: Int get() = 1
+                override fun get(
+                    context: AnimationContext,
+                    state: AnimationState,
+                    index: Int,
+                    data: List<top.fifthlight.blazerod.model.util.MutableBoolean>,
+                    post: Boolean,
+                ) {
+                    data[0].value = sortedEnableList.getByte(index) != 0.toByte()
+                }
+            }
+
+            return Pair(
+                ListAnimationKeyFrameIndexer(sortedTimeList),
+                frameData
+            )
+        }
+    }
+
+    private fun loadIkDisplay(buffer: ByteBuffer): List<KeyFrameAnimationChannel<*, *>> {
+        if (!buffer.hasRemaining()) return emptyList()
+
+        val lightCount = buffer.getInt()
+        buffer.position(buffer.position() + lightCount * 28)
+
+        if (!buffer.hasRemaining()) return emptyList()
+
+        val shadowCount = buffer.getInt()
+        buffer.position(buffer.position() + shadowCount * 9)
+
+        if (!buffer.hasRemaining()) return emptyList()
+
+        val ikDisplayCount = buffer.getInt()
+        val channels = mutableMapOf<String, IkChannel>()
+
+        repeat(ikDisplayCount) {
+            val frameNumber = buffer.getInt()
+            val displayEnabled = buffer.get()
+            val ikCount = buffer.getInt()
+
+            repeat(ikCount) {
+                val ikName = loadString(buffer, 20)
+                val ikEnabled = buffer.get()
+                
+                val channel = channels.getOrPut(ikName, ::IkChannel)
+                channel.frameList.add(frameNumber)
+                channel.enableList.add(ikEnabled)
+            }
+        }
+
+        return channels.flatMap { (name, channel) ->
+            val (indexer, data) = channel.toData()
+            listOf(
+                KeyFrameAnimationChannel(
+                    type = AnimationChannel.Type.IkEnabled as AnimationChannel.Type<MutableBoolean, AnimationChannel.Type.NodeData>,
+                    typeData = AnimationChannel.Type.NodeData(
+                        targetNode = null,
+                        targetNodeName = name,
+                        targetHumanoidTag = HumanoidTag.fromPmxJapanese(name),
+                    ),
+                    indexer = indexer,
+                    keyframeData = data,
+                    interpolation = AnimationInterpolation.step,
+                ),
+            )
+        }
+    }
+
     private fun load(buffer: ByteBuffer): LoadResult {
         loadHeader(buffer)
         val boneChannels = loadBone(buffer)
@@ -462,11 +550,16 @@ class VmdLoader : ModelFileLoader {
         } else {
             listOf()
         }
+        val ikChannels = if (buffer.hasRemaining()) {
+            loadIkDisplay(buffer)
+        } else {
+            listOf()
+        }
 
         return LoadResult(
             metadata = null,
             model = null,
-            animations = listOf(SimpleAnimation(channels = boneChannels + faceChannels + cameraChannels)),
+            animations = listOf(SimpleAnimation(channels = boneChannels + faceChannels + cameraChannels + ikChannels)),
         )
     }
 

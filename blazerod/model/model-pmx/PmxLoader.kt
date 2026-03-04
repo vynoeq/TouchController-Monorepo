@@ -83,7 +83,7 @@ class PmxLoader : ModelFileLoader {
         private lateinit var materials: List<MaterialData?>
         private lateinit var vertexToMaterialMap: VertexMaterialTable
         private lateinit var bones: List<PmxBone>
-        private val targetToIkDataMap = mutableMapOf<Int, MutableList<PmxBone.IkData>>()
+        private val effectorToIkDataMap = mutableMapOf<Int, MutableList<PmxBone.IkData>>()
         private val sourceToInheritMap = mutableMapOf<Int, MutableList<PmxBone.InheritData>>()
         private lateinit var morphTargets: List<PmxMorph>
         private lateinit var morphTargetGroups: List<PmxMorphGroup>
@@ -776,7 +776,7 @@ class PmxLoader : ModelFileLoader {
                         limitRadian = limitRadian,
                         links = links,
                     ).also {
-                        targetToIkDataMap.getOrPut(targetIndex, ::mutableListOf).add(it)
+                        effectorToIkDataMap.getOrPut(index, ::mutableListOf).add(it)
                     }
                 } else {
                     null
@@ -1125,7 +1125,7 @@ class PmxLoader : ModelFileLoader {
                 } ?: listOf()
 
                 val components = buildList {
-                    targetToIkDataMap[index]?.forEach { data ->
+                    effectorToIkDataMap[index]?.forEach { data ->
                         add(
                             NodeComponent.IkTargetComponent(
                                 ikTarget = IkTarget(
