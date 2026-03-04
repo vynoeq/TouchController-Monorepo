@@ -86,7 +86,6 @@ abstract class AnimationInterpolation(val elements: Int) {
             }
         }
 
-        val step = object : AnimationInterpolation(1) {
             override fun interpolateVector3f(
                 context: AnimationContext,
                 state: AnimationState,
@@ -97,7 +96,11 @@ abstract class AnimationInterpolation(val elements: Int) {
                 endValue: List<Vector3fc>,
                 result: Vector3f,
             ) {
-                result.set(startValue[0])
+                if (delta >= 0.5f) {
+                    result.set(endValue[0])
+                } else {
+                    result.set(startValue[0])
+                }
             }
 
             override fun interpolateQuaternionf(
@@ -110,7 +113,11 @@ abstract class AnimationInterpolation(val elements: Int) {
                 endValue: List<Quaternionfc>,
                 result: Quaternionf,
             ) {
-                result.set(startValue[0])
+                if (delta >= 0.5f) {
+                    result.set(endValue[0])
+                } else {
+                    result.set(startValue[0])
+                }
             }
 
             override fun interpolateFloat(
@@ -123,7 +130,11 @@ abstract class AnimationInterpolation(val elements: Int) {
                 endValue: List<FloatWrapper>,
                 result: MutableFloat,
             ) {
-                result.value = startValue[0].value
+                if (delta >= 0.5f) {
+                    result.value = endValue[0].value
+                } else {
+                    result.value = startValue[0].value
+                }
             }
         }
 

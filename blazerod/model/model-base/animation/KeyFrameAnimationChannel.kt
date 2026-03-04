@@ -152,7 +152,11 @@ fun <D> KeyFrameAnimationChannel(
             endValue: List<MutableBoolean>,
             result: MutableBoolean
         ) {
-            result.value = startValue[0].value
+            if (delta >= 0.5f) {
+                result.value = endValue[0].value
+            } else {
+                result.value = startValue[0].value
+            }
         }
     },
     keyframeData = keyframeData,

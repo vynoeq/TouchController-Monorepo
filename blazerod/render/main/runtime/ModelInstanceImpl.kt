@@ -293,16 +293,7 @@ class ModelInstanceImpl(
     override fun getIkEnabled(index: Int) = modelData.ikEnabled[index]
 
     override fun setIkEnabled(index: Int, enabled: Boolean) {
-        val prevEnabled = modelData.ikEnabled[index]
         modelData.ikEnabled[index] = enabled
-        if (prevEnabled && !enabled) {
-            val component = scene.ikTargetComponents[index]
-            for (chain in component.chains) {
-                markNodeTransformDirty(scene.nodes[chain.nodeIndex])
-                val transform = modelData.transformMaps[chain.nodeIndex]
-                transform.clearFrom(component.transformId)
-            }
-        }
     }
 
     override fun setGroupWeight(morphedPrimitiveIndex: Int, targetGroupIndex: Int, weight: Float) {
