@@ -180,6 +180,15 @@ class ModelInstanceImpl(
         val worldTransforms = Array(scene.nodes.size) { Matrix4f() }
         val worldTransformsNoPhysics = Array(scene.nodes.size) { Matrix4f() }
 
+        val centerNodeIndex = scene.nodes.indexOfFirst { it.humanoidTag == top.fifthlight.blazerod.model.HumanoidTag.Hips }.takeIf { it != -1 }
+        val isIkTargetNode = BooleanArray(scene.nodes.size).apply {
+            scene.nodes.forEachIndexed { i, node ->
+                if (node.getComponentsOfType(top.fifthlight.blazerod.runtime.node.component.IkTargetComponent.Type).isNotEmpty()) {
+                    set(i, true)
+                }
+            }
+        }
+
         val localMatricesBuffer = run {
             val buffer = LocalMatricesBuffer(scene.primitiveComponents.size)
             buffer.clear()
@@ -348,6 +357,17 @@ class ModelInstanceImpl(
             dst.set(modelData.worldTransformsNoPhysics[parent.nodeIndex]).mul(localBase)
         } else {
             dst.set(localBase)
+        }
+        
+        // --- Virtual Root Sync for IK targets ---
+        // If this is an IK target and is essentially a root bone (no parent or parent is root/motherbone)
+        if (modelData.isIkTargetNode[nodeIndex] && modelData.centerNodeIndex != null) {
+            if (parent == null || parent.nodeIndex == 0) {
+                // Apply the X and Z translation of the Center bone so IK targets move with the boss torso
+                val centerTx = modelData.transformMaps[modelData.centerNodeIndex].getSum(TransformId.EXTERNAL_PARENT_DEFORM)
+                dst.m30(dst.m30() + centerTx.m30())
+                dst.m32(dst.m32() + centerTx.m32())
+            }
         }
         for (child in node.children) {
             updateNodeTransformNoPhysics(child)
