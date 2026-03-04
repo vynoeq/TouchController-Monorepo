@@ -45,6 +45,10 @@ class CrossfadeAnimationState(
     }
 
     override fun getTime(): Float = elapsedTime
+
+    fun setElapsedTime(time: Float) {
+        this.elapsedTime = time
+    }
 }
 
 class CrossfadeAnimationItemInstance(
