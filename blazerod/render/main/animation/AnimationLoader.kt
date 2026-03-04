@@ -149,9 +149,17 @@ object AnimationLoader {
                     val node = data.targetNode?.let { scene.nodeIdMap[it.id] }
                         ?: data.targetNodeName?.let { scene.nodeNameMap[it] }
                         ?: data.targetHumanoidTag?.let { scene.humanoidTagMap[it] }
-                        ?: return null
+                        ?: run {
+                            top.fifthlight.blazerod.BlazeRod.logger.info("[IK DEBUG] Failed to bind IkEnabled: bone not found! targetNodeName=${data.targetNodeName} targetHumanoidTag=${data.targetHumanoidTag}")
+                            return null
+                        }
 
-                    val ikComponent = node.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull() ?: return null
+                    val ikComponent = node.getComponentsOfType(RenderNodeComponent.Type.IkTarget).firstOrNull() ?: run {
+                        top.fifthlight.blazerod.BlazeRod.logger.info("[IK DEBUG] Failed to bind IkEnabled to node ${node.name}: missing IkTarget component!")
+                        return null
+                    }
+                    
+                    top.fifthlight.blazerod.BlazeRod.logger.info("[IK DEBUG] SUCCEEDED finding IkTarget index ${ikComponent.ikIndex} on node ${node.name} for VMD target ${data.targetNodeName}")
 
                     @Suppress("UNCHECKED_CAST")
                     IkEnabledItem(
