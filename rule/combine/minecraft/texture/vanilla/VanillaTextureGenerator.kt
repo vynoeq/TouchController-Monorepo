@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import top.fifthlight.combine.resources.Metadata
 import top.fifthlight.combine.resources.NinePatchMetadata
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
 import java.time.LocalDateTime
@@ -33,7 +34,7 @@ data class TextureMetadata(val gui: Gui) {
                 val border: Border,
                 @SerialName("stretch_inner")
                 val stretchInner: Boolean,
-            ): Scaling {
+            ) : Scaling {
                 @Serializable
                 data class Border(
                     val left: Int,
@@ -48,12 +49,25 @@ data class TextureMetadata(val gui: Gui) {
             data class Tile(
                 val width: Int,
                 val height: Int,
-            ): Scaling
+            ) : Scaling
         }
     }
 }
 
-fun main(vararg args: String) {
+private fun expandArgFiles(args: Array<out String>): List<String> {
+    return args.flatMap { arg ->
+        if (arg.startsWith("@")) {
+            Files.readAllLines(Path.of(arg.substring(1)))
+                .filter { it.isNotBlank() }
+        } else {
+            listOf(arg)
+        }
+    }
+}
+
+fun main(vararg rawArgs: String) {
+    val args = expandArgFiles(rawArgs).toTypedArray()
+
     if (args.size < 3) {
         System.err.println("Usage: VanillaTextureGenerator <namespace> <prefix> <output_jar> [--texture <identifier> <png file> <manifest json>] [--ninepatch <identifier> <png file> <manifest json>]...")
         exitProcess(1)

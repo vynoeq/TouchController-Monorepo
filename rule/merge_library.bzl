@@ -152,7 +152,7 @@ def _kt_merge_library_import_impl(ctx):
     return [
         MergeLibraryInfo(
             merge_jars = ctx.attr.src[_JavaInfo].full_compile_jars,
-            merge_source_jars = ctx.attr.src[_JavaInfo].source_jars,
+            merge_source_jars = depset(ctx.attr.src[_JavaInfo].source_jars),
             deps = [dep[MergeLibraryInfo] for dep in ctx.attr.deps],
         ),
         ctx.attr.src[_JavaInfo],

@@ -1,6 +1,7 @@
 load("@rules_java//java:defs.bzl", "java_binary")
 load("@rules_kotlin//kotlin:core.bzl", "kt_kotlinc_options")
 load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//rule:merge_library.bzl", "kt_merge_library_import")
 
 kt_kotlinc_options(
     name = "kotlinc_opts",
@@ -8,13 +9,21 @@ kt_kotlinc_options(
 )
 
 kt_jvm_library(
-    name = "jij_merger_library",
+    name = "jij_merger_library_raw",
     srcs = glob(["*.kt"]),
-    kotlinc_opts = "kotlinc_opts",
+    kotlinc_opts = ":kotlinc_opts",
+    visibility = ["//visibility:private"],
+    plugins = ["//:kotlin_serialization_plugin"],
     deps = [
-        "//:kotlin_serialization",
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
     ],
+)
+
+kt_merge_library_import(
+    name = "jij_merger_library",
+    src = ":jij_merger_library_raw",
 )
 
 java_binary(

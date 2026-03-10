@@ -1,8 +1,21 @@
-load("//rule:merge_library.bzl", "kt_merge_library")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//rule:merge_library.bzl", "kt_merge_library_import")
 
-kt_merge_library(
-    name = "click",
+kt_jvm_library(
+    name = "click_raw",
     srcs = glob(["*.kt"]),
     kotlinc_opts = "//touchcontroller/common:kotlinc_opts",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+    ],
+    exports = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+    ],
+)
+
+kt_merge_library_import(
+    name = "click",
+    src = ":click_raw",
     visibility = ["//touchcontroller:__subpackages__"],
 )

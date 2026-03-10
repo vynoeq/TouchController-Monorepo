@@ -1,11 +1,25 @@
-load("//rule:merge_library.bzl", "kt_merge_library")
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("//rule:merge_library.bzl", "kt_merge_library_import")
 
-kt_merge_library(
-    name = "data",
+kt_jvm_library(
+    name = "data_raw",
     srcs = glob(["*.kt"]),
-    visibility = ["//visibility:public"],
+    visibility = ["//visibility:private"],
+    exports = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
+    ],
     deps = [
         "//:kotlin_serialization",
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
     ],
+)
+
+kt_merge_library_import(
+    name = "data",
+    src = ":data_raw",
+    visibility = ["//visibility:public"],
 )

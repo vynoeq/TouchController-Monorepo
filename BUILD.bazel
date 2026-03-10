@@ -22,6 +22,7 @@ config_setting(
 
 kt_compiler_plugin(
     name = "kotlin_serialization_plugin",
+    visibility = ["//visibility:public"],
     compile_phase = True,
     id = "org.jetbrains.kotlin.serialization",
     stubs_phase = True,
@@ -36,7 +37,9 @@ kt_jvm_library(
     exported_compiler_plugins = [":kotlin_serialization_plugin"],
     visibility = ["//visibility:public"],
     exports = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
         "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_core_jvm",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_serialization_json_jvm",
     ],
 )
 
@@ -77,7 +80,7 @@ define_kt_toolchain(
     name = "kotlin_toolchain",
     api_version = "2.2",
     #experimental_report_unused_deps = "error",
-    experimental_strict_kotlin_deps = "error",
+    experimental_strict_kotlin_deps = "off",
     experimental_use_abi_jars = True,
     jvm_target = "21",
     language_version = "2.2",

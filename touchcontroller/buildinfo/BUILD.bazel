@@ -30,4 +30,7 @@ kt_merge_library(
     name = "buildinfo",
     srcs = [":buildinfo_sources"],
     visibility = ["//touchcontroller:__subpackages__"],
+    deps = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+    ],
 )

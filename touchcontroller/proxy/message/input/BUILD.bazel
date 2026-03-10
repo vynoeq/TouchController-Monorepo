@@ -4,5 +4,7 @@ kt_merge_library(
     name = "input",
     srcs = glob(["*.kt"]),
     visibility = ["//touchcontroller:__subpackages__"],
-    deps = [],
+    deps = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+    ],
 )

@@ -4,4 +4,7 @@ kt_merge_library(
     name = "modifier",
     srcs = glob(["*.kt"]),
     visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
+    ],
 )

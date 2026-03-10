@@ -4,13 +4,27 @@ import com.squareup.kotlinpoet.*
 import kotlinx.serialization.json.Json
 import top.fifthlight.combine.resources.Metadata
 import top.fifthlight.combine.resources.NinePatchMetadata
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.system.exitProcess
 
-fun main(vararg args: String) {
-    if (args.size < 2) {
+private fun expandArgFiles(args: Array<out String>): List<String> {
+    return args.flatMap { arg ->
+        if (arg.startsWith("@")) {
+            Files.readAllLines(Path.of(arg.substring(1)))
+                .filter { it.isNotBlank() }
+        } else {
+            listOf(arg)
+        }
+    }
+}
+
+fun main(vararg rawArgs: String) {
+    val args = expandArgFiles(rawArgs).toTypedArray()
+
+    if (args.size < 5) {
         System.err.println("Usage: KotlinTextureLibraryGenerator <output_file> <package name> <class name> <prefix> <namespace> [--texture <identifier> <png file> <manifest json>] [--ninepatch <identifier> <png file> <manifest json>]...")
         exitProcess(1)
     }

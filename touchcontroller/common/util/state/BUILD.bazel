@@ -5,6 +5,7 @@ kt_merge_library(
     srcs = glob(["*.kt"]),
     visibility = ["//touchcontroller:__subpackages__"],
     deps = [
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
     ],
 )
